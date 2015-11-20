@@ -1,8 +1,8 @@
 import java.awt.Color;
 
 public class TetrisUtil {
-	public static final int BITS_PER_COLOR = 3;
-	public static final int MASK = (1 << BITS_PER_COLOR) - 1;
+	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
+	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 111
 	public static final int BOARD_WIDTH = 16;
 	public static final int BOARD_HEIGHT = 24;
 	public static final Color[] PIECE_COLORS = {
@@ -25,6 +25,15 @@ public class TetrisUtil {
 		return -1;
 	}
 	
+	/**
+	 * Converts a row of colors to the bit encoding that will be sent
+	 * over the network.
+	 * 
+	 * @param row
+	 * 						the array of colors to encode
+	 * @return a long containing the bits encoding the colors that can
+	 * 				 sent over the network
+	 */
 	public static long gridRowToNetworkMessage(Color[] row) {
 		long networkFormat = 0;
 		for (int i = 0; i < row.length; i++) {
