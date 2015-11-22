@@ -1,13 +1,38 @@
-public class Piece {
-	private Collection<Square> squares;
+//import java.util.Collection;
+import java.util.List;
+import java.awt.Color;
+import java.util.ArrayList;
 
-	public Piece (Collection<Square> squares) {
+public abstract class Piece {
+	public static final int NUM_SQUARES_PER_PIECE = 4;
+
+	// private Collection<Square> squares;
+	
+	// Collection is just a collection of static methods that
+	// operate on or return collections; best use something like
+	// arraylist for constant time access and amortized O(1) add
+	// since it resizes; leave without access modifier so subclasses
+	// have access
+	List<Square> squares;
+	
+	public Piece(List<Square> squares) {
+		this.squares = squares;
+	}
+	
+	public Piece(int i, int j, Color color) {}
+	
+	public List<Square> getSpaces() {
+		return squares;
+	}
+
+/*	public Piece(Collection<Square> squares) {
+		assert(squares.size() == NUM_SQUARES_PER_PIECE);
 		this.squares = squares;
 	}
 
 	public Collection<Square> getSpaces() {
 		return squares;
-	}
+	} */
 
 	public void moveLeft(Board board) {
 
@@ -31,11 +56,7 @@ public class Piece {
 
 	}
 
-	public void rotateLeft(Board board) {
+	public abstract void rotateLeft(Board board);
 
-	}
-
-	public void rotateRight(Board board) {
-
-	}
+	public abstract void rotateRight(Board board);
 }

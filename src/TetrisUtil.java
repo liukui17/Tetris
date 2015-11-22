@@ -6,14 +6,14 @@ public class TetrisUtil {
 	public static final int BOARD_WIDTH = 16;
 	public static final int BOARD_HEIGHT = 24;
 	public static final Color[] PIECE_COLORS = {
-			Color.GRAY, // empty
-			Color.CYAN, // I
-			Color.BLUE, // J
-			Color.ORANGE, // L
-			Color.YELLOW, // O
-			Color.GREEN, // S (there is no lime so set this for now)
-			Color.MAGENTA, // T (there is no purple so set this for now)
-			Color.RED // Z
+		Color.GRAY, // empty
+		Color.CYAN, // I
+		Color.BLUE, // J
+		Color.ORANGE, // L
+		Color.YELLOW, // O
+		Color.GREEN, // S (there is no lime so set this for now)
+		Color.MAGENTA, // T (there is no purple so set this for now)
+		Color.RED // Z
 	};
 	
 	public static int colorToInt(Color color) {
