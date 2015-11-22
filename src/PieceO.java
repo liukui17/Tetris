@@ -1,19 +1,22 @@
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PieceO extends Piece {
 	
-	public PieceO(Square[] squares) {
+	public PieceO(List<Square> squares) {
 		super(squares);
 	}
 	
-	public PieceO(int i, int j, Color color) {
-		super(i, j, color);
+	//     [][]
+	//     [][]
+	public PieceO(int startRow, int startCol, Color color) {
+		super(startRow, startCol, color);
 		squares = new ArrayList<Square>();
-		squares.add(new Square(i, j, color));
-		squares.add(new Square(i + 1, j, color));
-		squares.add(new Square(i, j + 1, color));
-		squares.add(new Square(i + 1, j + 1, color));
+		squares.add(new Square(startRow, startCol, color));
+		squares.add(new Square(startRow + 1, startCol, color));
+		squares.add(new Square(startRow, startCol + 1, color));
+		squares.add(new Square(startRow + 1, startCol + 1, color));
 	}
 	
 	public void rotateLeft(Board board) {}

@@ -19,7 +19,7 @@ public abstract class Piece {
 		this.squares = squares;
 	}
 	
-	public Piece(int i, int j, Color color) {}
+	public Piece(int startRow, int startCol, Color color) {}
 	
 	public List<Square> getSpaces() {
 		return squares;
