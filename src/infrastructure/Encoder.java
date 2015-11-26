@@ -1,7 +1,7 @@
 package infrastructure;
 import java.awt.Color;
 
-public class TetrisUtil {
+public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 111
 	public static final int BOARD_WIDTH = 16;
