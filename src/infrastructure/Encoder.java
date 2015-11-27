@@ -64,5 +64,30 @@ public class Encoder {
 			bits >>= BITS_PER_COLOR;
 		}
 	}
-	
+
+	/**
+	 * Decodes the specified byte into a String and returns it.
+	 * 
+	 * @param bits the byte containing the command
+	 * 
+	 * @return a String of the human readable command encoded in the byte
+	 */
+	public static String decodeCommand(byte bits) {
+		/*
+		 * 01111111 = 127
+		 * 
+		 * Ignore the MSB because it indicates the player who made
+		 * the command, which does not provide any information about
+		 * the actual action to be taken.
+		 */
+		byte command = (byte) (bits & 127);
+		
+		switch (command) {
+			case 0: return "left";
+			case 1: return "right";
+			case 2: return "rotate";
+			case 4: return "drop";
+			default: return "???";
+		}
+	}
 }

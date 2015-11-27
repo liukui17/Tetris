@@ -4,6 +4,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameTimer {
+	/**
+	 * A "test" main. Will be removed later.
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		GameTimer t = new GameTimer();
 		t.start();
@@ -76,12 +79,15 @@ public class GameTimer {
 	
 	/**
 	 * The TimerTask that will drop the blocks
+	 * 
+	 * DISCLAIMER: IN PROGRESS. Currently on prints messages
 	 */
 	private class Dropper extends TimerTask {
 		private int i = 0;
 		
 		@Override
 		public void run() {
+			// NEED TO LOCK BOARD WHEN DROPPING
 			System.out.println("dropped " + i);
 			i++;
 		}
