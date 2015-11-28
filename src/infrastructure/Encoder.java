@@ -4,22 +4,10 @@ import java.awt.Color;
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 111
-	public static final int BOARD_WIDTH = 16;
-	public static final int BOARD_HEIGHT = 24;
-	public static final Color[] PIECE_COLORS = {
-		Color.GRAY, // empty
-		Color.CYAN, // I
-		Color.BLUE, // J
-		Color.ORANGE, // L
-		Color.YELLOW, // O
-		Color.GREEN, // S (there is no lime so set this for now)
-		Color.MAGENTA, // T (there is no purple so set this for now)
-		Color.RED // Z
-	};
 	
 	public static int colorToInt(Color color) {
-		for (int i = 0; i < PIECE_COLORS.length; i++) {
-			if (PIECE_COLORS[i].equals(color)) {
+		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
+			if (GameUtil.PIECE_COLORS[i].equals(color)) {
 				return i;
 			}
 		}
@@ -60,7 +48,7 @@ public class Encoder {
 	public static void networkMessageToGridRow(long bits, Color[] row) {
 		for (int i = 0; i < row.length; i++) {
 			int nextColor = (int) (bits & MASK);
-			row[i] = PIECE_COLORS[nextColor];
+			row[i] = GameUtil.PIECE_COLORS[nextColor];
 			bits >>= BITS_PER_COLOR;
 		}
 	}
