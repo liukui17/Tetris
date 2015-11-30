@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import infrastructure.GameUtil;
+
 public class PieceJ extends Piece {
 	
 	public PieceJ(List<Square> squares) {
@@ -11,18 +13,19 @@ public class PieceJ extends Piece {
 	
 	//       []
 	//       [][][]
-	public PieceJ(int startRow, int startCol, Color color) {
-		squares.add(new Square(startRow, startCol, color));
-		squares.add(new Square(startRow + 1, startCol, color));
-		squares.add(new Square(startRow + 1, startCol + 1, color));
-		squares.add(new Square(startRow + 1, startCol + 2, color));
+	public PieceJ(int startRow, int startCol) {
+		super();
+		squares.add(new Square(startRow, startCol, GameUtil.PIECE_COLORS[2]));
+		squares.add(new Square(startRow + 1, startCol, GameUtil.PIECE_COLORS[2]));
+		squares.add(new Square(startRow + 1, startCol + 1, GameUtil.PIECE_COLORS[2]));
+		squares.add(new Square(startRow + 1, startCol + 2, GameUtil.PIECE_COLORS[2]));
 	}
 	
-	public void rotateLeft(Board board) {
+	public void rotateLeft() {
 		
 	}
 	
-	public void rotateRight(Board board) {
+	public void rotateRight() {
 		
 	}
 }
