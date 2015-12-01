@@ -81,17 +81,16 @@ public class Board {
 	}
 	
 	public synchronized boolean tryMoveDown(int player) {
-//		playerPieces[player].moveDown();
-//		int collisions = checkNoCollisionsMovedPiece(player);
-//		if (collisions == 1 || collisions == 3) {
-//			playerPieces[player].moveUp();
-//			addToSetSquares(player);
-//			return false;
-//		} else if (collisions == 2) {
-//			playerPieces[player].moveUp();
-//			return false;
-//		}
-		System.out.println("try move down");
+		playerPieces[player].moveDown();
+		int collisions = checkNoCollisionsMovedPiece(player);
+		if (collisions == 1 || collisions == 3) {
+			playerPieces[player].moveUp();
+			addToSetSquares(player);
+			return false;
+		} else if (collisions == 2) {
+			playerPieces[player].moveUp();
+			return false;
+		}
 		return true;
 	}
 	

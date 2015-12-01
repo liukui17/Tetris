@@ -1,5 +1,6 @@
 package infrastructure;
 
+import java.awt.Color;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,24 +24,27 @@ public class GameTimer extends Thread {
 	
 	private Board board;
 	
+	private Score score;
+	
 	/**
 	 * Constructs a new GameTimer with the specified initialDropInterval.
 	 * 
 	 * @param initialDropInterval the drop interval at which the game will begin
 	 * with
 	 */
-	public GameTimer(long initialDropInterval, Board board) {
+	public GameTimer(long initialDropInterval, Board board, Score score) {
 		timer = new Timer();
 		dropper = new Dropper();
 		dropInterval = initialDropInterval;
 		this.board = board;
+		this.score = score;
 	}
 	
 	/**
 	 * Constructs a new GameTimer with the default drop interval.
 	 */
-	public GameTimer(Board board) {
-		this(DEFAULT_DROP_INTERVAL, board);
+	public GameTimer(Board board, Score score) {
+		this(DEFAULT_DROP_INTERVAL, board, score);
 	}
 	
 	@Override
@@ -75,6 +79,7 @@ public class GameTimer extends Thread {
 		@Override
 		public void run() {
 			// randomize for fairness
+			System.out.println("inside dropper");
 			if ((Math.random() * 10) % 2 == 0) {
 				board.tryMoveDown(0);
 				board.tryMoveDown(1);
@@ -82,6 +87,8 @@ public class GameTimer extends Thread {
 				board.tryMoveDown(1);
 				board.tryMoveDown(0);
 			}
+			
+
 		}
 	}
 }

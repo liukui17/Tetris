@@ -28,10 +28,20 @@ public class Encoder {
 	 */
 	public static long gridRowToNetworkMessage(Color[] row) {
 		long networkFormat = 0;
-		for (int i = 0; i < row.length; i++) {
-			networkFormat += colorToInt(row[i]);
-			networkFormat <<= BITS_PER_COLOR;
+		
+		// empty row
+		if (row == null) {
+			for (int i = 0; i < GameUtil.BOARD_WIDTH; i++) {
+				networkFormat += colorToInt(Color.gray);
+				networkFormat <<= BITS_PER_COLOR;
+			}
+		} else {
+			for (int i = 0; i < row.length; i++) {
+				networkFormat += colorToInt(row[i]);
+				networkFormat <<= BITS_PER_COLOR;
+			}
 		}
+		
 		return networkFormat;
 	}
 	

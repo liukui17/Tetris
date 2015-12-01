@@ -130,6 +130,8 @@ public class ServerConnectionManager implements Runnable {
 						outToP1.writeInt(score);
 						outToP1.writeBoolean(isGameOver);
 					}
+					
+					System.out.println("sent board to client");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
