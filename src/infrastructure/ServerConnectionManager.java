@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 /*
- * Justification for only one ConnectionManager for both players:
+ * Justification for only one ServerConnectionManager for both players:
  * We can read commands issued by either player concurrently (which
  * we definitely want to do for efficiency), however, at the end of
  * the day, we HAVE to make changing the board state sequential with
@@ -24,7 +24,7 @@ import java.util.concurrent.BlockingQueue;
  * Manages the connection, and the data sent/received through the connection
  * between the server and the players.
  */
-public class ConnectionManager implements Runnable {
+public class ServerConnectionManager implements Runnable {
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<Color[]> out;
 	
@@ -33,7 +33,7 @@ public class ConnectionManager implements Runnable {
 	private DataInputStream inFromP2;
 	private DataOutputStream outToP2;
 	
-	public ConnectionManager(BlockingQueue<Byte> commands, BlockingQueue<Color[]> out,
+	public ServerConnectionManager(BlockingQueue<Byte> commands, BlockingQueue<Color[]> out,
 													 DataInputStream inFromP1, DataOutputStream outToP1,
 													 DataInputStream inFromP2, DataOutputStream outToP2) {
 		this.commands = commands;

@@ -29,11 +29,11 @@ public class Board {
 		checkRep();
 	}
 	
-	public void drop(int player) {
+	public synchronized void drop(int player) {
 		while (tryMoveDown(player)) {}
 	}
 	
-	public boolean tryMoveLeft(int player) {
+	public synchronized boolean tryMoveLeft(int player) {
 		playerPieces[player].moveLeft();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].moveRight();
@@ -42,7 +42,7 @@ public class Board {
 		return true;
 	}
 	
-	public boolean tryMoveRight(int player) {
+	public synchronized boolean tryMoveRight(int player) {
 		playerPieces[player].moveRight();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].moveLeft();
@@ -51,7 +51,7 @@ public class Board {
 		return true;
 	}
 	
-	public boolean tryMoveDown(int player) {
+	public synchronized boolean tryMoveDown(int player) {
 		playerPieces[player].moveDown();
 		int collisions = checkNoCollisionsMovedPiece(player);
 		if (collisions == 1) {
@@ -64,7 +64,7 @@ public class Board {
 		return true;
 	}
 	
-	public boolean tryRotateLeft(int player) {
+	public synchronized boolean tryRotateLeft(int player) {
 		playerPieces[player].rotateLeft();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].rotateRight();
@@ -73,7 +73,7 @@ public class Board {
 		return true;
 	}
 	
-	public boolean tryRotateRight(int player) {
+	public synchronized boolean tryRotateRight(int player) {
 		playerPieces[player].rotateRight();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].rotateLeft();
@@ -82,7 +82,7 @@ public class Board {
 		return true;
 	}
 	
-	public boolean checkNoCollisionsEntireBoard() {
+	public synchronized boolean checkNoCollisionsEntireBoard() {
 		for (int i = 0; i < playerPieces.length; i++) {
 			if (!checkNoCollisionsWithSetSquares(i)) {
 				return false;
@@ -96,7 +96,7 @@ public class Board {
 		return true;
 	}
 	
-	public int checkNoCollisionsMovedPiece(int player) {
+	public synchronized int checkNoCollisionsMovedPiece(int player) {
 		boolean setSquares = checkNoCollisionsWithSetSquares(player);
 		boolean otherPlayers = checkNoCollisionsWithOtherPlayers(player);
 		if (setSquares && otherPlayers) {
@@ -110,7 +110,7 @@ public class Board {
 		}
 	}
 	
-	private boolean checkNoCollisionsWithSetSquares(int player) {
+	private synchronized boolean checkNoCollisionsWithSetSquares(int player) {
 		for (Square square : playerPieces[player].squares) {
 			if (boardRows.get(square.y)[square.x] != null) {
 				return false;
@@ -122,7 +122,7 @@ public class Board {
 		return true;
 	}
 	
-	private boolean checkNoCollisionsWithOtherPlayers(int player) {
+	private synchronized boolean checkNoCollisionsWithOtherPlayers(int player) {
 		for (int i = 0; i < playerPieces.length; i++) {
 			if (i != player) {
 				for (Square square : playerPieces[player].squares) {
@@ -135,7 +135,7 @@ public class Board {
 		return true;
 	}
 	
-	public Color[] getRowColors(int rowNum) {
+	public synchronized Color[] getRowColors(int rowNum) {
 		Square[] row = boardRows.get(rowNum);
 		if (row != null) {
 			Color[] rowColors = new Color[row.length];
@@ -148,7 +148,7 @@ public class Board {
 		}
 	}
 	
-	public void addToSetSquares(int player) {
+	public synchronized void addToSetSquares(int player) {
 		for (Square square : playerPieces[player].squares) {
 			Square[] row = boardRows.get(square.y);
 			if (row == null) {
@@ -159,7 +159,7 @@ public class Board {
 		playerPieces[player] = PieceFactory.generateNewPiece(player);
 	}
 	
-	public List<Integer> getFullRows() {
+	public synchronized List<Integer> getFullRows() {
 		List<Integer> fullRows = new LinkedList<Integer>();
 		for (int i = 0; i < boardRows.keySet().size(); i++) {
 			if (isFullRow(boardRows.get(i))) {
@@ -169,7 +169,7 @@ public class Board {
 		return fullRows;
 	}
 	
-	public boolean isFullRow(Square[] row) {
+	public synchronized boolean isFullRow(Square[] row) {
 		for (int i = 0; i < row.length; i++) {
 			if (row[i] == null) {
 				return false;
@@ -178,7 +178,7 @@ public class Board {
 		return true;
 	}
 	
-	public void clearRow(int rowToClear) {
+	public synchronized void clearRow(int rowToClear) {
 		Square[] row = boardRows.get(rowToClear);
 		if (row != null) {
 			if (isFullRow(boardRows.get(rowToClear))) {
@@ -187,7 +187,7 @@ public class Board {
 		}
 	}
 	
-	private void checkRep() {
+	private synchronized void checkRep() {
 		for (int i = 0; i < playerPieces.length; i++) {
 			assert(playerPieces[i] != null);
 		}

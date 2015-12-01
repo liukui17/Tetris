@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import pieces.Board;
+
 /**
  * A GameThread manages one single game of collaborative Tetris
  * between two players p1 and p2.
@@ -21,10 +23,10 @@ public class GameThread implements Runnable {
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<Color[]> out;
 	
-	// private GameTimer timer;
-	// private Board board;
-	// private int score;
-
+	private int score;
+	private Board board;
+	private GameTimer timer;
+	
 	public GameThread(Socket p1Socket, Socket p2Socket) throws IOException {	
 		this.p1Socket = p1Socket;
 		this.p2Socket = p2Socket;
@@ -32,9 +34,10 @@ public class GameThread implements Runnable {
 		commands = new LinkedBlockingQueue<Byte>();
 		out = new LinkedBlockingQueue<Color[]>();
 		
-		// score = 0;
-		// timer = new GameTimer();
-		// board = new Board();
+		score = 0;
+		
+		board = new Board();
+		timer = new GameTimer(board);
 	}
 
 	@Override
@@ -50,7 +53,7 @@ public class GameThread implements Runnable {
 		 * out BlockingQueue.
 		 */
 		try {
-			new Thread(new ConnectionManager(commands, out,
+			new Thread(new ServerConnectionManager(commands, out,
 					new DataInputStream(p1Socket.getInputStream()),
 					new DataOutputStream(p1Socket.getOutputStream()),
 					new DataInputStream(p2Socket.getInputStream()),
@@ -58,6 +61,11 @@ public class GameThread implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		/*
+		 * Start the timer
+		 */
+		timer.start();
 		
 		/*
 		 * Dequeues command bytes from the command BlockingQueue, parses it,
