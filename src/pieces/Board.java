@@ -156,6 +156,10 @@ public class Board {
 			}
 			boardRows.get(square.y)[square.x] = square;
 		}
+		List<Integer> fullRows = getFullRows();
+		for (Integer i : fullRows) {
+			clearRow(i);
+		}
 		playerPieces[player] = PieceFactory.generateNewPiece(player);
 	}
 	
