@@ -164,7 +164,7 @@ public class Board {
 		for (Square square : playerPieces[player].squares) {
 			Square[] row = boardRows.get(square.y);
 			if (row != null) {
-				System.out.println("This row is null");
+			//	System.out.println("This row is null");
 				// check there isn't already another square occupying that space
 				if (row[square.x] != null) {
 					return false;
