@@ -52,46 +52,62 @@ public class MainFrame extends JFrame {
 				repaint();
 
 				switch (s) {
-					case "Options":
-						c.add(optionsPanel, BorderLayout.CENTER);
-						break;
-					case "Help":
-						c.add(helpPanel, BorderLayout.CENTER);
-						break;
-					case "Start":
-						c.add(waitingPanel, BorderLayout.CENTER);
-						revalidate();
-						repaint();
+				case "Options":
+					c.add(optionsPanel, BorderLayout.CENTER);
+					break;
+				case "Help":
+					c.add(helpPanel, BorderLayout.CENTER);
+					break;
+				case "Start":
+					c.add(waitingPanel, BorderLayout.CENTER);
+					revalidate();
+					repaint();
 
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							Socket socket = null;
+							boolean connected = false;
+							while (!connected) {
 								try {
-									Socket socket = new Socket("localhost", 3333);
-									DataInputStream in = new DataInputStream(socket.getInputStream());
-									DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-									// Should block here until server sends boolean
-									boolean isPlayerOne = in.readBoolean();
-									c.remove(waitingPanel);
-
-									gamePanel = new GamePanel(in, out, isPlayerOne);
-									Thread gameThread = new Thread(gamePanel);
-									gameThread.start();
-									c.add(gamePanel, BorderLayout.CENTER);
-									revalidate();
-									repaint();
-									
+									socket = new Socket("localhost", 3333);
 								} catch (Exception e) {
-									e.printStackTrace();
+									System.out.println("Server not accepting connections");
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e1) {
+										e1.printStackTrace();
+									}
+									continue;
 								}
-
+								connected = true;
 							}
-						});
-						revalidate();
-						repaint();
-						
 
-						break;
+							try {
+								DataInputStream in = new DataInputStream(socket.getInputStream());
+								DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+								// Should block here until server sends boolean
+								boolean isPlayerOne = in.readBoolean();
+
+								c.remove(waitingPanel);
+
+								gamePanel = new GamePanel(in, out, isPlayerOne);
+								Thread gameThread = new Thread(gamePanel);
+								gameThread.start();
+								c.add(gamePanel, BorderLayout.CENTER);
+								revalidate();
+								repaint();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+						}
+					});
+					revalidate();
+					repaint();
+
+
+					break;
 				}
 
 				revalidate();
