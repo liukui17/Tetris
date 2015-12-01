@@ -3,19 +3,9 @@ package infrastructure;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameTimer {
-	/**
-	 * A "test" main. Will be removed later.
-	 */
-	public static void main(String[] args) throws InterruptedException {
-		GameTimer t = new GameTimer();
-		t.start();
-		Thread.sleep(5000);
-		t.speedUp();
-		Thread.sleep(5000);
-		t.end();
-	}
-	
+import pieces.Board;
+
+public class GameTimer extends Thread {	
 	// The default drop interval in milliseconds
 	private static final long DEFAULT_DROP_INTERVAL = 1000;
 	
@@ -31,29 +21,30 @@ public class GameTimer {
 	// The current interval between drops in milliseconds
 	private long dropInterval;
 	
+	private Board board;
+	
 	/**
 	 * Constructs a new GameTimer with the specified initialDropInterval.
 	 * 
 	 * @param initialDropInterval the drop interval at which the game will begin
 	 * with
 	 */
-	public GameTimer(long initialDropInterval) {
+	public GameTimer(long initialDropInterval, Board board) {
 		timer = new Timer();
 		dropper = new Dropper();
 		dropInterval = initialDropInterval;
+		this.board = board;
 	}
 	
 	/**
 	 * Constructs a new GameTimer with the default drop interval.
 	 */
-	public GameTimer() {
-		this(DEFAULT_DROP_INTERVAL);
+	public GameTimer(Board board) {
+		this(DEFAULT_DROP_INTERVAL, board);
 	}
 	
-	/**
-	 * Starts this GameTimer.
-	 */
-	public void start() {
+	@Override
+	public void run() {
 		System.out.println("Started timer");
 		timer.scheduleAtFixedRate(dropper, 0, dropInterval);
 	}
@@ -78,18 +69,19 @@ public class GameTimer {
 	}
 	
 	/**
-	 * The TimerTask that will drop the blocks
-	 * 
-	 * DISCLAIMER: IN PROGRESS. Currently on prints messages
+	 * The TimerTask that will drop the blocks for both players
 	 */
 	private class Dropper extends TimerTask {
-		private int i = 0;
-		
 		@Override
 		public void run() {
-			// NEED TO LOCK BOARD WHEN DROPPING
-			System.out.println("dropped " + i);
-			i++;
+			// randomize for fairness
+			if ((Math.random() * 10) % 2 == 0) {
+				board.tryMoveDown(0);
+				board.tryMoveDown(1);
+			} else {
+				board.tryMoveDown(1);
+				board.tryMoveDown(0);
+			}
 		}
 	}
 }

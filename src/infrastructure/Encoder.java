@@ -1,6 +1,8 @@
 package infrastructure;
 import java.awt.Color;
 
+import pieces.Board;
+
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 111
@@ -54,13 +56,16 @@ public class Encoder {
 	}
 
 	/**
-	 * Decodes the specified byte into a String and returns it.
+	 * Decodes the specified byte into a Board command and executes it.
 	 * 
 	 * @param bits the byte containing the command
+	 * @param player an int denoting the player who issued the command
+	 * @param board the board the command will take action on
 	 * 
-	 * @return a String of the human readable command encoded in the byte
+	 * @requires bits must follow the established encoding && player must be
+	 * either 0 or 1 && board != null
 	 */
-	public static String decodeCommand(byte bits) {
+	public static void decodeCommand(byte bits, int player, Board board) {
 		/*
 		 * 01111111 = 127
 		 * 
@@ -71,11 +76,12 @@ public class Encoder {
 		byte command = (byte) (bits & 127);
 		
 		switch (command) {
-			case 0: return "left";
-			case 1: return "right";
-			case 2: return "rotate";
-			case 4: return "drop";
-			default: return "???";
+			case 0: board.tryMoveLeft(player); break;
+			case 1: board.tryMoveRight(player); break;
+			case 2: board.tryRotateLeft(player); break;
+			case 4: board.tryRotateRight(player); break;
+			case 8: board.drop(player); break;
+			default: throw new IllegalArgumentException();
 		}
 	}
 }
