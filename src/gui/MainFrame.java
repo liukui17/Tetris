@@ -13,8 +13,8 @@ import javax.swing.SwingUtilities;
 // Controller
 // All communication to/from components goes through here
 public class MainFrame extends JFrame {
-	private static final int WIDTH = 600;
-	private static final int HEIGHT = 840;
+	private static final int WIDTH = 680;
+	private static final int HEIGHT = 720;
 
 	private MenuPanel menuPanel;
 	private HelpPanel helpPanel;

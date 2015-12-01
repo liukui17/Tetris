@@ -47,15 +47,20 @@ public class HelpPanel extends JPanel implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		add(moveRight, gbc);
+		
+		JLabel moveDown = new JLabel("Move Down");
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		add(moveDown, gbc);
 
 		JLabel rotate = new JLabel("Rotate");
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		add(rotate, gbc);
 
 		JLabel drop = new JLabel("Drop");
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		add(drop, gbc);
 
 		JLabel leftKey = new JLabel("");
@@ -71,25 +76,32 @@ public class HelpPanel extends JPanel implements ActionListener {
 		gbc.gridx = 2;
 		gbc.gridy = 2;
 		add(rightKey, gbc);
-
+		
+		JLabel downKey = new JLabel("");
+		Image imgDownKey = new ImageIcon(this.getClass().getResource("/img/arrow-down.png")).getImage();
+		downKey.setIcon(new ImageIcon(imgDownKey));
+		gbc.gridx = 2;
+		gbc.gridy = 3;
+		add(downKey, gbc);
+		
 		JLabel upKey = new JLabel("");
 		Image imgUpKey = new ImageIcon(this.getClass().getResource("/img/arrow-up.png")).getImage();
 		upKey.setIcon(new ImageIcon(imgUpKey));
 		gbc.gridx = 2;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		add(upKey, gbc);
 
 		JLabel spaceKey = new JLabel("");
 		Image imgSpaceKey = new ImageIcon(this.getClass().getResource("/img/space.png")).getImage();
 		spaceKey.setIcon(new ImageIcon(imgSpaceKey));
 		gbc.gridx = 2;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		add(spaceKey, gbc);
 
 		JButton test = new JButton("Back");
 		test.addActionListener(this);
 		gbc.gridx = 1;
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		add(test, gbc);
 
 		setBackground(Color.LIGHT_GRAY);
