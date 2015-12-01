@@ -1,5 +1,9 @@
-import java.awt.*;
-import javax.swing.*;
+package gui;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+import javax.swing.JPanel;
 
 public class BoardPanel extends JPanel {
 	private Color[][] grid;

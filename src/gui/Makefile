@@ -1,6 +1,6 @@
 JCC = javac
 
-default: Client.class BoardPanel.class ButtonListener.class GamePanel.class HelpPanel.class MainFrame.class MenuPanel.class OptionsPanel.class 
+default: Client.class BoardPanel.class ButtonListener.class GamePanel.class HelpPanel.class MainFrame.class MenuPanel.class OptionsPanel.class WaitingPanel.class
 
 Client.class: Client.java
 	$(JCC) Client.java
@@ -25,6 +25,9 @@ MenuPanel.class: MenuPanel.java
 
 OptionsPanel.class: OptionsPanel.java
 	$(JCC) OptionsPanel.java
+
+WaitingPanel.class: WaitingPanel.java
+	$(JCC) WaitingPanel.java
 
 clean:
 	$(RM) *.class

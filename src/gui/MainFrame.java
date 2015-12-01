@@ -1,6 +1,13 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+
+import javax.swing.JFrame;
 
 // Controller
 // All communication to/from components goes through here
@@ -12,6 +19,7 @@ public class MainFrame extends JFrame {
 	private HelpPanel helpPanel;
 	private GamePanel gamePanel;
 	private OptionsPanel optionsPanel;
+	private WaitingPanel waitingPanel;
 
 	public MainFrame(String title) {
 		super(title);
@@ -26,11 +34,10 @@ public class MainFrame extends JFrame {
 		// Create Swing component
 		menuPanel = new MenuPanel();
 		helpPanel = new HelpPanel();
-		gamePanel = new GamePanel();
+		//gamePanel = new GamePanel();
 		optionsPanel = new OptionsPanel();
+		waitingPanel = new WaitingPanel();
 
-		Thread gameThread = new Thread(gamePanel);
-		gameThread.start();
 
 		// Add Swing components to content pane
 		Container c = getContentPane();
@@ -39,6 +46,12 @@ public class MainFrame extends JFrame {
 		// Set Listeners
 		menuPanel.setButtonListener(new ButtonListener() {
 			public void buttonClicked(String s) {
+				c.remove(menuPanel);
+				revalidate();
+				repaint();
+				doLayout();
+				System.out.println("after remove menu");
+
 				switch (s) {
 					case "Options":
 						c.add(optionsPanel, BorderLayout.CENTER);
@@ -47,15 +60,30 @@ public class MainFrame extends JFrame {
 						c.add(helpPanel, BorderLayout.CENTER);
 						break;
 					case "Start":
-						// TO DO
-						// Should load intermediate loading screen until player 2 has connected
-						// SwingWorker?
-						// low priority
-						c.add(gamePanel, BorderLayout.CENTER);
+						c.add(waitingPanel, BorderLayout.CENTER);
+						revalidate();
+						repaint();
+						
+						try {
+							Socket socket = new Socket("localhost", 3333);
+							DataInputStream in = new DataInputStream(socket.getInputStream());
+							DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+							// Should block here until server sends boolean
+							boolean isPlayerOne = in.readBoolean();
+							c.remove(waitingPanel);
+
+							gamePanel = new GamePanel(in, out, isPlayerOne);
+							Thread gameThread = new Thread(gamePanel);
+							gameThread.start();
+							c.add(gamePanel, BorderLayout.CENTER);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
 						break;
 				}
 
-				c.remove(menuPanel);
 				revalidate();
 				repaint();
 			}
@@ -85,66 +113,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		// Keyboard Dispatcher
-		// Instead of printing, need to send input to network
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
-			public boolean dispatchKeyEvent(KeyEvent e) {
-				if (e.getID() == KeyEvent.KEY_PRESSED) {
-					int key = e.getKeyCode();
-
-					switch (key) {
-						case KeyEvent.VK_LEFT:
-							System.out.println("Left");
-							break;
-						case KeyEvent.VK_RIGHT:
-							System.out.println("Right");
-							break;
-						case KeyEvent.VK_UP:
-							System.out.println("Up");
-							break;
-						case KeyEvent.VK_DOWN:
-							System.out.println("Down");
-							break;
-						case KeyEvent.VK_SPACE:
-							System.out.println("Space");
-							break;
-					}
-
-				}
-				return false;
-			}
-		});
-
-		// Remove this stuff later
-		Color[][] grid = new Color[10][20];
-		int x1, y1, x2, y2, x3, y3;
-		grid[x1 = 0][0] = Color.CYAN;
-		grid[0][1] = Color.CYAN;
-		grid[0][2] = Color.CYAN;
-		grid[1][2] = Color.CYAN;
-
-		grid[0][18] = Color.GREEN;
-		grid[0][17] = Color.GREEN;
-		grid[1][18] = Color.GREEN;
-		grid[1][17] = Color.GREEN;
-
-		grid[2][15] = Color.MAGENTA;
-		grid[2][16] = Color.MAGENTA;
-		grid[1][16] = Color.MAGENTA;
-		grid[0][16] = Color.MAGENTA;
-		grid[9][19] = Color.RED;
-		grid[8][19] = Color.RED;
-		grid[7][19] = Color.BLUE;
-		grid[6][19] = Color.BLUE;
-		grid[2][19] = Color.YELLOW;
-		grid[1][19] = Color.YELLOW;
-		gamePanel.updateGrid(grid);
 	}
-
-	// Updates grid
-	public void updateGrid(Color[][] grid) {
-		gamePanel.updateGrid(grid);
-	}
-
 
 }

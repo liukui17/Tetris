@@ -1,6 +1,18 @@
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
+package gui;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 
 public class MenuPanel extends JPanel implements ActionListener {
 	private ButtonListener buttonListener;
