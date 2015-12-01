@@ -28,7 +28,7 @@ public class GameThread implements Runnable {
 	private BlockingQueue<GameState> outStates;
 	
 	// the current score
-	private int score;
+	private Score score;
 	
 	// the next threshold to reach before increasing the drop rate
 	private int threshold;
@@ -43,11 +43,11 @@ public class GameThread implements Runnable {
 		commandsFromClient = new LinkedBlockingQueue<Byte>();
 		outStates = new LinkedBlockingQueue<GameState>();
 		
-		score = 0;
+		score = new Score();
 		threshold = INITIAL_THRESHOLD;
 		
 		board = new Board();
-		timer = new GameTimer(board);
+		timer = new GameTimer(board, score);
 	}
 
 	@Override
@@ -71,6 +71,15 @@ public class GameThread implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// give the server the initial board state
+		Color[][] initialBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
+		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+			initialBoard[i] = board.getRowColors(i);;
+		}
+		// the game just started so score is 0 and the game is not over
+		GameState initialState = new GameState(initialBoard, 0, false);
+		outStates.add(initialState);
 		
 		/*
 		 * Start the timer
@@ -99,31 +108,33 @@ public class GameThread implements Runnable {
 				// decode the command and perform it
 				Encoder.decodeCommand(commandByte, player, board);
 				
-				score += SCORE_INCREASE_RATE * board.removeFullRows();
-				
-				/*
-				 * speed up the timer if we've reached the current threshold and update
-				 * the threshold
-				 */
-				if (score >= threshold) {
-					timer.speedUp();
-					threshold += THRESHOLD_INCREASE_RATE;
+				synchronized {
+					score.score += SCORE_INCREASE_RATE * board.removeFullRows();
+					
+					/*
+					 * speed up the timer if we've reached the current threshold and update
+					 * the threshold
+					 */
+					if (score.score >= threshold) {
+						timer.speedUp();
+						threshold += THRESHOLD_INCREASE_RATE;
+					}
+					
+					// build a Color[][] of the updated board
+					Color[][] updatedBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
+					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+						updatedBoard[i] = board.getRowColors(i);;
+					}
+					
+					// determine if it's game over
+					boolean isGameOver = board.isGameOver();
+					
+					// put the updated board, score and isGameOver in a GameState and send it
+					GameState state = new GameState(updatedBoard, score.score, isGameOver);
+					
+					outStates.add(state);
 				}
-				
-				// build a Color[][] of the updated board
-				Color[][] updatedBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-				for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-					updatedBoard[i] = board.getRowColors(i);;
-				}
-				
-				// determine if it's game over
-				boolean isGameOver = board.isGameOver();
-				
-				// put the updated board, score and isGameOver in a GameState and send it
-				GameState state = new GameState(updatedBoard, score, isGameOver);
-				
-				outStates.add(state);
-				
+					
 				// break out of the while(true) loop if it's game over
 				if (isGameOver) {
 					break;
