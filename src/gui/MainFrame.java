@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 // Controller
 // All communication to/from components goes through here
@@ -49,8 +50,6 @@ public class MainFrame extends JFrame {
 				c.remove(menuPanel);
 				revalidate();
 				repaint();
-				doLayout();
-				System.out.println("after remove menu");
 
 				switch (s) {
 					case "Options":
@@ -63,23 +62,34 @@ public class MainFrame extends JFrame {
 						c.add(waitingPanel, BorderLayout.CENTER);
 						revalidate();
 						repaint();
+
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								try {
+									Socket socket = new Socket("localhost", 3333);
+									DataInputStream in = new DataInputStream(socket.getInputStream());
+									DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+									// Should block here until server sends boolean
+									boolean isPlayerOne = in.readBoolean();
+									c.remove(waitingPanel);
+
+									gamePanel = new GamePanel(in, out, isPlayerOne);
+									Thread gameThread = new Thread(gamePanel);
+									gameThread.start();
+									c.add(gamePanel, BorderLayout.CENTER);
+									revalidate();
+									repaint();
+									
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+							}
+						});
+						revalidate();
+						repaint();
 						
-						try {
-							Socket socket = new Socket("localhost", 3333);
-							DataInputStream in = new DataInputStream(socket.getInputStream());
-							DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-							// Should block here until server sends boolean
-							boolean isPlayerOne = in.readBoolean();
-							c.remove(waitingPanel);
-
-							gamePanel = new GamePanel(in, out, isPlayerOne);
-							Thread gameThread = new Thread(gamePanel);
-							gameThread.start();
-							c.add(gamePanel, BorderLayout.CENTER);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
 
 						break;
 				}
