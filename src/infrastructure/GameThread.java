@@ -101,12 +101,14 @@ public class GameThread implements Runnable {
 				Encoder.decodeCommand(commandByte, player, board);
 				
 				// find full rows, remove them, and update score
-				List<Integer> fullRows = board.getFullRows();
+		/*		List<Integer> fullRows = board.getFullRows();
 				
 				for (Integer r : fullRows) {
 					score += SCORE_INCREASE_RATE;
 					board.clearRow(r);
-				}
+				} */
+				
+				score += SCORE_INCREASE_RATE * board.removeFullRows();
 				
 				/*
 				 * speed up the timer if we've reached the current threshold and update

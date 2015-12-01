@@ -215,6 +215,18 @@ public class Board {
 	}
 	
 	/**
+	 * Removes all full rows on the board
+	 * and returns the number of rows removed.
+	 */
+	public synchronized int removeFullRows() {
+		List<Integer> fullRows = getFullRows();
+		for (int i = 0; i < fullRows.size(); i++) {
+			clearRow(fullRows.get(i));
+		}
+		return fullRows.size();
+	}
+	
+	/**
 	 * Adds the given player's current falling piece to the
 	 * squares that are already fixed at the bottom of the board
 	 * (private utility function; call when appropriate).
@@ -228,12 +240,6 @@ public class Board {
 				boardRows.put(square.y, new Square[GameUtil.BOARD_WIDTH]);
 			}
 			boardRows.get(square.y)[square.x] = square;
-		}
-		List<Integer> fullRows = getFullRows();
-		// Removes any full rows now that we're adding more squares
-		// to the rows that are already set
-		for (int i = 0; i < fullRows.size(); i++) {
-			clearRow(fullRows.get(i));
 		}
 		// generate new piece for the player
 		playerPieces[player] = PieceFactory.generateNewPiece(player);
