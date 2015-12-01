@@ -59,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 				if (e.getID() == KeyEvent.KEY_PRESSED) {
 					int key = e.getKeyCode();
 
-					byte msg = Encoder.encodeKeyPress(key);
+					byte msg = Encoder.encodeKeyPress(key, isPlayerOne);
 					commands.add(msg);
 				}
 				return false;

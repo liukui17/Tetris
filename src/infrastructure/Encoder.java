@@ -86,24 +86,31 @@ public class Encoder {
 		}
 	}
 	
-	public static byte encodeKeyPress(int key) {
+	/**
+	 * Encodes the specified player's key press identified by the specified int
+	 * to a byte and returns it
+	 * 
+	 * @param key an int representing the key that the specified player pressed
+	 * @param player a boolean identifying which player pressed the key (true if
+	 * player 1 pressed, false if player 2 pressed)
+	 * 
+	 * @return an encoded byte of the specified player's key press
+	 */
+	public static byte encodeKeyPress(int key, boolean player) {
+		byte encoding;
+		if (player) {
+			encoding = 0;
+		} else {
+			encoding = -128;
+		}
+		
 		switch (key) {
-		case KeyEvent.VK_LEFT:
-			System.out.println("Left");
-			break;
-		case KeyEvent.VK_RIGHT:
-			System.out.println("Right");
-			break;
-		case KeyEvent.VK_UP:
-			System.out.println("Up");
-			break;
-		case KeyEvent.VK_DOWN:
-			System.out.println("Down");
-			break;
-		case KeyEvent.VK_SPACE:
-			System.out.println("Space");
-			break;
-	}
-		return 0;
+			case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
+			case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
+			case KeyEvent.VK_UP: return (byte) (encoding | 2);
+			case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
+			case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
+			default: throw new IllegalArgumentException();
+		}
 	}
 }
