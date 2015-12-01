@@ -20,19 +20,18 @@ import infrastructure.GameState;
 
 public class GamePanel extends JPanel implements Runnable {
 	private BoardPanel boardPanel;
-	private ButtonListener buttonListener;
 
 	private BlockingQueue<Byte> commands;
-	private BlockingQueue<GameState> inputBoards; 
+	private BlockingQueue<GameState> gameState; 
 
 	private boolean isPlayerOne;
 
 	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne) {
 		this.isPlayerOne = isPlayerOne;
 		commands = new LinkedBlockingQueue<Byte>();
-		inputBoards = new LinkedBlockingQueue<GameState>();
+		gameState = new LinkedBlockingQueue<GameState>();
 
-		Thread managerThread = new Thread(new ClientConnectionManager(commands, inputBoards, in, out));
+		Thread managerThread = new Thread(new ClientConnectionManager(commands, gameState, in, out));
 		managerThread.start();
 
 		// Set Layout Manager
@@ -77,9 +76,17 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void run() {
 		while (true) {
-			// check inputBoards
-			// if something repaint
-			//System.out.println(isPlayerOne);
+			GameState state = gameState.take();
+			if (state.isGameOver) {
+				// switch to end panel
+			}
+
+			// Display score
+
+			// Update grid
+			boardPanel.updateGrid(state.board);
+			boardPanel.revalidate();
+			boardPanel.repaint();
 		}
 	}
 }

@@ -7,18 +7,17 @@ import javax.swing.JPanel;
 
 public class BoardPanel extends JPanel {
 	private Color[][] grid;
-	private int width;
-	private int height;
-	private int cellSize;
+	private int cellWidth;
+	private int cellHeight;
+
+	public 
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.setBackground(Color.WHITE);
 
-		width = getWidth();
-		height = getHeight();
-		// 10 cells wide
-		cellSize = width / 10;
+		int cellWidth = getWidth() / GameUtil.BOARD_WIDTH;
+		int cellHeight = getHeight() / GameUtil.BOARD_HEIGHT;
 
 		if (grid != null) {
 			for (int i = 0; i < grid.length; i++) {
