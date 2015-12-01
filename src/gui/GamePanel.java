@@ -2,7 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements Runnable {
 	private BoardPanel boardPanel;
 	private ButtonListener buttonListener;
 
@@ -16,13 +16,13 @@ public class GamePanel extends JPanel {
 		Dimension prefSize = new Dimension(100, 20);
 		Dimension maxSize = new Dimension(100, 20);
 
-		// Placeholder
+		// Filler
 		add(new Box.Filler(minSize, prefSize, maxSize));
 
 		boardPanel = new BoardPanel();
 		add(boardPanel);
 
-		// Placeholder
+		// Filler
 		add(new Box.Filler(minSize, prefSize, maxSize));
 
 		setBackground(Color.LIGHT_GRAY);
@@ -32,5 +32,11 @@ public class GamePanel extends JPanel {
 		boardPanel.updateGrid(grid);
 		boardPanel.revalidate();
 		boardPanel.repaint();
+	}
+
+	public void run() {
+		while (true) {
+
+		}
 	}
 }

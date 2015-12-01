@@ -29,6 +29,9 @@ public class MainFrame extends JFrame {
 		gamePanel = new GamePanel();
 		optionsPanel = new OptionsPanel();
 
+		Thread gameThread = new Thread(gamePanel);
+		gameThread.start();
+
 		// Add Swing components to content pane
 		Container c = getContentPane();
 		c.add(menuPanel, BorderLayout.CENTER);
@@ -83,11 +86,7 @@ public class MainFrame extends JFrame {
 		});
 
 		// Keyboard Dispatcher
-		// Don't really want this here
-		// Don't want to be listening for keypresses on menu or help screen
-		// We want this in GamePanel.java I think
-		// Need to find a way for the MainFrame to listen for KeyEvents sent from GamePanel
-		// low priority
+		// Instead of printing, need to send input to network
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
 			public boolean dispatchKeyEvent(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED) {
@@ -146,5 +145,6 @@ public class MainFrame extends JFrame {
 	public void updateGrid(Color[][] grid) {
 		gamePanel.updateGrid(grid);
 	}
+
 
 }

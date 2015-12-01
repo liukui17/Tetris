@@ -1,9 +1,9 @@
 JCC = javac
 
-default: App.class BoardPanel.class ButtonListener.class GamePanel.class HelpPanel.class MainFrame.class MenuPanel.class OptionsPanel.class 
+default: Client.class BoardPanel.class ButtonListener.class GamePanel.class HelpPanel.class MainFrame.class MenuPanel.class OptionsPanel.class 
 
-App.class: App.java
-	$(JCC) App.java
+Client.class: Client.java
+	$(JCC) Client.java
 
 BoardPanel.class: BoardPanel.java
 	$(JCC) BoardPanel.java
