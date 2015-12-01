@@ -118,7 +118,7 @@ public class ServerConnectionManager implements Runnable {
 					
 					// send out the score and isGameOver
 					int score = state.score;
-					boolean isGameOver = state.isGameOver;
+					boolean isGameOver = state.getIsGameOver();
 					if (p1First) {
 						outToP1.writeInt(score);
 						outToP1.writeBoolean(isGameOver);

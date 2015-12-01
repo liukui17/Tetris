@@ -10,11 +10,23 @@ import java.awt.Color;
 public class GameState {
 	final Color[][] board;
 	final int score;
-	final boolean isGameOver;
+	private final boolean isGameOver;
 	
 	public GameState(Color[][] board, int score, boolean isGameOver) {
 		this.board = board;
 		this.score = score;
 		this.isGameOver = isGameOver;
+	}
+	
+	public Color[][] getBoard() {
+		return board;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+	
+	public boolean getIsGameOver() {
+		return isGameOver;
 	}
 }

@@ -7,11 +7,13 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import infrastructure.ClientConnectionManager;
@@ -20,6 +22,8 @@ import infrastructure.GameState;
 
 public class GamePanel extends JPanel implements Runnable {
 	private BoardPanel boardPanel;
+	private ScorePanel scorePanel;
+	private EndPanel endPanel;
 
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> gameState; 
@@ -48,8 +52,11 @@ public class GamePanel extends JPanel implements Runnable {
 		boardPanel = new BoardPanel();
 		add(boardPanel);
 
-		// Filler
-		add(new Box.Filler(minSize, prefSize, maxSize));
+		// Score Panel
+		scorePanel = new ScorePanel();
+		add(scorePanel);
+		
+		endPanel = new EndPanel();
 
 		// Keyboard Dispatcher
 		// Instead of printing, need to send input to network
@@ -76,15 +83,31 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void run() {
 		while (true) {
-			GameState state = gameState.take();
-			if (state.isGameOver) {
-				// switch to end panel
+			System.out.println("started gp thread");
+			GameState state = null;
+			try {
+				state = gameState.take();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println(Arrays.deepToString(state.getBoard()[0]));
+			
+			// Check if game over
+			if (state.getIsGameOver()) {
+				removeAll();
+				add(endPanel);
+				revalidate();
+				repaint();
+				break;
 			}
 
-			// Display score
+			// Update score
+			scorePanel.updateScore(state.getScore());
+			scorePanel.revalidate();
+			scorePanel.repaint();
 
 			// Update grid
-			boardPanel.updateGrid(state.board);
+			boardPanel.updateGrid(state.getBoard());
 			boardPanel.revalidate();
 			boardPanel.repaint();
 		}
