@@ -7,28 +7,30 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import infrastructure.ClientConnectionManager;
+import infrastructure.Encoder;
+import infrastructure.GameState;
 
 public class GamePanel extends JPanel implements Runnable {
 	private BoardPanel boardPanel;
 	private ButtonListener buttonListener;
 
 	private BlockingQueue<Byte> commands;
-	private BlockingQueue<Color[][]> inputBoards; 
+	private BlockingQueue<GameState> inputBoards; 
 
 	private boolean isPlayerOne;
 
 	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne) {
 		this.isPlayerOne = isPlayerOne;
-		commands = new ArrayBlockingQueue<Byte>(32);
-		inputBoards = new ArrayBlockingQueue<Color[][]>(32);
+		commands = new LinkedBlockingQueue<Byte>();
+		inputBoards = new LinkedBlockingQueue<GameState>();
 
 		Thread managerThread = new Thread(new ClientConnectionManager(commands, inputBoards, in, out));
 		managerThread.start();
@@ -57,24 +59,8 @@ public class GamePanel extends JPanel implements Runnable {
 				if (e.getID() == KeyEvent.KEY_PRESSED) {
 					int key = e.getKeyCode();
 
-					switch (key) {
-						case KeyEvent.VK_LEFT:
-							System.out.println("Left");
-							break;
-						case KeyEvent.VK_RIGHT:
-							System.out.println("Right");
-							break;
-						case KeyEvent.VK_UP:
-							System.out.println("Up");
-							break;
-						case KeyEvent.VK_DOWN:
-							System.out.println("Down");
-							break;
-						case KeyEvent.VK_SPACE:
-							System.out.println("Space");
-							break;
-					}
-
+					byte msg = Encoder.encodeKeyPress(key);
+					commands.add(msg);
 				}
 				return false;
 			}

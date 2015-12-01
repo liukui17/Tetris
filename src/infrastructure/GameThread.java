@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -97,16 +96,8 @@ public class GameThread implements Runnable {
 					player = 1;  // player 2's move
 				}
 				
-				// decode the command and performs it
+				// decode the command and perform it
 				Encoder.decodeCommand(commandByte, player, board);
-				
-				// find full rows, remove them, and update score
-		/*		List<Integer> fullRows = board.getFullRows();
-				
-				for (Integer r : fullRows) {
-					score += SCORE_INCREASE_RATE;
-					board.clearRow(r);
-				} */
 				
 				score += SCORE_INCREASE_RATE * board.removeFullRows();
 				
@@ -126,7 +117,7 @@ public class GameThread implements Runnable {
 				}
 				
 				// determine if it's game over
-				boolean isGameOver = false; // board.isGameOver();
+				boolean isGameOver = board.isGameOver();
 				
 				// put the updated board, score and isGameOver in a GameState and send it
 				GameState state = new GameState(updatedBoard, score, isGameOver);

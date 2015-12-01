@@ -1,5 +1,6 @@
 package infrastructure;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 
 import pieces.Board;
 
@@ -83,5 +84,26 @@ public class Encoder {
 			case 8: board.drop(player); break;
 			default: throw new IllegalArgumentException();
 		}
+	}
+	
+	public static byte encodeKeyPress(int key) {
+		switch (key) {
+		case KeyEvent.VK_LEFT:
+			System.out.println("Left");
+			break;
+		case KeyEvent.VK_RIGHT:
+			System.out.println("Right");
+			break;
+		case KeyEvent.VK_UP:
+			System.out.println("Up");
+			break;
+		case KeyEvent.VK_DOWN:
+			System.out.println("Down");
+			break;
+		case KeyEvent.VK_SPACE:
+			System.out.println("Space");
+			break;
+	}
+		return 0;
 	}
 }
