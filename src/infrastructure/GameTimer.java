@@ -76,11 +76,11 @@ public class GameTimer extends Thread {
 		public void run() {
 			// randomize for fairness
 			if ((Math.random() * 10) % 2 == 0) {
-				board.drop(0);
-				board.drop(1);
+				board.tryMoveDown(0);
+				board.tryMoveDown(1);
 			} else {
-				board.drop(1);
-				board.drop(0);
+				board.tryMoveDown(1);
+				board.tryMoveDown(0);
 			}
 		}
 	}

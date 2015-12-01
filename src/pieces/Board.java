@@ -112,7 +112,11 @@ public class Board {
 	
 	private synchronized boolean checkNoCollisionsWithSetSquares(int player) {
 		for (Square square : playerPieces[player].squares) {
-			if (boardRows.get(square.y)[square.x] != null) {
+			Square[] row = boardRows.get(square.y);
+			if (row == null) {
+				System.out.println("This row is null");
+			}
+			if (row[square.x] != null) {
 				return false;
 			}
 		}

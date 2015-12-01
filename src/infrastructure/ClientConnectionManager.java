@@ -7,18 +7,18 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 public class ClientConnectionManager implements Runnable {
-	private BlockingQueue<Color[][]> inputBoards;
+	private BlockingQueue<GameState> inputStates;
 	private BlockingQueue<Byte> outputCommandBytes;
 	
 	private DataInputStream inFromServer;
 	private DataOutputStream outToServer;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
-																 BlockingQueue<Color[][]> inputBoards,
+																 BlockingQueue<GameState> inputStates,
 																 DataInputStream inFromServer,
 																 DataOutputStream outToServer) {
 		this.outputCommandBytes = commands;
-		this.inputBoards = inputBoards;
+		this.inputStates = inputStates;
 		
 		this.inFromServer = inFromServer;
 		this.outToServer = outToServer;
@@ -31,20 +31,29 @@ public class ClientConnectionManager implements Runnable {
 	}
 	
 	/**
-	 * The thread responsible for reading longs from the server and converting
-	 * them to Color[][]'s
+	 * The thread responsible for reading GameStates from the server
 	 */
 	public class ReadThread implements Runnable {
 		@Override
 		public void run() {
 			while (true) {
 				try {
+					// read the board state
 					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 						long rowLong = inFromServer.readLong();
 						Encoder.networkMessageToGridRow(rowLong, board[i]);
 					}
-					inputBoards.add(board);
+					
+					// read the score and isGameOver
+					int score = inFromServer.readInt();
+					boolean isGameOver = inFromServer.readBoolean();
+					
+					// put the board state, score and isGameOver in a GameState struct
+					GameState state = new GameState(board, score, isGameOver);
+					
+					// send it to the GUI
+					inputStates.add(state);
 				} catch (IOException e) {
 					e.printStackTrace();
 					return;
