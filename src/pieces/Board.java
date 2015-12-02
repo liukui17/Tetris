@@ -214,6 +214,13 @@ public class Board {
 					rowColors[i] = row[i].color;
 				}
 			}
+			for (int i = 0; i < playerPieces.length; i++) {
+				for (Square square : playerPieces[i].squares) {
+					if (square.y == rowNum) {
+						rowColors[square.x] = square.color;
+					}
+				}
+			}
 			return rowColors;
 		} else {
 			return null;
