@@ -59,7 +59,7 @@ public class GameThread implements Runnable {
 								 														 new DataInputStream(p1Socket.getInputStream()),
 								 														 new DataOutputStream(p1Socket.getOutputStream()),
 								 														 new DataInputStream(p2Socket.getInputStream()),
-								 														 new DataOutputStream(p1Socket.getOutputStream()))).start();
+								 														 new DataOutputStream(p2Socket.getOutputStream()))).start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

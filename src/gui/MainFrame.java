@@ -93,8 +93,9 @@ public class MainFrame extends JFrame {
 
 								gamePanel = new GamePanel(in, out, isPlayerOne);
 								Thread gameThread = new Thread(gamePanel);
-								gameThread.start();
+//								gameThread.start();
 								c.add(gamePanel, BorderLayout.CENTER);
+								gameThread.start();
 								revalidate();
 								repaint();
 							} catch (Exception e) {
@@ -105,8 +106,7 @@ public class MainFrame extends JFrame {
 					});
 					revalidate();
 					repaint();
-
-
+					
 					break;
 				}
 

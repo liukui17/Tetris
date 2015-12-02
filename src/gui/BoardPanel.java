@@ -25,16 +25,16 @@ public class BoardPanel extends JPanel {
 		this.setBackground(Color.WHITE);
 
 		if (grid != null) {
-			for (int i = 0; i < grid.length; i++) {
-				for (int j = 0; j < grid[i].length; j++) {
+			for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+				for (int j = 0; j < GameUtil.BOARD_WIDTH; j++) {
 					Color c = grid[i][j];
 					if (c != null) {
 						g.setColor(c);
-						g.fill3DRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight, true);
+						g.fill3DRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight, true);
 					} else {
 						// fill with default color
 						g.setColor(Color.gray);
-						g.fill3DRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight, true);
+						g.fill3DRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight, true);
 					}
 				}
 			}

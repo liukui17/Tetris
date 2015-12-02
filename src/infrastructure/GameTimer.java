@@ -80,11 +80,19 @@ public class GameTimer extends Thread {
 			// randomize for fairness
 			System.out.println("inside dropper");
 			if ((Math.random() * 10) % 2 == 0) {
-				gameState.tryMoveDown(0);
-				gameState.tryMoveDown(1);
+				if (!gameState.tryMoveDown(0)) {
+					System.out.println("Failed to drop 1");
+				}
+				if (!gameState.tryMoveDown(1)) {
+					System.out.println("Failed to drop 2");
+				}
 			} else {
-				gameState.tryMoveDown(1);
-				gameState.tryMoveDown(0);
+				if (!gameState.tryMoveDown(1)) {
+					System.out.println("Failed to drop 3");
+				}
+				if (!gameState.tryMoveDown(0)) {
+					System.out.println("Failed to drop 4");
+				}
 			}
 			
 			out.add(gameState.getCurrentState());
