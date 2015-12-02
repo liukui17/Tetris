@@ -7,13 +7,11 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import infrastructure.ClientConnectionManager;
@@ -21,6 +19,8 @@ import infrastructure.Encoder;
 import infrastructure.GameState;
 
 public class GamePanel extends JPanel implements Runnable {
+	private static final long serialVersionUID = 1L;
+	
 	private BoardPanel boardPanel;
 	private ScorePanel scorePanel;
 	private EndPanel endPanel;
@@ -28,10 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> gameState; 
 
-	private boolean isPlayerOne;
-
 	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne) {
-		this.isPlayerOne = isPlayerOne;
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
 
@@ -75,22 +72,21 @@ public class GamePanel extends JPanel implements Runnable {
 		setBackground(Color.LIGHT_GRAY);
 	}
 
-	public void updateGrid(Color[][] grid) {
-		boardPanel.updateGrid(grid);
-		boardPanel.revalidate();
-		boardPanel.repaint();
-	}
+//	public void updateGrid(Color[][] grid) {
+//		boardPanel.updateGrid(grid);
+//		boardPanel.revalidate();
+//		boardPanel.repaint();
+//	}
 
 	public void run() {
 		while (true) {
-			System.out.println("started gp thread");
 			GameState state = null;
 			try {
 				state = gameState.take();
+				System.out.println("got game state");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.out.println(Arrays.deepToString(state.getBoard()[0]));
 			
 			// Check if game over
 			if (state.getIsGameOver()) {
@@ -98,6 +94,7 @@ public class GamePanel extends JPanel implements Runnable {
 				add(endPanel);
 				revalidate();
 				repaint();
+				System.out.println("GAME OVER");
 				break;
 			}
 
@@ -110,6 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
 			boardPanel.updateGrid(state.getBoard());
 			boardPanel.revalidate();
 			boardPanel.repaint();
+			System.out.println("repainted");
 		}
 	}
 }
