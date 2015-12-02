@@ -1,6 +1,5 @@
 package infrastructure;
 
-import java.awt.Color;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,14 +7,11 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import pieces.Board;
-
 /**
  * A GameThread manages one single game of collaborative Tetris
  * between two players p1 and p2.
  */
 public class GameThread implements Runnable {
-	private static final int SCORE_INCREASE_RATE = 10;
 	private static final int INITIAL_THRESHOLD = 100;
 	private static final int THRESHOLD_INCREASE_RATE = 100;
 	
@@ -27,13 +23,10 @@ public class GameThread implements Runnable {
 	private BlockingQueue<Byte> commandsFromClient;
 	private BlockingQueue<GameState> outStates;
 	
-	// the current score
-	private Score score;
-	
 	// the next threshold to reach before increasing the drop rate
 	private int threshold;
 	
-	private Board board;
+	private GameStateManager gameState;
 	private GameTimer timer;
 	
 	public GameThread(Socket p1Socket, Socket p2Socket) throws IOException {	
@@ -43,11 +36,10 @@ public class GameThread implements Runnable {
 		commandsFromClient = new LinkedBlockingQueue<Byte>();
 		outStates = new LinkedBlockingQueue<GameState>();
 		
-		score = new Score();
 		threshold = INITIAL_THRESHOLD;
 		
-		board = new Board();
-		timer = new GameTimer(board, score);
+		gameState = new GameStateManager();
+		timer = new GameTimer(gameState, outStates);
 	}
 
 	@Override
@@ -72,13 +64,8 @@ public class GameThread implements Runnable {
 			e.printStackTrace();
 		}
 		
-		// give the server the initial board state
-		Color[][] initialBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-			initialBoard[i] = board.getRowColors(i);;
-		}
-		// the game just started so score is 0 and the game is not over
-		GameState initialState = new GameState(initialBoard, 0, false);
+		// send out the initial state to the client
+		GameState initialState = gameState.getCurrentState();
 		outStates.add(initialState);
 		
 		/*
@@ -106,37 +93,28 @@ public class GameThread implements Runnable {
 				}
 				
 				// decode the command and perform it
-				Encoder.decodeCommand(commandByte, player, board);
+				Encoder.decodeCommand(commandByte, player, gameState);
 				
-				synchronized {
-					score.score += SCORE_INCREASE_RATE * board.removeFullRows();
-					
-					/*
-					 * speed up the timer if we've reached the current threshold and update
-					 * the threshold
-					 */
-					if (score.score >= threshold) {
-						timer.speedUp();
-						threshold += THRESHOLD_INCREASE_RATE;
-					}
-					
-					// build a Color[][] of the updated board
-					Color[][] updatedBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-						updatedBoard[i] = board.getRowColors(i);;
-					}
-					
-					// determine if it's game over
-					boolean isGameOver = board.isGameOver();
-					
-					// put the updated board, score and isGameOver in a GameState and send it
-					GameState state = new GameState(updatedBoard, score.score, isGameOver);
-					
-					outStates.add(state);
+				// get the new game state
+				GameState updatedGameState = gameState.getCurrentState();
+				
+				/*
+				 * speed up the timer if we've reached the current threshold and update
+				 * the threshold
+				 */
+				if (gameState.getScore() >= threshold) {
+					timer.speedUp();
+					threshold += THRESHOLD_INCREASE_RATE;
 				}
+				
+				// determine if it's game over
+				boolean isGameOver = updatedGameState.getIsGameOver();
+				
+				outStates.add(updatedGameState);
 					
 				// break out of the while(true) loop if it's game over
 				if (isGameOver) {
+					timer.end();
 					break;
 				}
 			} catch (InterruptedException e) {

@@ -1,10 +1,8 @@
 package infrastructure;
 
-import java.awt.Color;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import pieces.Board;
+import java.util.concurrent.BlockingQueue;
 
 public class GameTimer extends Thread {	
 	// The default drop interval in milliseconds
@@ -12,6 +10,8 @@ public class GameTimer extends Thread {
 	
 	// The change in time which the drop interval will be decremented by
 	private static final long SPEED_UP_CHANGE = 500;
+	
+	private BlockingQueue<GameState> out;
 	
 	// The Timer backbone of this class
 	private Timer timer;
@@ -22,9 +22,7 @@ public class GameTimer extends Thread {
 	// The current interval between drops in milliseconds
 	private long dropInterval;
 	
-	private Board board;
-	
-	private Score score;
+	private GameStateManager gameState;
 	
 	/**
 	 * Constructs a new GameTimer with the specified initialDropInterval.
@@ -32,19 +30,20 @@ public class GameTimer extends Thread {
 	 * @param initialDropInterval the drop interval at which the game will begin
 	 * with
 	 */
-	public GameTimer(long initialDropInterval, Board board, Score score) {
+	public GameTimer(long initialDropInterval, GameStateManager gameState,
+									 BlockingQueue<GameState> out) {
 		timer = new Timer();
 		dropper = new Dropper();
 		dropInterval = initialDropInterval;
-		this.board = board;
-		this.score = score;
+		this.gameState = gameState;
+		this.out = out;
 	}
 	
 	/**
 	 * Constructs a new GameTimer with the default drop interval.
 	 */
-	public GameTimer(Board board, Score score) {
-		this(DEFAULT_DROP_INTERVAL, board, score);
+	public GameTimer(GameStateManager gameState, BlockingQueue<GameState> out) {
+		this(DEFAULT_DROP_INTERVAL, gameState, out);
 	}
 	
 	@Override
@@ -81,14 +80,14 @@ public class GameTimer extends Thread {
 			// randomize for fairness
 			System.out.println("inside dropper");
 			if ((Math.random() * 10) % 2 == 0) {
-				board.tryMoveDown(0);
-				board.tryMoveDown(1);
+				gameState.tryMoveDown(0);
+				gameState.tryMoveDown(1);
 			} else {
-				board.tryMoveDown(1);
-				board.tryMoveDown(0);
+				gameState.tryMoveDown(1);
+				gameState.tryMoveDown(0);
 			}
 			
-
+			out.add(gameState.getCurrentState());
 		}
 	}
 }

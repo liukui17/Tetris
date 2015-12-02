@@ -206,6 +206,9 @@ public class Board {
 		if (row != null) {
 			Color[] rowColors = new Color[row.length];
 			for (int i = 0; i < rowColors.length; i++) {
+				if (row[i] == null) {
+					System.out.println("row[i] is null");
+				}
 				rowColors[i] = row[i].color;
 			}
 			return rowColors;

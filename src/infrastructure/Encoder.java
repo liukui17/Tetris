@@ -2,8 +2,6 @@ package infrastructure;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-import pieces.Board;
-
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 111
@@ -71,12 +69,12 @@ public class Encoder {
 	 * 
 	 * @param bits the byte containing the command
 	 * @param player an int denoting the player who issued the command
-	 * @param board the board the command will take action on
+	 * @param gameState the GameStateManager the command will take action on
 	 * 
 	 * @requires bits must follow the established encoding && player must be
 	 * either 0 or 1 && board != null
 	 */
-	public static void decodeCommand(byte bits, int player, Board board) {
+	public static void decodeCommand(byte bits, int player, GameStateManager gameState) {
 		/*
 		 * 01111111 = 127
 		 * 
@@ -87,11 +85,11 @@ public class Encoder {
 		byte command = (byte) (bits & 127);
 		
 		switch (command) {
-			case 0: board.tryMoveLeft(player); break;
-			case 1: board.tryMoveRight(player); break;
-			case 2: board.tryRotateLeft(player); break;
-			case 4: board.tryRotateRight(player); break;
-			case 8: board.drop(player); break;
+			case 0: gameState.tryMoveLeft(player); break;
+			case 1: gameState.tryMoveRight(player); break;
+			case 2: gameState.tryRotateLeft(player); break;
+			case 4: gameState.tryRotateRight(player); break;
+			case 8: gameState.drop(player); break;
 			default: throw new IllegalArgumentException();
 		}
 	}
