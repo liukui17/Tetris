@@ -202,9 +202,9 @@ public class Board {
 	 * Gets all of the colors of the given row.
 	 */
 	public synchronized Color[] getRowColors(int rowNum) {
+		Color[] rowColors = new Color[GameUtil.BOARD_WIDTH];
 		Square[] row = boardRows.get(rowNum);
 		if (row != null) {
-			Color[] rowColors = new Color[row.length];
 			for (int i = 0; i < rowColors.length; i++) {
 				// null array element means that square is not occupied
 				// so set the corresponding color to GRAY (PIECE_COLORS[0])
@@ -214,17 +214,22 @@ public class Board {
 					rowColors[i] = row[i].color;
 				}
 			}
-			for (int i = 0; i < playerPieces.length; i++) {
-				for (Square square : playerPieces[i].squares) {
-					if (square.y == rowNum) {
-						rowColors[square.x] = square.color;
-					}
+		}
+		// fill in falling piece squares
+		for (int i = 0; i < playerPieces.length; i++) {
+			for (Square square : playerPieces[i].squares) {
+				if (square.y == rowNum) {
+					rowColors[square.x] = square.color;
 				}
 			}
-			return rowColors;
-		} else {
-			return null;
 		}
+		// fill gaps with gray
+		for (int i = 0; i < rowColors.length; i++) {
+			if (rowColors[i] == null) {
+				rowColors[i] = GameUtil.PIECE_COLORS[0];
+			}
+		}
+		return rowColors;
 	}
 	
 	/**

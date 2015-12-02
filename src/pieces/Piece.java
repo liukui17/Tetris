@@ -37,7 +37,7 @@ public abstract class Piece {
 		squares = new ArrayList<Square>();
 	}
 	
-	public List<Square> getSpaces() {
+	public synchronized List<Square> getSpaces() {
 		return squares;
 	}
 
@@ -50,7 +50,7 @@ public abstract class Piece {
 		return squares;
 	} */
 	
-	public boolean containsSquare(Square other) {
+	public synchronized boolean containsSquare(Square other) {
 		for (Square square : squares) {
 			if (other.x == square.x && other.y == square.y) {
 				return true;
@@ -59,7 +59,7 @@ public abstract class Piece {
 		return false;
 	}
 	
-	public boolean hasHitBottom() {
+	public synchronized boolean hasHitBottom() {
 		for (Square square : squares) {
 			if (square.y >= GameUtil.BOARD_HEIGHT) {
 				return true;
@@ -68,25 +68,25 @@ public abstract class Piece {
 		return false;
 	}
 
-	protected void moveLeft() {
+	protected synchronized void moveLeft() {
 		for (Square square : squares) {
 			square.x = (square.x - 1) % GameUtil.BOARD_WIDTH;
 		}
 	}
 
-	protected void moveRight() {
+	protected synchronized void moveRight() {
 		for (Square square : squares) {
 			square.x = (square.x + 1) % GameUtil.BOARD_WIDTH;
 		}
 	}
 
-	protected void moveDown() {
+	protected synchronized void moveDown() {
 		for (Square square : squares) {
 			square.y = square.y + 1;
 		}
 	}
 	
-	protected void moveUp() {
+	protected synchronized void moveUp() {
 		for (Square square : squares) {
 			square.y = square.y - 1;
 		}
