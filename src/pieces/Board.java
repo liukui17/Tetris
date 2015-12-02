@@ -145,13 +145,13 @@ public class Board {
 		boolean setSquares = checkNoCollisionsWithSetSquares(player);
 		boolean otherPlayers = checkNoCollisionsWithOtherPlayers(player);
 		if (setSquares && otherPlayers) {
-			return COLLISION_CODES[3];
+			return COLLISION_CODES[0];
 		} else if (setSquares) {
 			return COLLISION_CODES[1];
 		} else if (otherPlayers) {
 			return COLLISION_CODES[2];
 		} else {
-			return COLLISION_CODES[0];
+			return COLLISION_CODES[3];
 		}
 	}
 	
