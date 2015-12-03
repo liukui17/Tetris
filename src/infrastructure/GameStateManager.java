@@ -28,7 +28,7 @@ public class GameStateManager {
 		// convert board into a Color[][]
 		Color[][] currentBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-			currentBoard[i] = board.getRowColors(i);;
+			currentBoard[i] = board.getRowColors(i);
 		}
 		return new GameState(currentBoard, score, board.isGameOver());
 	}

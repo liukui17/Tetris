@@ -71,12 +71,18 @@ public abstract class Piece {
 	protected synchronized void moveLeft() {
 		for (Square square : squares) {
 			square.x = (square.x - 1) % GameUtil.BOARD_WIDTH;
+			if (square.x < 0) {
+				square.x += GameUtil.BOARD_WIDTH;
+			}
 		}
 	}
 
 	protected synchronized void moveRight() {
 		for (Square square : squares) {
 			square.x = (square.x + 1) % GameUtil.BOARD_WIDTH;
+			if (square.x < 0) {
+				square.x += GameUtil.BOARD_WIDTH;
+			}
 		}
 	}
 
