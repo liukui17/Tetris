@@ -37,10 +37,11 @@ public class Encoder {
 			/*
 			 * Left squares end up on the left bits of the long
 			 */
-			for (int i = 0; i < row.length; i++) {
+			for (int i = 0; i < row.length - 1; i++) {
 				networkFormat += colorToInt(row[i]);
 				networkFormat <<= BITS_PER_COLOR;
 			}
+			networkFormat += colorToInt(row[row.length - 1]);
 		}
 		
 		return networkFormat;
