@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
-	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 111
+	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 00000111
 	
 	public static int colorToInt(Color color) {
 		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
@@ -30,10 +30,13 @@ public class Encoder {
 		// empty row
 		if (row == null) {
 			for (int i = 0; i < GameUtil.BOARD_WIDTH; i++) {
-				networkFormat += colorToInt(Color.gray);
+				networkFormat += colorToInt(Color.GRAY);
 				networkFormat <<= BITS_PER_COLOR;
 			}
 		} else {
+			/*
+			 * Left squares end up on the left bits of the long
+			 */
 			for (int i = 0; i < row.length; i++) {
 				networkFormat += colorToInt(row[i]);
 				networkFormat <<= BITS_PER_COLOR;
@@ -57,7 +60,10 @@ public class Encoder {
 	 * @modifies the array of colors 'row'
 	 */
 	public static void networkMessageToGridRow(long bits, Color[] row) {
-		for (int i = 0; i < row.length; i++) {
+		/*
+		 * Decode the long from right to left to allow use of a simple mask
+		 */
+		for (int i = row.length - 1; i >= 0; i--) {
 			int nextColor = (int) (bits & MASK);
 			row[i] = GameUtil.PIECE_COLORS[nextColor];
 			bits >>= BITS_PER_COLOR;

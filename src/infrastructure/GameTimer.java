@@ -1,7 +1,5 @@
 package infrastructure;
 
-import java.awt.Color;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
@@ -97,11 +95,7 @@ public class GameTimer extends Thread {
 			}
 			
 			GameState currentState = gameState.getCurrentState();
-			Color[][] board = currentState.getBoard();
-			
-			for (int i = 0; i < board.length; i++) {
-				System.out.println(Arrays.deepToString(board[i]));
-			}
+			// currentState.printBoard();
 			
 			out.add(currentState);
 		}

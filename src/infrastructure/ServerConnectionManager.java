@@ -102,6 +102,7 @@ public class ServerConnectionManager implements Runnable {
 					boolean p1First = GameUtil.rng.nextInt(2) == 0;
 					
 					GameState state = outStates.take();
+					// state.printBoard();
 					
 					// send out the Color[][] first
 					for (Color[] row : state.board) {

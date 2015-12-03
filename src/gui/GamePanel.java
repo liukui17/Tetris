@@ -72,18 +72,11 @@ public class GamePanel extends JPanel implements Runnable {
 		setBackground(Color.LIGHT_GRAY);
 	}
 
-//	public void updateGrid(Color[][] grid) {
-//		boardPanel.updateGrid(grid);
-//		boardPanel.revalidate();
-//		boardPanel.repaint();
-//	}
-
 	public void run() {
 		while (true) {
 			GameState state = null;
 			try {
 				state = gameState.take();
-				System.out.println("got game state");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -104,10 +97,10 @@ public class GamePanel extends JPanel implements Runnable {
 			scorePanel.repaint();
 
 			// Update grid
+			// state.printBoard();
 			boardPanel.updateGrid(state.getBoard());
 			boardPanel.revalidate();
 			boardPanel.repaint();
-			System.out.println("repainted");
 		}
 	}
 }
