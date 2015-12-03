@@ -1,6 +1,7 @@
 package infrastructure;
 
 import java.awt.Color;
+import java.util.Random;
 
 public class GameUtil {
 	public static final int NUM_PLAYERS = 2;
@@ -17,4 +18,5 @@ public class GameUtil {
 		Color.MAGENTA, // T (there is no purple so set this for now)
 		Color.RED // Z
 	};
+	public static Random rng = new Random();
 }

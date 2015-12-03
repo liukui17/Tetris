@@ -80,8 +80,7 @@ public class GameTimer extends Thread {
 		@Override
 		public void run() {
 			// randomize for fairness
-			// System.out.println("inside dropper");
-			if ((Math.random() * 10) % 2 == 0) {
+			if (GameUtil.rng.nextInt(2) == 0) {
 				if (!gameState.tryMoveDown(0)) {
 					System.out.println("Failed to drop 1");
 				}

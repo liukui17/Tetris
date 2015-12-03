@@ -99,7 +99,7 @@ public class ServerConnectionManager implements Runnable {
 					 * Have to sequentially send out update, so make it
 					 * random to make it fair
 					 */
-					boolean p1First = (Math.random() * 10) % 2 == 0;
+					boolean p1First = GameUtil.rng.nextInt(2) == 0;
 					
 					GameState state = outStates.take();
 					
