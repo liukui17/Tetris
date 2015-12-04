@@ -18,8 +18,7 @@ public class GameUtil {
 		Color.MAGENTA, // T (there is no purple so set this for now)
 		Color.RED // Z
 	};
-	public static Random rng = new Random();
-	
+
 	/**
 	 * Returns a human-readable String representation of the specified Color.
 	 * 

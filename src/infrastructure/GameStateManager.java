@@ -70,6 +70,10 @@ public class GameStateManager {
 		updateScore();
 	}
 	
+	public synchronized boolean isGameOver() {
+		return board.isGameOver();
+	}
+	
 	private void updateScore() {
 		score += SCORE_INCREASE_RATE * board.removeFullRows();
 	}

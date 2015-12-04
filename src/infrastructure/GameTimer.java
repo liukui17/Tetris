@@ -1,8 +1,10 @@
 package infrastructure;
 
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GameTimer extends Thread {	
 	// The default drop interval in milliseconds
@@ -13,10 +15,10 @@ public class GameTimer extends Thread {
 	
 	private BlockingQueue<GameState> out;
 	
-	// The Timer backbone of this class
-	private Timer timer;
+	// The timer backbone of this class
+	private ScheduledExecutorService timer;
 	
-	// The TimerTask to perform the dropping
+	// The module to perform the dropping
 	TimerTask dropper;
 
 	// The current interval between drops in milliseconds
@@ -32,7 +34,7 @@ public class GameTimer extends Thread {
 	 */
 	public GameTimer(long initialDropInterval, GameStateManager gameState,
 									 BlockingQueue<GameState> out) {
-		timer = new Timer();
+		timer = Executors.newSingleThreadScheduledExecutor();
 		dropper = new Dropper();
 		dropInterval = initialDropInterval;
 		this.gameState = gameState;
@@ -49,14 +51,14 @@ public class GameTimer extends Thread {
 	@Override
 	public void run() {
 		System.out.println("Started timer");
-		timer.scheduleAtFixedRate(dropper, 0, dropInterval);
+		timer.scheduleAtFixedRate(dropper, 0, dropInterval, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
 	 * Ends this GameTimer.
 	 */
 	public void end() {
-		timer.cancel();
+		timer.shutdownNow();
 		System.out.println("Ended Timer");
 	}
 	
@@ -67,7 +69,7 @@ public class GameTimer extends Thread {
 		dropInterval -= SPEED_UP_CHANGE;
 		dropper.cancel();
 		dropper = new Dropper();
-		timer.scheduleAtFixedRate(dropper, 0, dropInterval);
+		timer.scheduleAtFixedRate(dropper, 0, dropInterval, TimeUnit.MILLISECONDS);
 		System.out.println("Sped up");
 	}
 	
@@ -77,21 +79,11 @@ public class GameTimer extends Thread {
 	private class Dropper extends TimerTask {
 		@Override
 		public void run() {
-			// randomize for fairness
-			if (GameUtil.rng.nextInt(2) == 0) {
-				if (!gameState.tryMoveDown(0)) {
-					System.out.println("Failed to drop 1");
-				}
-				if (!gameState.tryMoveDown(1)) {
-					System.out.println("Failed to drop 2");
-				}
-			} else {
-				if (!gameState.tryMoveDown(1)) {
-					System.out.println("Failed to drop 3");
-				}
-				if (!gameState.tryMoveDown(0)) {
-					System.out.println("Failed to drop 4");
-				}
+			if (!gameState.tryMoveDown(0)) {
+				System.out.println("Failed to drop 1");
+			}
+			if (!gameState.tryMoveDown(1)) {
+				System.out.println("Failed to drop 2");
 			}
 			
 			GameState currentState = gameState.getCurrentState();

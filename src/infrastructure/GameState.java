@@ -8,14 +8,32 @@ import java.awt.Color;
  * and a boolean of whether the game is over.
  */
 public class GameState {
-	final Color[][] board;
-	final int score;
+	private final Color[][] board;
+	private final int score;
 	private final boolean isGameOver;
 	
 	public GameState(Color[][] board, int score, boolean isGameOver) {
 		this.board = board;
 		this.score = score;
 		this.isGameOver = isGameOver;
+	}
+	
+	/**
+	 * Copy constructor
+	 * 
+	 * @param other
+	 */
+	public GameState(GameState other) {
+		Color[][] otherBoard = other.getBoard();
+		board = new Color[otherBoard.length][otherBoard[0].length];
+		for (int i = 0; i < otherBoard.length; i++) {
+			for (int j = 0; j < otherBoard[0].length; j++) {
+				board[i][j] = otherBoard[i][j];
+			}
+		}
+		
+		score = other.getScore();
+		isGameOver = other.getIsGameOver();
 	}
 	
 	public Color[][] getBoard() {
