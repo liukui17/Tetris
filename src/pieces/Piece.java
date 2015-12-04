@@ -49,7 +49,7 @@ public abstract class Piece {
 	public synchronized boolean containsSquare(Square other) {
 		for (Square square : squares) {
 			if (GameUtil.modulo(other.x, GameUtil.BOARD_WIDTH) == GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)
-					&& other.y == GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)) {
+					&& other.y == square.y) {
 				return true;
 			}
 		}
