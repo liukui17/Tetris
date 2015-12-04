@@ -4,22 +4,23 @@ import java.awt.Color;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 public class ClientConnectionManager implements Runnable {
 	private BlockingQueue<GameState> inputStates;
 	private BlockingQueue<Byte> outputCommandBytes;
-	
+
 	private DataInputStream inFromServer;
 	private DataOutputStream outToServer;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
-																 BlockingQueue<GameState> inputStates,
-																 DataInputStream inFromServer,
-																 DataOutputStream outToServer) {
+			BlockingQueue<GameState> inputStates,
+			DataInputStream inFromServer,
+			DataOutputStream outToServer) {
 		this.outputCommandBytes = commands;
 		this.inputStates = inputStates;
-		
+
 		this.inFromServer = inFromServer;
 		this.outToServer = outToServer;
 	}
@@ -29,7 +30,7 @@ public class ClientConnectionManager implements Runnable {
 		new Thread(new ReadThread()).start();
 		new Thread(new WriteThread()).start();
 	}
-	
+
 	/**
 	 * The thread responsible for reading GameStates from the server
 	 */
@@ -44,19 +45,27 @@ public class ClientConnectionManager implements Runnable {
 						long rowLong = inFromServer.readLong();
 						Encoder.networkMessageToGridRow(rowLong, board[i]);
 					}
-					
+
 					// read the score and isGameOver
 					int score = inFromServer.readInt();
 					boolean isGameOver = inFromServer.readBoolean();
 					
+					// read the pieces of each player
+					Set<BytePair> p1Spaces = Encoder.decodeSpaces(inFromServer.readLong());
+					Set<BytePair> p2Spaces = Encoder.decodeSpaces(inFromServer.readLong());
+					
 					// put the board state, score and isGameOver in a GameState struct
-					GameState state = new GameState(board, score, isGameOver);
-					
+					GameState state = new GameState(board, p1Spaces, p2Spaces, score, isGameOver);
+
 					long delay = inFromServer.readLong();
-					while (System.currentTimeMillis() < delay) { }
-					
+					while (System.currentTimeMillis() < delay) {
+						// System.out.println("wait");
+					}
+
 					// send it to the GUI
 					inputStates.add(state);
+					
+					System.out.println(delay);
 				} catch (IOException e) {
 					e.printStackTrace();
 					return;
@@ -64,7 +73,7 @@ public class ClientConnectionManager implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * The thread responsible for writing out encoded command bytes to the server
 	 */

@@ -1,8 +1,10 @@
 package infrastructure;
 
 import java.awt.Color;
+import java.util.Set;
 
 import pieces.Board;
+import pieces.Piece;
 
 public class GameStateManager {
 	private static final int SCORE_INCREASE_RATE = 10;
@@ -15,7 +17,7 @@ public class GameStateManager {
 		score = 0;
 	}
 	
-	public int getScore() {
+	public synchronized int getScore() {
 		return score;
 	}
 	
@@ -30,20 +32,23 @@ public class GameStateManager {
 		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 			currentBoard[i] = board.getRowColors(i);
 		}
-		return new GameState(currentBoard, score, board.isGameOver());
+		
+		// get player 1/2 pieces
+		Set<BytePair> p1Piece = board.getPiece(0).getBytePairs();
+		Set<BytePair> p2Piece = board.getPiece(1).getBytePairs();
+		
+		return new GameState(currentBoard, p1Piece, p2Piece, score, board.isGameOver());
 	}
 	
 	public synchronized boolean tryMoveLeft(int player) {
 		boolean moved = board.tryMoveLeft(player);
 		updateScore();
-		System.out.println("LEFT");
 		return moved;
 	}
 	
 	public synchronized boolean tryMoveRight(int player) {
 		boolean moved = board.tryMoveRight(player);
 		updateScore();
-		System.out.println("RIGHT");
 		return moved;
 	}
 	
@@ -74,7 +79,11 @@ public class GameStateManager {
 		return board.isGameOver();
 	}
 	
-	private void updateScore() {
+	public synchronized Piece getPiece(int player) {
+		return board.getPiece(player);
+	}
+	
+	private synchronized void updateScore() {
 		score += SCORE_INCREASE_RATE * board.removeFullRows();
 	}
 }

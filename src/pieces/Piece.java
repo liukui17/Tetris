@@ -1,10 +1,13 @@
 package pieces;
 import java.util.List;
+import java.util.Set;
 
+import infrastructure.BytePair;
 import infrastructure.GameUtil;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public abstract class Piece {
 	static final int DEBUG = 0;
@@ -40,6 +43,16 @@ public abstract class Piece {
 	
 	public synchronized List<Square> getSpaces() {
 		return squares;
+	}
+	
+	public synchronized Set<BytePair> getBytePairs() {
+		Set<BytePair> set = new HashSet<BytePair>(); 
+		for (Square s : squares) {
+			byte x = (byte) s.getX();
+			byte y = (byte) s.getY();
+			set.add(new BytePair(x, y));
+		}
+		return set;
 	}
 	
 	public int getOrientation() {

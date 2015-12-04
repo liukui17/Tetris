@@ -20,11 +20,9 @@ public class GameServer {
 			
 			while (true) {
 				Socket player1 = server.accept();
-				// player1.setTcpNoDelay(false);
 				System.out.println("Player 1 connected");
 				
 				Socket player2 = server.accept();
-				// player2.setTcpNoDelay(false);
 				System.out.println("Player 2 connected");
 				
 				notifyPlayerNumbers(player1, player2);

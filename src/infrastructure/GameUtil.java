@@ -1,7 +1,6 @@
 package infrastructure;
 
 import java.awt.Color;
-import java.util.Random;
 
 public class GameUtil {
 	public static final int NUM_PLAYERS = 2;

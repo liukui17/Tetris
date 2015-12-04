@@ -100,14 +100,13 @@ public class ServerConnectionManager implements Runnable {
 		public void run() {
 			try {
 				while (true) {
-					GameState state1 = outStates.take();
-					GameState state2 = new GameState(state1);
+					GameState state = outStates.take();
 					// state.printBoard();
 
 					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
 
-					Thread p1 = new Thread(new WriteThread(outToP1, state1, displayDelay));
-					Thread p2 = new Thread(new WriteThread(outToP2, state2, displayDelay));
+					Thread p1 = new Thread(new WriteThread(outToP1, state, displayDelay));
+					Thread p2 = new Thread(new WriteThread(outToP2, state, displayDelay));
 					
 					p1.start();
 					p2.start();
@@ -133,7 +132,7 @@ public class ServerConnectionManager implements Runnable {
 
 		@Override
 		public void run() {
-			try {				
+			try {
 				// send out the Color[][] first
 				for (Color[] row : state.getBoard()) {
 					long msgLong = Encoder.gridRowToNetworkMessage(row);
@@ -145,6 +144,13 @@ public class ServerConnectionManager implements Runnable {
 				boolean isGameOver = state.getIsGameOver();
 				out.writeInt(score);
 				out.writeBoolean(isGameOver);
+				
+				// send out player 1's then player 2's falling piece spaces
+				long p1Spaces = Encoder.encodeSpacesOfPiece(state.getSpaces(0));
+				long p2Spaces = Encoder.encodeSpacesOfPiece(state.getSpaces(1));
+				
+				out.writeLong(p1Spaces);
+				out.writeLong(p2Spaces);
 				
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);

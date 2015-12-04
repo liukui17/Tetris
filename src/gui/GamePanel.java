@@ -77,7 +77,7 @@ public class GamePanel extends JPanel implements Runnable {
 			GameState state = null;
 			try {
 				state = gameState.take();
-				System.out.println(System.currentTimeMillis());
+				// System.out.println(System.currentTimeMillis());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -99,7 +99,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// Update grid
 			// state.printBoard();
-			boardPanel.updateGrid(state.getBoard());
+			boardPanel.updateGrid(state.getBoard(), state.getSpaces(0), state.getSpaces(1));
 			boardPanel.revalidate();
 			boardPanel.repaint(1);
 		}
