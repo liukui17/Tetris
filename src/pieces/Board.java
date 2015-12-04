@@ -259,11 +259,19 @@ public class Board {
 	 * and returns the number of rows removed.
 	 */
 	public synchronized int removeFullRows() {
-		List<Integer> fullRows = getFullRows();
+	/*	List<Integer> fullRows = getFullRows();
 		for (int i = 0; i < fullRows.size(); i++) {
 			clearRow(fullRows.get(i));
 		}
-		return fullRows.size();
+		return fullRows.size(); */
+		int numRemoved = 0;
+		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+			if (isFullRow(i)) {
+				clearRow(i);
+				numRemoved++;
+			}
+		}
+		return numRemoved;
 	}
 	
 	/**
@@ -288,17 +296,15 @@ public class Board {
 	/**
 	 * Returns all of the full rows in the board.
 	 */
-	public synchronized List<Integer> getFullRows() {
+/*	public synchronized List<Integer> getFullRows() {
 		List<Integer> fullRows = new LinkedList<Integer>();
-		Set<Integer> rowNumbers = boardRows.keySet();
-		for (Integer i : rowNumbers) {
-			Square[] nextRow = boardRows.get(i);
-			if (isFullRow(nextRow)) {
+		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+			if (isFullRow(i)) {
 				fullRows.add(i);
 			}
 		}
 		return fullRows;
-	}
+	} */
 	
 	/**
 	 * Simply helper function that checks if a given row
@@ -308,7 +314,11 @@ public class Board {
 	 * to get a 'clearFullRows' or something so we can avoid
 	 * having to allocate a new list for the full row numbers.
 	 */
-	private synchronized boolean isFullRow(Square[] row) {
+	private synchronized boolean isFullRow(int rowNum) {
+		Square[] row = boardRows.get(rowNum);
+		if (row == null) {
+			return false;
+		}
 		for (int i = 0; i < row.length; i++) {
 			if (row[i] == null) {
 				return false;
@@ -322,12 +332,20 @@ public class Board {
 	 * (private utility function).
 	 */
 	private synchronized void clearRow(int rowToClear) {
-		Square[] row = boardRows.get(rowToClear);
-		if (row != null) {
-			if (isFullRow(boardRows.get(rowToClear))) {
-				boardRows.remove(rowToClear);
+		for (int i = rowToClear; i > 0; i--) {
+			Square[] above = boardRows.get(i - 1);
+			if (above != null) {
+				boardRows.put(i, above);
+			} else {
+				boardRows.remove(i);
 			}
 		}
+	/*	Square[] row = boardRows.get(rowToClear);
+		if (row != null) {
+			if (isFullRow(rowToClear)) {
+				boardRows.remove(rowToClear);
+			}
+		} */
 	}
 	
 	/**

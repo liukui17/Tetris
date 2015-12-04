@@ -18,6 +18,14 @@ public class GameUtil {
 		Color.MAGENTA, // T (there is no purple so set this for now)
 		Color.RED // Z
 	};
+	
+	public static int modulo(int dividend, int divisor) {
+		int res = dividend % divisor;
+		if (res < 0) {
+			res += divisor;
+		}
+		return res;
+	}
 
 	/**
 	 * Returns a human-readable String representation of the specified Color.

@@ -72,19 +72,13 @@ public abstract class Piece {
 
 	protected synchronized void moveLeft() {
 		for (Square square : squares) {
-			square.x = (square.x - 1) % GameUtil.BOARD_WIDTH;
-			if (square.x < 0) {
-				square.x += GameUtil.BOARD_WIDTH;
-			}
+			square.x = GameUtil.modulo(square.x - 1, GameUtil.BOARD_WIDTH);
 		}
 	}
 
 	protected synchronized void moveRight() {
 		for (Square square : squares) {
-			square.x = (square.x + 1) % GameUtil.BOARD_WIDTH;
-			if (square.x < 0) {
-				square.x += GameUtil.BOARD_WIDTH;
-			}
+			square.x = GameUtil.modulo(square.x + 1, GameUtil.BOARD_WIDTH);
 		}
 	}
 
@@ -119,9 +113,9 @@ public abstract class Piece {
 		for (Square square : squares) {
 			int oldX = square.x - pivot.x;
 			int oldY = square.y - pivot.y;
-			int newX = -oldY + pivot.x;
+			int newX = GameUtil.modulo(-oldY, GameUtil.BOARD_WIDTH) + pivot.x;
 			int newY = oldX + pivot.y;
-			square.x = newX;
+			square.x = GameUtil.modulo(newX, GameUtil.BOARD_WIDTH);
 			square.y = newY;
 		}
 	}
@@ -131,9 +125,9 @@ public abstract class Piece {
 		for (Square square : squares) {
 			int oldX = square.x - pivot.x;
 			int oldY = square.y - pivot.y;
-			int newX = oldY + pivot.x;
+			int newX = GameUtil.modulo(oldY, GameUtil.BOARD_WIDTH) + pivot.x;
 			int newY = -oldX + pivot.y;
-			square.x = newX;
+			square.x = GameUtil.modulo(newX, GameUtil.BOARD_WIDTH);
 			square.y = newY;
 		}
 	}

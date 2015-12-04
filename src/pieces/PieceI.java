@@ -21,10 +21,12 @@ public class PieceI extends Piece {
 	}
 	
 	public void rotateLeft() {
-
+		// temporary
+		rotateLeftFixedSquareOrigin(2);
 	}
 	
 	public void rotateRight() {
-		
+		// temporary
+		rotateRightFixedSquareOrigin(2);
 	}
 }
