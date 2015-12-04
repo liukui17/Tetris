@@ -188,7 +188,7 @@ public class Board {
 			if (row != null) {
 			//	System.out.println("This row is null");
 				// check there isn't already another square occupying that space
-				if (row[square.x] != null) {
+				if (row[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] != null) {
 					return false;
 				}
 			}
@@ -239,9 +239,9 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			for (Square square : playerPieces[i].squares) {
 				if (square.y == rowNum) {
-					assert square.x >= 0;
-					assert square.x < GameUtil.BOARD_WIDTH;
-					rowColors[square.x] = square.color;
+				//	assert square.x >= 0;
+				//	assert square.x < GameUtil.BOARD_WIDTH;
+					rowColors[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square.color;
 				}
 			}
 		}
@@ -287,7 +287,7 @@ public class Board {
 			if (row == null) {
 				boardRows.put(square.y, new Square[GameUtil.BOARD_WIDTH]);
 			}
-			boardRows.get(square.y)[square.x] = square;
+			boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 		}
 		// generate new piece for the player
 		playerPieces[player] = PieceFactory.generateNewPiece(player);
