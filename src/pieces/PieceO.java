@@ -13,6 +13,8 @@ public class PieceO extends Piece {
 	
 	//     [][]
 	//     [][]
+	// (this tetromino has no rotations since symmetric, i.e. everything
+	// is fixed under rotations)
 	public PieceO(int startRow, int startCol) {
 		super();
 		squares.add(new Square(startRow, startCol, GameUtil.PIECE_COLORS[4]));

@@ -1,5 +1,4 @@
 package pieces;
-//import java.util.Collection;
 import java.util.List;
 
 import infrastructure.GameUtil;
@@ -10,8 +9,6 @@ import java.util.ArrayList;
 public abstract class Piece {
 	static final int DEBUG = 0;
 	public static final int NUM_SQUARES_PER_PIECE = 4;
-
-	// private Collection<Square> squares;
 	
 	// Collection is just a collection of static methods that
 	// operate on or return collections; best use something like
@@ -19,9 +16,11 @@ public abstract class Piece {
 	// since it resizes; leave without access modifier so subclasses
 	// have access
 	List<Square> squares;
+	int orientation;
 	
 	public Piece(List<Square> squares) {
 		this.squares = new ArrayList<Square>(squares);
+		orientation = 0;
 		checkRep();
 	}
 	
@@ -31,24 +30,21 @@ public abstract class Piece {
 		for (Square square : other.squares) {
 			squares.add(new Square(square));
 		}
+		orientation = 0;
 	}
 	
 	public Piece() {
 		squares = new ArrayList<Square>();
+		orientation = 0;
 	}
 	
 	public synchronized List<Square> getSpaces() {
 		return squares;
 	}
-
-/*	public Piece(Collection<Square> squares) {
-		assert(squares.size() == NUM_SQUARES_PER_PIECE);
-		this.squares = squares;
+	
+	public int getOrientation() {
+		return orientation;
 	}
-
-	public Collection<Square> getSpaces() {
-		return squares;
-	} */
 	
 	public synchronized boolean containsSquare(Square other) {
 		for (Square square : squares) {
@@ -59,6 +55,12 @@ public abstract class Piece {
 		return false;
 	}
 	
+	/**
+	 * Define "hitting" the bottom to mean having a square
+	 * that is at row 24 (which doesn't exist); signals
+	 * caller to put the piece back in its previous, valid
+	 * position.
+	 */
 	public synchronized boolean hasHitBottom() {
 		for (Square square : squares) {
 			if (square.y >= GameUtil.BOARD_HEIGHT) {
@@ -97,10 +99,44 @@ public abstract class Piece {
 			square.y = square.y - 1;
 		}
 	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer("[");
+		buf.append(squares.get(0).toString());
+		for (int i = 1; i < squares.size(); i++) {
+			buf.append(", " + squares.get(i).toString());
+		}
+		buf.append("]");
+		return buf.toString();
+	}
 
 	protected abstract void rotateLeft();
 
 	protected abstract void rotateRight();
+	
+	protected void rotateLeftFixedSquareOrigin(int pivotIndex) {
+		Square pivot = squares.get(pivotIndex);
+		for (Square square : squares) {
+			int oldX = square.x - pivot.x;
+			int oldY = square.y - pivot.y;
+			int newX = -oldY + pivot.x;
+			int newY = oldX + pivot.y;
+			square.x = newX;
+			square.y = newY;
+		}
+	}
+	
+	protected void rotateRightFixedSquareOrigin(int pivotIndex) {
+		Square pivot = squares.get(pivotIndex);
+		for (Square square : squares) {
+			int oldX = square.x - pivot.x;
+			int oldY = square.y - pivot.y;
+			int newX = oldY + pivot.x;
+			int newY = -oldX + pivot.y;
+			square.x = newX;
+			square.y = newY;
+		}
+	}
 	
 	protected void checkRep() {
 		assert(squares != null);

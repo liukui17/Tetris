@@ -63,6 +63,18 @@ public class Board {
 	}
 	
 	/**
+	 * Mainly for testing purposes. If you decide to call
+	 * this, do NOT modify the piece. Use it only for
+	 * observing.
+	 */
+	public Piece getPiece(int player) {
+		if (player >= playerPieces.length || player < 0) {
+			return null;
+		}
+		return playerPieces[player];
+	}
+	
+	/**
 	 * Drops a player's piece to the bottom of the board.
 	 * A bit inefficient since all it does is keep trying
 	 * to fall (one row at a time) until it can't anymore.
@@ -157,9 +169,9 @@ public class Board {
 		if (setSquares && otherPlayers) {
 			return COLLISION_CODES[0];
 		} else if (setSquares) {
-			return COLLISION_CODES[1];
-		} else if (otherPlayers) {
 			return COLLISION_CODES[2];
+		} else if (otherPlayers) {
+			return COLLISION_CODES[1];
 		} else {
 			return COLLISION_CODES[3];
 		}
@@ -179,10 +191,6 @@ public class Board {
 				if (row[square.x] != null) {
 					return false;
 				}
-			}
-			// check its within board bounds
-			if (square.y >= GameUtil.BOARD_HEIGHT || square.y < 0) {
-				return false;
 			}
 		}
 		if (playerPieces[player].hasHitBottom()) {
