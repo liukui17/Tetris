@@ -52,6 +52,9 @@ public class ClientConnectionManager implements Runnable {
 					// put the board state, score and isGameOver in a GameState struct
 					GameState state = new GameState(board, score, isGameOver);
 					
+					long delay = inFromServer.readLong();
+					while (System.currentTimeMillis() < delay) { }
+					
 					// send it to the GUI
 					inputStates.add(state);
 				} catch (IOException e) {
