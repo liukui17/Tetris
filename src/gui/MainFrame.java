@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 // All communication to/from components goes through here
 public class MainFrame extends JFrame {
 	private static final int WIDTH = 680;
-	private static final int HEIGHT = 720;
+	private static final int HEIGHT = 780;
 
 	private MenuPanel menuPanel;
 	private HelpPanel helpPanel;
@@ -22,8 +22,9 @@ public class MainFrame extends JFrame {
 	private OptionsPanel optionsPanel;
 	private WaitingPanel waitingPanel;
 
-	public MainFrame(String title) {
+	public MainFrame(String title, String hostName, int portNum) {		
 		super(title);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
@@ -69,7 +70,7 @@ public class MainFrame extends JFrame {
 							boolean connected = false;
 							while (!connected) {
 								try {
-									socket = new Socket("localhost", 3333);
+									socket = new Socket(hostName, portNum);
 								} catch (Exception e) {
 									System.out.println("Server not accepting connections");
 									try {
