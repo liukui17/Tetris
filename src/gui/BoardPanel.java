@@ -34,11 +34,6 @@ public class BoardPanel extends JPanel {
 		super.paintComponent(g);
 		this.setBackground(Color.WHITE);
 		
-		// Can either recompute cell dimensions everytime try to repaint
-		// So that it scales or hardcode to avoid computation
-//		cellWidth = getWidth() / GameUtil.BOARD_WIDTH;
-//		cellHeight = getHeight() / GameUtil.BOARD_HEIGHT;
-
 		// draw the spaces themselves
 		if (grid != null) {
 			for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
