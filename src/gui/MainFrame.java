@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 // All communication to/from components goes through here
 public class MainFrame extends JFrame {
 	private static final int WIDTH = 680;
-	private static final int HEIGHT = 720;
+	private static final int HEIGHT = 750;
 
 	private MenuPanel menuPanel;
 	private HelpPanel helpPanel;

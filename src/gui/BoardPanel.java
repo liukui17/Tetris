@@ -15,14 +15,19 @@ public class BoardPanel extends JPanel {
 
 	public BoardPanel() {
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-		cellWidth = 30; //getWidth() / GameUtil.BOARD_WIDTH;
-		cellHeight = 30; //getHeight() / GameUtil.BOARD_HEIGHT;
+		cellWidth = 30;
+		cellHeight = 30;
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.setBackground(Color.WHITE);
+		
+		// Can either recompute cell dimensions everytime try to repaint
+		// So that it scales or hardcode to avoid computation
+//		cellWidth = getWidth() / GameUtil.BOARD_WIDTH;
+//		cellHeight = getHeight() / GameUtil.BOARD_HEIGHT;
 
 		if (grid != null) {
 			for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
