@@ -28,7 +28,7 @@ public class ServerConnectionManager implements Runnable {
 	/*
 	 * The delay to send to both players simultaneously (in ms)
 	 */
-	private static final long SEND_DELAY = 100;
+	private static final long DISPLAY_DELAY = 100;
 
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> outStates;
@@ -104,10 +104,10 @@ public class ServerConnectionManager implements Runnable {
 					GameState state2 = new GameState(state1);
 					// state.printBoard();
 
-					long sendTime = System.currentTimeMillis() + SEND_DELAY;
+					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
 
-					Thread p1 = new Thread(new WriteThread(outToP1, state1, sendTime));
-					Thread p2 = new Thread(new WriteThread(outToP2, state2, sendTime));
+					Thread p1 = new Thread(new WriteThread(outToP1, state1, displayDelay));
+					Thread p2 = new Thread(new WriteThread(outToP2, state2, displayDelay));
 					
 					p1.start();
 					p2.start();
@@ -123,19 +123,17 @@ public class ServerConnectionManager implements Runnable {
 	public class WriteThread implements Runnable {
 		private DataOutputStream out;
 		private GameState state;
-		private long sendTime;
+		private long displayDelay;
 
-		public WriteThread(DataOutputStream out, GameState state, long sendTime) {
+		public WriteThread(DataOutputStream out, GameState state, long displayDelay) {
 			this.out = out;
 			this.state = state;
-			this.sendTime = sendTime;
+			this.displayDelay = displayDelay;
 		}
 
 		@Override
 		public void run() {
-			try {
-				while (System.currentTimeMillis() < sendTime) { System.out.println("waiting"); }
-				
+			try {				
 				// send out the Color[][] first
 				for (Color[] row : state.getBoard()) {
 					long msgLong = Encoder.gridRowToNetworkMessage(row);
@@ -147,6 +145,9 @@ public class ServerConnectionManager implements Runnable {
 				boolean isGameOver = state.getIsGameOver();
 				out.writeInt(score);
 				out.writeBoolean(isGameOver);
+				
+				// send the delay for the gui to display the game state
+				out.writeLong(displayDelay);
 
 				// System.out.println("sent board to client");
 			} catch (Exception e) {
