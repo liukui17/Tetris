@@ -14,6 +14,7 @@ public class GameServer {
 	
 	public static void main(String[] args) {
 		try {
+			@SuppressWarnings("resource")
 			ServerSocket server = new ServerSocket(PORT_NUM);
 			System.out.println("Started server");
 			

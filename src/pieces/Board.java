@@ -40,7 +40,17 @@ public class Board {
 	 * anyways.
 	 */
 	
+	/*
+	 * playerPieces[0] = player 1's falling piece
+	 * playerPieces[1] = player 2's falling piece
+	 */
 	Piece[] playerPieces;
+	
+	/*
+	 * boardRows stores the FIXED rows of the Tetris game. It only stores the
+	 * spaces that have hit the bottom and can no longer move; it does NOT store
+	 * the falling pieces.
+	 */
 	Map<Integer, Square[]> boardRows;
 	
 	public Board() {
@@ -205,6 +215,8 @@ public class Board {
 		Color[] rowColors = new Color[GameUtil.BOARD_WIDTH];
 		Square[] row = boardRows.get(rowNum);
 		if (row != null) {
+			assert rowColors.length == row.length;
+			
 			for (int i = 0; i < rowColors.length; i++) {
 				// null array element means that square is not occupied
 				// so set the corresponding color to GRAY (PIECE_COLORS[0])
@@ -219,6 +231,8 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			for (Square square : playerPieces[i].squares) {
 				if (square.y == rowNum) {
+					assert square.x >= 0;
+					assert square.x < GameUtil.BOARD_WIDTH;
 					rowColors[square.x] = square.color;
 				}
 			}

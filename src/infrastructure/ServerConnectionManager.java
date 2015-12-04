@@ -99,9 +99,10 @@ public class ServerConnectionManager implements Runnable {
 					 * Have to sequentially send out update, so make it
 					 * random to make it fair
 					 */
-					boolean p1First = (Math.random() * 10) % 2 == 0;
+					boolean p1First = GameUtil.rng.nextInt(2) == 0;
 					
 					GameState state = outStates.take();
+					// state.printBoard();
 					
 					// send out the Color[][] first
 					for (Color[] row : state.board) {
@@ -131,7 +132,7 @@ public class ServerConnectionManager implements Runnable {
 						outToP1.writeBoolean(isGameOver);
 					}
 					
-					System.out.println("sent board to client");
+					// System.out.println("sent board to client");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

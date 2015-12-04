@@ -10,13 +10,15 @@ import infrastructure.GameUtil;
 public class BoardPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Color[][] grid;
-	private int cellWidth;
-	private int cellHeight;
+	
+	/*
+	 * Length of a side of a square cell
+	 */
+	private int cellLength;
 
 	public BoardPanel() {
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-		cellWidth = 30;
-		cellHeight = 30;
+		cellLength = 30;
 	}
 	
 	@Override
@@ -33,14 +35,8 @@ public class BoardPanel extends JPanel {
 			for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 				for (int j = 0; j < GameUtil.BOARD_WIDTH; j++) {
 					Color c = grid[i][j];
-					if (c != null) {
-						g.setColor(c);
-						g.fill3DRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight, true);
-					} else {
-						// fill with default color
-						g.setColor(Color.gray);
-						g.fill3DRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight, true);
-					}
+					g.setColor(c);
+					g.fill3DRect(j * cellLength, i * cellLength, cellLength, cellLength, true);
 				}
 			}
 		}

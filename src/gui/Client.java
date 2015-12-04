@@ -8,7 +8,7 @@ public class Client {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				MainFrame mainFrame = new MainFrame("Tetris");
+				new MainFrame("Tetris");
 			}
 
 		});

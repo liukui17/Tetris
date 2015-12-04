@@ -28,7 +28,7 @@ public class GameStateManager {
 		// convert board into a Color[][]
 		Color[][] currentBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-			currentBoard[i] = board.getRowColors(i);;
+			currentBoard[i] = board.getRowColors(i);
 		}
 		return new GameState(currentBoard, score, board.isGameOver());
 	}
@@ -36,12 +36,14 @@ public class GameStateManager {
 	public synchronized boolean tryMoveLeft(int player) {
 		boolean moved = board.tryMoveLeft(player);
 		updateScore();
+		System.out.println("LEFT");
 		return moved;
 	}
 	
 	public synchronized boolean tryMoveRight(int player) {
 		boolean moved = board.tryMoveRight(player);
 		updateScore();
+		System.out.println("RIGHT");
 		return moved;
 	}
 	

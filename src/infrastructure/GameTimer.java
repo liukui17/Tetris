@@ -1,7 +1,5 @@
 package infrastructure;
 
-import java.awt.Color;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
@@ -80,8 +78,7 @@ public class GameTimer extends Thread {
 		@Override
 		public void run() {
 			// randomize for fairness
-			// System.out.println("inside dropper");
-			if ((Math.random() * 10) % 2 == 0) {
+			if (GameUtil.rng.nextInt(2) == 0) {
 				if (!gameState.tryMoveDown(0)) {
 					System.out.println("Failed to drop 1");
 				}
@@ -98,11 +95,7 @@ public class GameTimer extends Thread {
 			}
 			
 			GameState currentState = gameState.getCurrentState();
-			Color[][] board = currentState.getBoard();
-			
-			for (int i = 0; i < board.length; i++) {
-				System.out.println(Arrays.deepToString(board[i]));
-			}
+			// currentState.printBoard();
 			
 			out.add(currentState);
 		}
