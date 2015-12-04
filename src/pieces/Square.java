@@ -1,6 +1,8 @@
 package pieces;
 import java.awt.Color;
 
+import infrastructure.GameUtil;
+
 public class Square {
 	
 	// probably easier to just leave these without access modifiers
@@ -23,5 +25,21 @@ public class Square {
 		this.x = other.x;
 		this.y = other.y;
 		this.color = other.color;
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public String toString() {
+		return "(" + x + ", " + y + ", " + GameUtil.colorToString(color) + ")";
 	}
 }

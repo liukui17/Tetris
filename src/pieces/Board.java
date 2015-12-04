@@ -63,6 +63,18 @@ public class Board {
 	}
 	
 	/**
+	 * Mainly for testing purposes. If you decide to call
+	 * this, do NOT modify the piece. Use it only for
+	 * observing.
+	 */
+	public Piece getPiece(int player) {
+		if (player >= playerPieces.length || player < 0) {
+			return null;
+		}
+		return playerPieces[player];
+	}
+	
+	/**
 	 * Drops a player's piece to the bottom of the board.
 	 * A bit inefficient since all it does is keep trying
 	 * to fall (one row at a time) until it can't anymore.
@@ -157,9 +169,9 @@ public class Board {
 		if (setSquares && otherPlayers) {
 			return COLLISION_CODES[0];
 		} else if (setSquares) {
-			return COLLISION_CODES[1];
-		} else if (otherPlayers) {
 			return COLLISION_CODES[2];
+		} else if (otherPlayers) {
+			return COLLISION_CODES[1];
 		} else {
 			return COLLISION_CODES[3];
 		}
@@ -176,13 +188,9 @@ public class Board {
 			if (row != null) {
 			//	System.out.println("This row is null");
 				// check there isn't already another square occupying that space
-				if (row[square.x] != null) {
+				if (row[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] != null) {
 					return false;
 				}
-			}
-			// check its within board bounds
-			if (square.y >= GameUtil.BOARD_HEIGHT || square.y < 0) {
-				return false;
 			}
 		}
 		if (playerPieces[player].hasHitBottom()) {
@@ -231,9 +239,9 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			for (Square square : playerPieces[i].squares) {
 				if (square.y == rowNum) {
-					assert square.x >= 0;
-					assert square.x < GameUtil.BOARD_WIDTH;
-					rowColors[square.x] = square.color;
+				//	assert square.x >= 0;
+				//	assert square.x < GameUtil.BOARD_WIDTH;
+					rowColors[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square.color;
 				}
 			}
 		}
@@ -251,11 +259,19 @@ public class Board {
 	 * and returns the number of rows removed.
 	 */
 	public synchronized int removeFullRows() {
-		List<Integer> fullRows = getFullRows();
+	/*	List<Integer> fullRows = getFullRows();
 		for (int i = 0; i < fullRows.size(); i++) {
 			clearRow(fullRows.get(i));
 		}
-		return fullRows.size();
+		return fullRows.size(); */
+		int numRemoved = 0;
+		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+			if (isFullRow(i)) {
+				clearRow(i);
+				numRemoved++;
+			}
+		}
+		return numRemoved;
 	}
 	
 	/**
@@ -271,7 +287,7 @@ public class Board {
 			if (row == null) {
 				boardRows.put(square.y, new Square[GameUtil.BOARD_WIDTH]);
 			}
-			boardRows.get(square.y)[square.x] = square;
+			boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 		}
 		// generate new piece for the player
 		playerPieces[player] = PieceFactory.generateNewPiece(player);
@@ -280,17 +296,15 @@ public class Board {
 	/**
 	 * Returns all of the full rows in the board.
 	 */
-	public synchronized List<Integer> getFullRows() {
+/*	public synchronized List<Integer> getFullRows() {
 		List<Integer> fullRows = new LinkedList<Integer>();
-		Set<Integer> rowNumbers = boardRows.keySet();
-		for (Integer i : rowNumbers) {
-			Square[] nextRow = boardRows.get(i);
-			if (isFullRow(nextRow)) {
+		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+			if (isFullRow(i)) {
 				fullRows.add(i);
 			}
 		}
 		return fullRows;
-	}
+	} */
 	
 	/**
 	 * Simply helper function that checks if a given row
@@ -300,7 +314,11 @@ public class Board {
 	 * to get a 'clearFullRows' or something so we can avoid
 	 * having to allocate a new list for the full row numbers.
 	 */
-	private synchronized boolean isFullRow(Square[] row) {
+	private synchronized boolean isFullRow(int rowNum) {
+		Square[] row = boardRows.get(rowNum);
+		if (row == null) {
+			return false;
+		}
 		for (int i = 0; i < row.length; i++) {
 			if (row[i] == null) {
 				return false;
@@ -314,12 +332,20 @@ public class Board {
 	 * (private utility function).
 	 */
 	private synchronized void clearRow(int rowToClear) {
-		Square[] row = boardRows.get(rowToClear);
-		if (row != null) {
-			if (isFullRow(boardRows.get(rowToClear))) {
-				boardRows.remove(rowToClear);
+		for (int i = rowToClear; i > 0; i--) {
+			Square[] above = boardRows.get(i - 1);
+			if (above != null) {
+				boardRows.put(i, above);
+			} else {
+				boardRows.remove(i);
 			}
 		}
+	/*	Square[] row = boardRows.get(rowToClear);
+		if (row != null) {
+			if (isFullRow(rowToClear)) {
+				boardRows.remove(rowToClear);
+			}
+		} */
 	}
 	
 	/**

@@ -1,17 +1,17 @@
 package pieces;
-//import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import infrastructure.BytePair;
 import infrastructure.GameUtil;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public abstract class Piece {
 	static final int DEBUG = 0;
 	public static final int NUM_SQUARES_PER_PIECE = 4;
-
-	// private Collection<Square> squares;
 	
 	// Collection is just a collection of static methods that
 	// operate on or return collections; best use something like
@@ -19,9 +19,11 @@ public abstract class Piece {
 	// since it resizes; leave without access modifier so subclasses
 	// have access
 	List<Square> squares;
+	int orientation;
 	
 	public Piece(List<Square> squares) {
 		this.squares = new ArrayList<Square>(squares);
+		orientation = 0;
 		checkRep();
 	}
 	
@@ -31,34 +33,48 @@ public abstract class Piece {
 		for (Square square : other.squares) {
 			squares.add(new Square(square));
 		}
+		orientation = 0;
 	}
 	
 	public Piece() {
 		squares = new ArrayList<Square>();
+		orientation = 0;
 	}
 	
 	public synchronized List<Square> getSpaces() {
 		return squares;
 	}
-
-/*	public Piece(Collection<Square> squares) {
-		assert(squares.size() == NUM_SQUARES_PER_PIECE);
-		this.squares = squares;
+	
+	public synchronized Set<BytePair> getBytePairs() {
+		Set<BytePair> set = new HashSet<BytePair>(); 
+		for (Square s : squares) {
+			byte x = (byte) s.getX();
+			byte y = (byte) s.getY();
+			set.add(new BytePair(x, y));
+		}
+		return set;
 	}
-
-	public Collection<Square> getSpaces() {
-		return squares;
-	} */
+	
+	public int getOrientation() {
+		return orientation;
+	}
 	
 	public synchronized boolean containsSquare(Square other) {
 		for (Square square : squares) {
-			if (other.x == square.x && other.y == square.y) {
+			if (GameUtil.modulo(other.x, GameUtil.BOARD_WIDTH) == GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)
+					&& other.y == square.y) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * Define "hitting" the bottom to mean having a square
+	 * that is at row 24 (which doesn't exist); signals
+	 * caller to put the piece back in its previous, valid
+	 * position.
+	 */
 	public synchronized boolean hasHitBottom() {
 		for (Square square : squares) {
 			if (square.y >= GameUtil.BOARD_HEIGHT) {
@@ -70,19 +86,15 @@ public abstract class Piece {
 
 	protected synchronized void moveLeft() {
 		for (Square square : squares) {
-			square.x = (square.x - 1) % GameUtil.BOARD_WIDTH;
-			if (square.x < 0) {
-				square.x += GameUtil.BOARD_WIDTH;
-			}
+		//	square.x = GameUtil.modulo(square.x - 1, GameUtil.BOARD_WIDTH);
+			square.x--;
 		}
 	}
 
 	protected synchronized void moveRight() {
 		for (Square square : squares) {
-			square.x = (square.x + 1) % GameUtil.BOARD_WIDTH;
-			if (square.x < 0) {
-				square.x += GameUtil.BOARD_WIDTH;
-			}
+		//	square.x = GameUtil.modulo(square.x + 1, GameUtil.BOARD_WIDTH);
+			square.x++;
 		}
 	}
 
@@ -97,10 +109,48 @@ public abstract class Piece {
 			square.y = square.y - 1;
 		}
 	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer("[");
+		buf.append(squares.get(0).toString());
+		for (int i = 1; i < squares.size(); i++) {
+			buf.append(", " + squares.get(i).toString());
+		}
+		buf.append("]");
+		return buf.toString();
+	}
 
 	protected abstract void rotateLeft();
 
 	protected abstract void rotateRight();
+	
+	protected void rotateLeftFixedSquareOrigin(int pivotIndex) {
+		Square pivot = squares.get(pivotIndex);
+		for (Square square : squares) {
+			int oldX = square.x - pivot.x;
+			int oldY = square.y - pivot.y;
+		//	int newX = GameUtil.modulo(-oldY, GameUtil.BOARD_WIDTH) + pivot.x;
+			int newX = -oldY + pivot.x;
+			int newY = oldX + pivot.y;
+		//	square.x = GameUtil.modulo(newX, GameUtil.BOARD_WIDTH);
+			square.x = newX;
+			square.y = newY;
+		}
+	}
+	
+	protected void rotateRightFixedSquareOrigin(int pivotIndex) {
+		Square pivot = squares.get(pivotIndex);
+		for (Square square : squares) {
+			int oldX = square.x - pivot.x;
+			int oldY = square.y - pivot.y;
+		//	int newX = GameUtil.modulo(oldY, GameUtil.BOARD_WIDTH) + pivot.x;
+			int newX = oldY + pivot.x;
+			int newY = -oldX + pivot.y;
+		//	square.x = GameUtil.modulo(newX, GameUtil.BOARD_WIDTH);
+			square.x = newX;
+			square.y = newY;
+		}
+	}
 	
 	protected void checkRep() {
 		assert(squares != null);

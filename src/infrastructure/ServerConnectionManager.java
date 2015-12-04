@@ -25,21 +25,26 @@ import java.util.concurrent.BlockingQueue;
  * between the server and the players.
  */
 public class ServerConnectionManager implements Runnable {
+	/*
+	 * The delay to send to both players simultaneously (in ms)
+	 */
+	private static final long DISPLAY_DELAY = 100;
+
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> outStates;
-	
+
 	private DataInputStream inFromP1;
 	private DataOutputStream outToP1;
 	private DataInputStream inFromP2;
 	private DataOutputStream outToP2;
-	
+
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
-																 BlockingQueue<GameState> outStates,
-																 DataInputStream inFromP1, DataOutputStream outToP1,
-																 DataInputStream inFromP2, DataOutputStream outToP2) {
+			BlockingQueue<GameState> outStates,
+			DataInputStream inFromP1, DataOutputStream outToP1,
+			DataInputStream inFromP2, DataOutputStream outToP2) {
 		this.commands = commands;
 		this.outStates = outStates;
-		
+
 		this.inFromP1 = inFromP1;
 		this.outToP1 = outToP1;
 		this.inFromP2 = inFromP2;
@@ -50,9 +55,9 @@ public class ServerConnectionManager implements Runnable {
 	public void run() {
 		new Thread(new ReadThread(inFromP1)).start();
 		new Thread(new ReadThread(inFromP2)).start();
-		new Thread(new WriteThread()).start();
+		new Thread(new WriteManager()).start();
 	}
-	
+
 	/**
 	 * The thread responsible for reading command bytes from
 	 * a player.
@@ -60,7 +65,7 @@ public class ServerConnectionManager implements Runnable {
 	public class ReadThread implements Runnable {
 		// the DataInputStream that this thread will read from
 		private DataInputStream player;
-		
+
 		/**
 		 * Constructs a new ReadThread from the specified DataInputStream
 		 * 
@@ -71,7 +76,7 @@ public class ServerConnectionManager implements Runnable {
 		public ReadThread(DataInputStream player) {
 			this.player = player;
 		}
-		
+
 		@Override
 		public void run() {
 			while (true) {
@@ -85,58 +90,73 @@ public class ServerConnectionManager implements Runnable {
 			}
 		}
 	}
-	
+
 	/** 
 	 * The thread that is responsible for writing out the board
-	 * state to both players.
+	 * state to both players to both players simultaneously AND fairly.
 	 */
-	public class WriteThread implements Runnable {
+	public class WriteManager implements Runnable {
 		@Override
 		public void run() {
 			try {
 				while (true) {
-					/*
-					 * Have to sequentially send out update, so make it
-					 * random to make it fair
-					 */
-					boolean p1First = GameUtil.rng.nextInt(2) == 0;
-					
 					GameState state = outStates.take();
 					// state.printBoard();
+
+					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
+
+					Thread p1 = new Thread(new WriteThread(outToP1, state, displayDelay));
+					Thread p2 = new Thread(new WriteThread(outToP2, state, displayDelay));
 					
-					// send out the Color[][] first
-					for (Color[] row : state.board) {
-						long msgLong = Encoder.gridRowToNetworkMessage(row);
-						
-						if (p1First) {
-							outToP1.writeLong(msgLong);
-							outToP2.writeLong(msgLong);
-						} else {
-							outToP2.writeLong(msgLong);
-							outToP1.writeLong(msgLong);
-						}
-					}
-					
-					// send out the score and isGameOver
-					int score = state.score;
-					boolean isGameOver = state.getIsGameOver();
-					if (p1First) {
-						outToP1.writeInt(score);
-						outToP1.writeBoolean(isGameOver);
-						outToP2.writeInt(score);
-						outToP2.writeBoolean(isGameOver);
-					} else {
-						outToP2.writeInt(score);
-						outToP2.writeBoolean(isGameOver);
-						outToP1.writeInt(score);
-						outToP1.writeBoolean(isGameOver);
-					}
-					
-					// System.out.println("sent board to client");
+					p1.start();
+					p2.start();
+					p1.join();
+					p2.join();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (InterruptedException e) {
+			}
+		}
+	}
+	
+	public class WriteThread implements Runnable {
+		private DataOutputStream out;
+		private GameState state;
+		private long displayDelay;
+
+		public WriteThread(DataOutputStream out, GameState state, long displayDelay) {
+			this.out = out;
+			this.state = state;
+			this.displayDelay = displayDelay;
+		}
+
+		@Override
+		public void run() {
+			try {
+				// send out the Color[][] first
+				for (Color[] row : state.getBoard()) {
+					long msgLong = Encoder.gridRowToNetworkMessage(row);
+					out.writeLong(msgLong);
+				}
+
+				// send out the score and isGameOver
+				int score = state.getScore();
+				boolean isGameOver = state.getIsGameOver();
+				out.writeInt(score);
+				out.writeBoolean(isGameOver);
+				
+				// send out player 1's then player 2's falling piece spaces
+				long p1Spaces = Encoder.encodeSpacesOfPiece(state.getSpaces(0));
+				long p2Spaces = Encoder.encodeSpacesOfPiece(state.getSpaces(1));
+				
+				out.writeLong(p1Spaces);
+				out.writeLong(p2Spaces);
+				
+				// send the delay for the gui to display the game state
+				out.writeLong(displayDelay);
+
+				// System.out.println("sent board to client");
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

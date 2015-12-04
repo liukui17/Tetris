@@ -7,6 +7,9 @@ import infrastructure.GameUtil;
 public class PieceFactory {
 	static final Random RANDOM = new Random();
 	
+	/**
+	 * Generates a random new piece for the given player.
+	 */
 	public static Piece generateNewPiece(int player) {
 		int piece = RANDOM.nextInt(7);
 		switch (piece) {

@@ -21,6 +21,7 @@ public class GameServer {
 			while (true) {
 				Socket player1 = server.accept();
 				System.out.println("Player 1 connected");
+				
 				Socket player2 = server.accept();
 				System.out.println("Player 2 connected");
 				

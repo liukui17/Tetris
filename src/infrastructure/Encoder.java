@@ -1,11 +1,18 @@
 package infrastructure;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
+
+import pieces.Piece;
+import pieces.Square;
 
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
-	public static final int MASK = (1 << BITS_PER_COLOR) - 1; // 00000111
-	
+	public static final int MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
+	public static final int BYTE = 8;
+	public static final int BYTE_MASK = (1 << BYTE) - 1;  // 00..11111111
+
 	public static int colorToInt(Color color) {
 		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
 			if (GameUtil.PIECE_COLORS[i].equals(color)) {
@@ -14,7 +21,7 @@ public class Encoder {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Converts a row of colors to the bit encoding that will be sent
 	 * over the network.
@@ -26,7 +33,7 @@ public class Encoder {
 	 */
 	public static long gridRowToNetworkMessage(Color[] row) {
 		long networkFormat = 0;
-		
+
 		// empty row
 		if (row == null) {
 			for (int i = 0; i < GameUtil.BOARD_WIDTH; i++) {
@@ -43,10 +50,10 @@ public class Encoder {
 			}
 			networkFormat += colorToInt(row[row.length - 1]);
 		}
-		
+
 		return networkFormat;
 	}
-	
+
 	/**
 	 * Modifies a row of colors to have the colors specified by the bits
 	 * in the given long (sent over the network)
@@ -90,17 +97,17 @@ public class Encoder {
 		 * the actual action to be taken.
 		 */
 		byte command = (byte) (bits & 127);
-		
+
 		switch (command) {
-			case 0: gameState.tryMoveLeft(player); break;
-			case 1: gameState.tryMoveRight(player); break;
-			case 2: gameState.tryRotateLeft(player); break;
-			case 4: gameState.tryRotateRight(player); break;
-			case 8: gameState.drop(player); break;
-			default: throw new IllegalArgumentException();
+		case 0: gameState.tryMoveLeft(player); break;
+		case 1: gameState.tryMoveRight(player); break;
+		case 2: gameState.tryRotateLeft(player); break;
+		case 4: gameState.tryRotateRight(player); break;
+		case 8: gameState.drop(player); break;
+		default: throw new IllegalArgumentException();
 		}
 	}
-	
+
 	/**
 	 * Encodes the specified player's key press identified by the specified int
 	 * to a byte and returns it
@@ -118,14 +125,51 @@ public class Encoder {
 		} else {
 			encoding = -128;
 		}
-		
+
 		switch (key) {
-			case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
-			case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
-			case KeyEvent.VK_UP: return (byte) (encoding | 2);
-			case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
-			case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
-			default: throw new IllegalArgumentException();
+		case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
+		case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
+		case KeyEvent.VK_UP: return (byte) (encoding | 2);
+		case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
+		case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
+		default: throw new IllegalArgumentException();
 		}
+	}
+
+	public static long encodeSpacesOfPiece(Set<BytePair> piece) {
+		/*
+		 * This will only work because
+		 *   - all pieces have 4 spaces
+		 *   - each space is described by 2 indices
+		 *   - each index can be encoded into 1 byte due to our board size
+		 *   
+		 *   4 spaces/piece * 2 indices/space * 1 byte/index = 8 bytes = 1 long
+		 */
+		long encoding = 0;
+		for (BytePair space : piece) {
+			encoding += space.getX();
+			encoding <<= BYTE;  // shift it over a byte
+
+			encoding += space.getY();
+			encoding <<= BYTE;
+		}
+		return encoding;
+	}
+
+	public static Set<BytePair> decodeSpaces(long encoding) {
+		Set<BytePair> spaces = new HashSet<BytePair>();
+
+		/*
+		 * Decode from right to left
+		 */
+		for (int i = 0; i < 8; i++) {
+			byte y = (byte) (encoding & BYTE_MASK);
+			encoding >>= BYTE;
+			byte x = (byte) (encoding & BYTE_MASK);
+			encoding >>= BYTE;
+			spaces.add(new BytePair(x, y));
+		}
+		
+		return spaces;
 	}
 }
