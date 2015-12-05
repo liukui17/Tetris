@@ -3,7 +3,9 @@ package gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -46,11 +48,11 @@ public class BoardPanel extends JPanel {
 		}
 
 		// draw the outlines of the falling pieces
-		TreeSet<Point> p1Corners = findCorners(p1Spaces); 
-		TreeSet<Point> p2Corners = findCorners(p2Spaces);
+		Set<Line> p1Sides = findSides(p1Spaces); 
+		Set<Line> p2Sides = findSides(p2Spaces);
 
-		drawPieceOutLine(g, p1Corners);
-		drawPieceOutLine(g, p2Corners);
+		drawPieceOutLine(g, Color.BLACK, p1Sides);
+		drawPieceOutLine(g, Color.PINK, p2Sides);
 	}
 
 	public void updateGrid(Color[][] grid, Set<BytePair> p1Spaces, Set<BytePair> p2Spaces) {
@@ -59,75 +61,58 @@ public class BoardPanel extends JPanel {
 		this.p2Spaces = p2Spaces;
 	}
 
-	private void drawPieceOutLine(Graphics g, TreeSet<Point> corners) {
-		/*
-		 * Has to be TreeSet to ensure the arrays are correctly aligned with each
-		 * other since it's sorted and thus maintains a consistent ordering
-		 */
-		int nPoints = corners.size();
-		int[] xCoordinates = new int[nPoints];
-		int[] yCoordinates = new int[nPoints];
-
-		int i = 0;
-		for (Point c : corners) {
-			xCoordinates[i] = (int) c.getX();
-			yCoordinates[i] = (int) c.getY();
-			i++;
-		}
-
-		g.setColor(Color.PINK);
-		g.drawPolygon(xCoordinates, yCoordinates, nPoints);
-	}
-
-	private static void addOnlyOddAmount(Point p, Set<Point> s) {
-		/*
-		 * s returns false if p is already in s, so when we add p, we *would*
-		 * have an even amount of p in the set if duplicates were allowed, so
-		 * we remove p to make it so the set abstractly contains only odd
-		 * amounts.
-		 */
-		if (!s.add(p)) {
-			s.remove(p);
+	private void drawPieceOutLine(Graphics g, Color color, Set<Line> sides) {
+		g.setColor(color);
+		
+		for (Line l : sides) {
+			Point start = l.getStart();
+			Point end = l.getEnd();
+			
+			int startX = (int) start.getX();
+			int startY = (int) start.getY();
+			int endX = (int) end.getX();
+			int endY = (int) end.getY();
+			
+			g.drawLine(startX, startY, endX, endY);
 		}
 	}
 
-	private static TreeSet<Point> findCorners(Set<BytePair> spaces) {
-		TreeSet<Point> corners = new TreeSet<Point>(new Comparator<Point>() {
-			@Override
-			public int compare(Point a, Point b) {
-				if (a.x > b.x) {
-					return 1;
-				} if (a.x < b.x) {
-					return -1;
-				} else {
-					if (a.y > b.y) {
-						return 1;
-					} else if (a.y < b.y) {
-						return -1;
-					} else {
-						return 0;
-					}
-				}
-			}
-		});
+	private static Set<Line> findSides(Set<BytePair> spaces) {
+		Map<Line, Integer> sideCounts = new HashMap<Line, Integer>();
 
 		for (BytePair p : spaces) {
-			int x = p.getX() * CELL_LENGTH;
+			int x = GameUtil.modulo(p.getX(), GameUtil.BOARD_WIDTH) * CELL_LENGTH;
 			int y = p.getY() * CELL_LENGTH;
 			
 			Point upperLeft = new Point(x, y);
-			addOnlyOddAmount(upperLeft, corners);
-
 			Point upperRight = new Point(x + CELL_LENGTH, y);
-			addOnlyOddAmount(upperRight, corners);
-
 			Point lowerLeft = new Point(x, y + CELL_LENGTH);
-			addOnlyOddAmount(lowerLeft, corners);
-
 			Point lowerRight = new Point(x + CELL_LENGTH, y + CELL_LENGTH);
-			addOnlyOddAmount(lowerRight, corners);
+			
+			Set<Line> pieceSides = new HashSet<Line>();
+			pieceSides.add(new Line(upperLeft, upperRight));
+			pieceSides.add(new Line(lowerLeft, lowerRight));
+			pieceSides.add(new Line(upperLeft, lowerLeft));
+			pieceSides.add(new Line(upperRight, lowerRight));
+			
+			assert pieceSides.size() == 4;
+			
+			for (Line l : pieceSides) {
+				if (sideCounts.containsKey(l)) {
+					sideCounts.put(l, sideCounts.get(l) + 1);
+				} else {
+					sideCounts.put(l, 1);
+				}
+			}
 		}
-
-		return corners;
+		
+		Set<Line> sides = new HashSet<Line>();
+		for (Line l : sideCounts.keySet()) {
+			if (sideCounts.get(l) == 1) {
+				sides.add(l);
+			}
+		}
+		
+		return sides;
 	}
 }

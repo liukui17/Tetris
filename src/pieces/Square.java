@@ -1,6 +1,7 @@
 package pieces;
 import java.awt.Color;
 
+import infrastructure.BytePair;
 import infrastructure.GameUtil;
 
 public class Square {
@@ -37,6 +38,15 @@ public class Square {
 	
 	public Color getColor() {
 		return color;
+	}
+	
+	/**
+	 * Returns a BytePair containing this Square's coordinates.
+	 * 
+	 * @return a BytePair containing this Square's coordinates
+	 */
+	public BytePair getBytePair() {
+		return new BytePair((byte) getX(), (byte) getY());
 	}
 	
 	public String toString() {

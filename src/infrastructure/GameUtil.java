@@ -8,7 +8,7 @@ public class GameUtil {
 	public static final int BOARD_WIDTH = NUM_PLAYERS * PLAYER_START_SECTION_WIDTH;
 	public static final int BOARD_HEIGHT = 24;
 	public static final Color[] PIECE_COLORS = {
-		Color.GRAY, // empty
+		Color.WHITE, // empty
 		Color.CYAN, // I
 		Color.BLUE, // J
 		Color.ORANGE, // L
@@ -37,21 +37,21 @@ public class GameUtil {
 	 * Can return ??? if the specified color is not known to the game
 	 */
 	public static String colorToString(Color color) {
-		if (color.equals(Color.GRAY)) {
+		if (color.equals(PIECE_COLORS[0])) {
 			return "_";
-		} else if (color.equals(Color.CYAN)) {
+		} else if (color.equals(PIECE_COLORS[1])) {
 			return "C";
-		} else if (color.equals(Color.BLUE)) {
+		} else if (color.equals(PIECE_COLORS[2])) {
 			return "B";
-		} else if (color.equals(Color.ORANGE)) {
+		} else if (color.equals(PIECE_COLORS[3])) {
 			return "O";
-		} else if (color.equals(Color.YELLOW)) {
+		} else if (color.equals(PIECE_COLORS[4])) {
 			return "Y";
-		} else if (color.equals(Color.GREEN)) {
+		} else if (color.equals(PIECE_COLORS[5])) {
 			return "G";
-		} else if (color.equals(Color.MAGENTA)) {
+		} else if (color.equals(PIECE_COLORS[6])) {
 			return "M";
-		} else if (color.equals(Color.RED)){
+		} else if (color.equals(PIECE_COLORS[7])){
 			return "R";
 		} else {
 			return "?";

@@ -6,20 +6,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
-/*
- * Justification for only one ServerConnectionManager for both players:
- * We can read commands issued by either player concurrently (which
- * we definitely want to do for efficiency), however, at the end of
- * the day, we HAVE to make changing the board state sequential with
- * locks to prevent data races.
- * 
- * So by using the blocking queue to hold commands issued by BOTH
- * players, we can keep track of the commands and have the game engine
- * sequentially dequeue commands from it, while also allowing the game
- * to read from both players concurrently by having the blocking queue
- * take care of the concurrency management/locking for us.
- */
-
 /**
  * Manages the connection, and the data sent/received through the connection
  * between the server and the players.
@@ -101,7 +87,6 @@ public class ServerConnectionManager implements Runnable {
 			try {
 				while (true) {
 					GameState state = outStates.take();
-					// state.printBoard();
 
 					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
 
@@ -154,8 +139,6 @@ public class ServerConnectionManager implements Runnable {
 				
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);
-
-				// System.out.println("sent board to client");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

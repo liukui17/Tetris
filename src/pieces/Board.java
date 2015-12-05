@@ -3,11 +3,8 @@ package pieces;
 import infrastructure.*;
 
 import java.util.Map;
-import java.util.Set;
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Board {
 	static final int DEBUG = 0;
@@ -186,7 +183,6 @@ public class Board {
 		for (Square square : playerPieces[player].squares) {
 			Square[] row = boardRows.get(square.y);
 			if (row != null) {
-			//	System.out.println("This row is null");
 				// check there isn't already another square occupying that space
 				if (row[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] != null) {
 					return false;
@@ -239,8 +235,6 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			for (Square square : playerPieces[i].squares) {
 				if (square.y == rowNum) {
-				//	assert square.x >= 0;
-				//	assert square.x < GameUtil.BOARD_WIDTH;
 					rowColors[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square.color;
 				}
 			}
@@ -259,11 +253,6 @@ public class Board {
 	 * and returns the number of rows removed.
 	 */
 	public synchronized int removeFullRows() {
-	/*	List<Integer> fullRows = getFullRows();
-		for (int i = 0; i < fullRows.size(); i++) {
-			clearRow(fullRows.get(i));
-		}
-		return fullRows.size(); */
 		int numRemoved = 0;
 		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 			if (isFullRow(i)) {
@@ -292,19 +281,6 @@ public class Board {
 		// generate new piece for the player
 		playerPieces[player] = PieceFactory.generateNewPiece(player);
 	}
-	
-	/**
-	 * Returns all of the full rows in the board.
-	 */
-/*	public synchronized List<Integer> getFullRows() {
-		List<Integer> fullRows = new LinkedList<Integer>();
-		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-			if (isFullRow(i)) {
-				fullRows.add(i);
-			}
-		}
-		return fullRows;
-	} */
 	
 	/**
 	 * Simply helper function that checks if a given row
@@ -340,12 +316,6 @@ public class Board {
 				boardRows.remove(i);
 			}
 		}
-	/*	Square[] row = boardRows.get(rowToClear);
-		if (row != null) {
-			if (isFullRow(rowToClear)) {
-				boardRows.remove(rowToClear);
-			}
-		} */
 	}
 	
 	/**

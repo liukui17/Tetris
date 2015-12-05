@@ -15,7 +15,7 @@ public abstract class Piece {
 	
 	// Collection is just a collection of static methods that
 	// operate on or return collections; best use something like
-	// arraylist for constant time access and amortized O(1) add
+	// ArrayList for constant time access and amortized O(1) add
 	// since it resizes; leave without access modifier so subclasses
 	// have access
 	List<Square> squares;
@@ -45,12 +45,15 @@ public abstract class Piece {
 		return squares;
 	}
 	
+	/**
+	 * Returns a Set of BytePairs of the coordinates of this piece's spaces.
+	 * 
+	 * @return a Set of BytePairs of the coordinates of this piece's spaces.
+	 */
 	public synchronized Set<BytePair> getBytePairs() {
 		Set<BytePair> set = new HashSet<BytePair>(); 
 		for (Square s : squares) {
-			byte x = (byte) s.getX();
-			byte y = (byte) s.getY();
-			set.add(new BytePair(x, y));
+			set.add(s.getBytePair());
 		}
 		return set;
 	}
@@ -86,14 +89,12 @@ public abstract class Piece {
 
 	protected synchronized void moveLeft() {
 		for (Square square : squares) {
-		//	square.x = GameUtil.modulo(square.x - 1, GameUtil.BOARD_WIDTH);
 			square.x--;
 		}
 	}
 
 	protected synchronized void moveRight() {
 		for (Square square : squares) {
-		//	square.x = GameUtil.modulo(square.x + 1, GameUtil.BOARD_WIDTH);
 			square.x++;
 		}
 	}

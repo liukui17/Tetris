@@ -1,7 +1,8 @@
 package infrastructure;
 
 /**
- * An ordered pairing of two bytes.
+ * An ordered pairing of two bytes. Fundamentally a Point, except that it stores
+ * bytes for its x and y values instead of ints.
  */
 public class BytePair {
 	private byte x;
@@ -32,5 +33,16 @@ public class BytePair {
 		}
 		BytePair b = (BytePair) o;
 		return x == b.x && y == b.y;
+	}
+	
+	/**
+	 * Returns a String representation of this BytePair. The format is the same
+	 * as how a point is expressed in mathematics: (x, y)
+	 * 
+	 * @return a String representation of this BytePair
+	 */
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
 	}
 }

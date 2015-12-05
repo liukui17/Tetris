@@ -83,7 +83,6 @@ public class GameTimer extends Thread {
 			gameState.tryMoveDown(1);
 
 			GameState currentState = gameState.getCurrentState();
-			// currentState.printBoard();
 
 			out.add(currentState);
 		}

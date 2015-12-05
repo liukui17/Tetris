@@ -97,8 +97,6 @@ public class GameThread implements Runnable {
 
 				// get the new game state
 				GameState updatedGameState = gameState.getCurrentState();
-				
-				// updatedGameState.printBoard();
 
 				/*
 				 * speed up the timer if we've reached the current threshold and update

@@ -2,16 +2,14 @@ package infrastructure;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
-
-import pieces.Piece;
-import pieces.Square;
 
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
 	public static final int BYTE = 8;
-	public static final int BYTE_MASK = (1 << BYTE) - 1;  // 00..11111111
+	public static final int BYTE_MASK = 255;  // 00..11111111
 
 	public static int colorToInt(Color color) {
 		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
@@ -99,12 +97,12 @@ public class Encoder {
 		byte command = (byte) (bits & 127);
 
 		switch (command) {
-		case 0: gameState.tryMoveLeft(player); break;
-		case 1: gameState.tryMoveRight(player); break;
-		case 2: gameState.tryRotateLeft(player); break;
-		case 4: gameState.tryRotateRight(player); break;
-		case 8: gameState.drop(player); break;
-		default: throw new IllegalArgumentException();
+			case 0: gameState.tryMoveLeft(player); break;
+			case 1: gameState.tryMoveRight(player); break;
+			case 2: gameState.tryRotateLeft(player); break;
+			case 4: gameState.tryMoveDown(player); break;
+			case 8: gameState.drop(player); break;
+			default: throw new IllegalArgumentException();
 		}
 	}
 
@@ -127,15 +125,25 @@ public class Encoder {
 		}
 
 		switch (key) {
-		case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
-		case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
-		case KeyEvent.VK_UP: return (byte) (encoding | 2);
-		case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
-		case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
-		default: throw new IllegalArgumentException();
+			case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
+			case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
+			case KeyEvent.VK_UP: return (byte) (encoding | 2);
+			case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
+			case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
+			default: throw new IllegalArgumentException();
 		}
 	}
-
+	
+	/**
+	 * Encodes the coordinates of the spaces of the piece described by the
+	 * specified Set of BytePairs.
+	 * 
+	 * @param piece the Set of BytePairs that contain the coordinates of its spaces
+	 * 
+	 * @requires piece != null && piece does not contain null
+	 * 
+	 * @return an encoded long of the spaces
+	 */
 	public static long encodeSpacesOfPiece(Set<BytePair> piece) {
 		/*
 		 * This will only work because
@@ -145,27 +153,42 @@ public class Encoder {
 		 *   
 		 *   4 spaces/piece * 2 indices/space * 1 byte/index = 8 bytes = 1 long
 		 */
+		
 		long encoding = 0;
-		for (BytePair space : piece) {
-			encoding += space.getX();
-			encoding <<= BYTE;  // shift it over a byte
-
-			encoding += space.getY();
+		
+		Iterator<BytePair> itr = piece.iterator();
+		
+		BytePair s = itr.next();
+		encoding += s.getY();
+		encoding <<= BYTE;  // shift it over a byte
+		encoding += s.getX();
+		
+		for (int i = 0; i < piece.size() - 1; i++) {
+			BytePair space = itr.next();
+			
 			encoding <<= BYTE;
+			encoding += space.getY();
+			encoding <<= BYTE;  // shift it over a byte
+			encoding += space.getX();
 		}
 		return encoding;
 	}
 
+	/**
+	 * Decodes the specified encoding into a Set of BytePairs representing the
+	 * spaces of a piece and returns it.
+	 * 
+	 * @param encoding the long that is to be decoded
+	 * 
+	 * @return a Set of BytePairs containing the decoded spaces
+	 */
 	public static Set<BytePair> decodeSpaces(long encoding) {
 		Set<BytePair> spaces = new HashSet<BytePair>();
 
-		/*
-		 * Decode from right to left
-		 */
-		for (int i = 0; i < 8; i++) {
-			byte y = (byte) (encoding & BYTE_MASK);
-			encoding >>= BYTE;
+		for (int i = 0; i < 4; i++) {
 			byte x = (byte) (encoding & BYTE_MASK);
+			encoding >>= BYTE;
+			byte y = (byte) (encoding & BYTE_MASK);
 			encoding >>= BYTE;
 			spaces.add(new BytePair(x, y));
 		}
