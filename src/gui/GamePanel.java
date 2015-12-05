@@ -7,9 +7,12 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -27,8 +30,17 @@ public class GamePanel extends JPanel implements Runnable {
 
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> gameState; 
+	
+	private MusicPlayer musicPlayer; 
 
 	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne) {
+		try {
+			musicPlayer = new MusicPlayer();
+			musicPlayer.start();
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
+			e1.printStackTrace();
+		}
+		
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
 
