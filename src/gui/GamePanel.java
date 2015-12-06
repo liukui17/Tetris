@@ -39,7 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = new LinkedBlockingQueue<GameState>();
 		
 		this.musicPlayer = musicPlayer;
-		musicPlayer.start();
+		musicPlayer.playBGM();
 
 		Thread managerThread = new Thread(new ClientConnectionManager(commands, gameState, in, out));
 		managerThread.start();

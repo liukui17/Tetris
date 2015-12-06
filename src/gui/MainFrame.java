@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
 		helpPanel = new HelpPanel();
 		//gamePanel = new GamePanel();
 		optionsPanel = new OptionsPanel(musicPlayer);
-		waitingPanel = new WaitingPanel();
+		waitingPanel = new WaitingPanel(musicPlayer);
 
 
 		// Add Swing components to content pane
@@ -93,6 +93,7 @@ public class MainFrame extends JFrame {
 								boolean isPlayerOne = in.readBoolean();
 
 								c.remove(waitingPanel);
+								musicPlayer.stop();
 
 								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer);
 								Thread gameThread = new Thread(gamePanel);

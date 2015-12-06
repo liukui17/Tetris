@@ -13,21 +13,17 @@ public class MusicPlayer {
 	private AudioInputStream audioIn;
 
 	private static final String BGM = "bgm.wav";
+	private static final String CRICKETS = "crickets.wav";
 
 	public MusicPlayer() {
 		try {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			URL url = classLoader.getResource(BGM);
-			File soundFile = new File(url.getPath());
-			audioIn = AudioSystem.getAudioInputStream(soundFile);
-
-			// Get a sound clip
-			clip = AudioSystem.getClip();
-			clip.open(audioIn);
+			openClip(BGM);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+
 
 	/*
 	 * Starts the music. Loops indefinitely
@@ -57,13 +53,38 @@ public class MusicPlayer {
 		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 
 		float newValue = volume.getValue() + change;
-		
+
 		if (newValue < volume.getMaximum() && newValue > volume.getMinimum()) {
 			volume.setValue(newValue);
 		}
 	}
-	
+
 	public boolean isPlaying() {
 		return clip.isActive();
+	}
+	
+	public void playCrickets() {
+		openClip(CRICKETS);
+		start();
+	}
+	
+	public void playBGM() {
+		openClip(BGM);
+		start();
+	}
+	
+	private void openClip(String name) {
+		try {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			URL url = classLoader.getResource(name);
+			File soundFile = new File(url.getPath());
+			audioIn = AudioSystem.getAudioInputStream(soundFile);
+			
+			clip = AudioSystem.getClip();
+			clip.open(audioIn);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
