@@ -96,7 +96,7 @@ public class MainFrame extends JFrame {
 
 								c.remove(waitingPanel);
 
-								gamePanel = new GamePanel(in, out, isPlayerOne);
+								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer);
 								Thread gameThread = new Thread(gamePanel);
 //								gameThread.start();
 								c.add(gamePanel, BorderLayout.CENTER);

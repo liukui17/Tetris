@@ -26,7 +26,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(20, 20, 20, 20);
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 0;
 		add(title, gbc);
 

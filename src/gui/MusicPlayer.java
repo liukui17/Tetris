@@ -53,7 +53,10 @@ public class MusicPlayer {
 	public void adjustVolume(Float change) {
 		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 
-		float currentValue = volume.getValue();
-		volume.setValue(currentValue + change);
+		float newValue = volume.getValue() + change;
+		
+		if (newValue < volume.getMaximum() && newValue > volume.getMinimum()) {
+			volume.setValue(newValue);
+		}
 	}
 }

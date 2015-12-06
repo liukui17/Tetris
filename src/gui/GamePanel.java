@@ -29,12 +29,17 @@ public class GamePanel extends JPanel implements Runnable {
 	private EndPanel endPanel;
 
 	private BlockingQueue<Byte> commands;
-	private BlockingQueue<GameState> gameState; 
+	private BlockingQueue<GameState> gameState;
+	
+	private MusicPlayer musicPlayer;
 
-	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne) {
+	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne, MusicPlayer musicPlayer) {
 
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
+		
+		this.musicPlayer = musicPlayer;
+		musicPlayer.start();
 
 		Thread managerThread = new Thread(new ClientConnectionManager(commands, gameState, in, out));
 		managerThread.start();
