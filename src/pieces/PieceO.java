@@ -17,10 +17,10 @@ public class PieceO extends Piece {
 	// is fixed under rotations)
 	public PieceO(int startRow, int startCol) {
 		super();
-		squares.add(new Square(startRow, startCol, GameUtil.PIECE_COLORS[4]));
-		squares.add(new Square(startRow + 1, startCol, GameUtil.PIECE_COLORS[4]));
-		squares.add(new Square(startRow, startCol + 1, GameUtil.PIECE_COLORS[4]));
-		squares.add(new Square(startRow + 1, startCol + 1, GameUtil.PIECE_COLORS[4]));
+		squares.add(new Square(startCol, startRow, GameUtil.PIECE_COLORS[4]));
+		squares.add(new Square(startCol, startRow + 1, GameUtil.PIECE_COLORS[4]));
+		squares.add(new Square(startCol + 1, startRow, GameUtil.PIECE_COLORS[4]));
+		squares.add(new Square(startCol + 1, startRow + 1, GameUtil.PIECE_COLORS[4]));
 	}
 	
 	public void rotateLeft() {}

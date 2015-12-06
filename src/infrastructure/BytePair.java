@@ -9,7 +9,7 @@ public class BytePair {
 	private byte y;
 
 	public BytePair(byte x, byte y) {
-		this.x= x;
+		this.x = x;
 		this.y = y;
 	}
 

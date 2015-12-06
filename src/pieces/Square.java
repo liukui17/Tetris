@@ -15,7 +15,7 @@ public class Square {
 	// not going to ever change the color of a square
 	final Color color;
 
-	public Square(int y, int x, Color color) {
+	public Square(int x, int y, Color color) {
 		this.x = x;
 		this.y = y;
 		this.color = color;

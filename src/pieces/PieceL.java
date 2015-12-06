@@ -15,10 +15,10 @@ public class PieceL extends Piece {
 	//     [ ][x][ ]	(x indicates fixed point in rotate)
 	public PieceL(int startRow, int startCol) {
 		super();
-		squares.add(new Square(startRow + 1, startCol, GameUtil.PIECE_COLORS[3]));
-		squares.add(new Square(startRow + 1, startCol + 1, GameUtil.PIECE_COLORS[3])); // pivot (index 1)
-		squares.add(new Square(startRow + 1, startCol + 2, GameUtil.PIECE_COLORS[3]));
-		squares.add(new Square(startRow, startCol + 2, GameUtil.PIECE_COLORS[3]));
+		squares.add(new Square(startCol, startRow + 1, GameUtil.PIECE_COLORS[3]));
+		squares.add(new Square(startCol + 1, startRow + 1, GameUtil.PIECE_COLORS[3])); // pivot (index 1)
+		squares.add(new Square(startCol + 2, startRow + 1, GameUtil.PIECE_COLORS[3]));
+		squares.add(new Square(startCol + 2, startRow, GameUtil.PIECE_COLORS[3]));
 	}
 	
 	public void rotateLeft() {

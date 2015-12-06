@@ -159,17 +159,17 @@ public class Encoder {
 		Iterator<BytePair> itr = piece.iterator();
 		
 		BytePair s = itr.next();
-		encoding += s.getY();
-		encoding <<= BYTE;  // shift it over a byte
 		encoding += GameUtil.modulo(s.getX(), GameUtil.BOARD_WIDTH);
+		encoding <<= BYTE;  // shift it over a byte
+		encoding += s.getY();
 		
 		for (int i = 0; i < piece.size() - 1; i++) {
 			BytePair space = itr.next();
 			
 			encoding <<= BYTE;
-			encoding += space.getY();
-			encoding <<= BYTE;  // shift it over a byte
 			encoding += GameUtil.modulo(space.getX(), GameUtil.BOARD_WIDTH);
+			encoding <<= BYTE;  // shift it over a byte
+			encoding += space.getY();
 		}
 		return encoding;
 	}
@@ -186,9 +186,9 @@ public class Encoder {
 		Set<BytePair> spaces = new HashSet<BytePair>();
 
 		for (int i = 0; i < 4; i++) {
-			byte x = (byte) (encoding & BYTE_MASK);
-			encoding >>= BYTE;
 			byte y = (byte) (encoding & BYTE_MASK);
+			encoding >>= BYTE;
+			byte x = (byte) (encoding & BYTE_MASK);
 			encoding >>= BYTE;
 			spaces.add(new BytePair(x, y));
 		}

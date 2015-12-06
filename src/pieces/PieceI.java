@@ -14,10 +14,10 @@ public class PieceI extends Piece {
 	//     [][][][]
 	public PieceI(int startRow, int startCol) {
 		super();
-		squares.add(new Square(startRow, startCol, GameUtil.PIECE_COLORS[1]));
-		squares.add(new Square(startRow, startCol + 1, GameUtil.PIECE_COLORS[1]));
-		squares.add(new Square(startRow, startCol + 2, GameUtil.PIECE_COLORS[1]));
-		squares.add(new Square(startRow, startCol + 3, GameUtil.PIECE_COLORS[1]));
+		squares.add(new Square(startCol, startRow, GameUtil.PIECE_COLORS[1]));
+		squares.add(new Square(startCol + 1, startRow, GameUtil.PIECE_COLORS[1]));
+		squares.add(new Square(startCol + 2, startRow, GameUtil.PIECE_COLORS[1]));
+		squares.add(new Square(startCol + 3, startRow, GameUtil.PIECE_COLORS[1]));
 	}
 	
 	public void rotateLeft() {
