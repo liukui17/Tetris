@@ -10,8 +10,6 @@ import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-// Controller
-// All communication to/from components goes through here
 public class MainFrame extends JFrame {
 	private static final int WIDTH = 680;
 	private static final int HEIGHT = 780;

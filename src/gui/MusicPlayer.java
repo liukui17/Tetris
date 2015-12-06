@@ -62,4 +62,8 @@ public class MusicPlayer {
 			volume.setValue(newValue);
 		}
 	}
+	
+	public boolean isPlaying() {
+		return clip.isActive();
+	}
 }

@@ -73,7 +73,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		musicMinus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
-				musicPlayer.adjustVolume(-2.0f);
+				musicPlayer.adjustVolume(-4.0f);
 			}
 		});
 		option1.add(musicMinus);
@@ -86,7 +86,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		musicPlus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
-				musicPlayer.adjustVolume(2.0f);
+				musicPlayer.adjustVolume(4.0f);
 			}
 		});
 		option1.add(musicPlus);

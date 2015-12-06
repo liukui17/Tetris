@@ -70,6 +70,18 @@ public class GamePanel extends JPanel implements Runnable {
 			public boolean dispatchKeyEvent(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED) {
 					int key = e.getKeyCode();
+					
+					/*
+					 * Toggles playing music
+					 */
+					if (key == KeyEvent.VK_M) {
+						if (musicPlayer.isPlaying()) {
+							musicPlayer.stop();
+						} else {
+							musicPlayer.start();
+						}
+						return false;
+					}
 
 					byte msg = Encoder.encodeKeyPress(key, isPlayerOne);
 					commands.add(msg);
