@@ -13,46 +13,55 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		this.musicPlayer = musicPlayer;
 
 		// Set Layout Manager
-		GridBagLayout layout = new GridBagLayout();
-		setLayout(layout);
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weightx = 1;
-		gbc.weighty = 1;
+		setLayout(new BorderLayout());
 
 		// Create & Add Swing Components
 		JLabel title = new JLabel("Options");
 		title.setFont(new Font("Dialog", Font.BOLD, 50));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
+		add(title, BorderLayout.NORTH);
+		
+		JButton back = new JButton("Back");
+		back.addActionListener(this);
+		add(back, BorderLayout.SOUTH);
+
+		JPanel options = new JPanel();
+		options.setBackground(Color.LIGHT_GRAY);
+		add(options, BorderLayout.CENTER);
+		
+		// Set Layout Manager
+		GridBagLayout layout = new GridBagLayout();
+		options.setLayout(layout);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(20, 20, 20, 20);
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		add(title, gbc);
 
 		// Add the labels
 		JLabel musicLabel = new JLabel("Music");
 		gbc.gridx = 0;
-		gbc.gridy = 1;
-		add(musicLabel, gbc);
+		gbc.gridy = 0;
+		options.add(musicLabel, gbc);
 
 		JLabel label2 = new JLabel("Option 2");
 		gbc.gridx = 0;
-		gbc.gridy = 2;
-		add(label2, gbc);
+		gbc.gridy = 1;
+		options.add(label2, gbc);
 
 		JLabel label3 = new JLabel("Option 3");
 		gbc.gridx = 0;
-		gbc.gridy = 3;
-		add(label3, gbc);
+		gbc.gridy = 2;
+		options.add(label3, gbc);
 
 		// Add the buttons
 		//gbc.fill = GridBagConstraints.HORIZONTAL;
 		JButton musicStop = new JButton("Stop");
 		//musicStop.setFont(new Font("Dialog", Font.BOLD, 30));
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		add(musicStop, gbc);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		options.add(musicStop, gbc);
 		musicStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.stop();
@@ -61,9 +70,9 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		
 		JButton musicMinus = new JButton("-");
 		musicMinus.setFont(new Font("Dialog", Font.BOLD, 30));
-		gbc.gridx = 3;
-		gbc.gridy = 1;
-		add(musicMinus, gbc);
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		options.add(musicMinus, gbc);
 		musicMinus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
@@ -73,9 +82,9 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		
 		JButton musicPlus = new JButton("+");
 		musicPlus.setFont(new Font("Dialog", Font.BOLD, 30));
-		gbc.gridx = 4;
-		gbc.gridy = 1;
-		add(musicPlus, gbc);
+		gbc.gridx = 3;
+		gbc.gridy = 0;
+		options.add(musicPlus, gbc);
 		musicPlus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
@@ -90,25 +99,19 @@ public class OptionsPanel extends JPanel implements ActionListener {
 //		gbc.gridy = 1;
 //		add(leftKey, gbc);
 
-		JLabel rightKey = new JLabel("");
-		Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();
-		rightKey.setIcon(new ImageIcon(imgRightKey));
-		gbc.gridx = 2;
-		gbc.gridy = 2;
-		add(rightKey, gbc);
-
-		JLabel upKey = new JLabel("");
-		Image imgUpKey = new ImageIcon(this.getClass().getResource("/img/arrow-up.png")).getImage();
-		upKey.setIcon(new ImageIcon(imgUpKey));
-		gbc.gridx = 2;
-		gbc.gridy = 3;
-		add(upKey, gbc);
-
-		JButton back = new JButton("Back");
-		back.addActionListener(this);
-		gbc.gridx = 1;
-		gbc.gridy = 5;
-		add(back, gbc);
+//		JLabel rightKey = new JLabel("");
+//		Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();
+//		rightKey.setIcon(new ImageIcon(imgRightKey));
+//		gbc.gridx = 2;
+//		gbc.gridy = 2;
+//		add(rightKey, gbc);
+//
+//		JLabel upKey = new JLabel("");
+//		Image imgUpKey = new ImageIcon(this.getClass().getResource("/img/arrow-up.png")).getImage();
+//		upKey.setIcon(new ImageIcon(imgUpKey));
+//		gbc.gridx = 2;
+//		gbc.gridy = 3;
+//		add(upKey, gbc);
 
 		setBackground(Color.LIGHT_GRAY);
 	}

@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.File;
+import java.net.URL;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -15,7 +16,9 @@ public class MusicPlayer {
 
 	public MusicPlayer() {
 		try {
-			File soundFile = new File(BGM);
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			URL url = classLoader.getResource(BGM);
+			File soundFile = new File(url.getPath());
 			audioIn = AudioSystem.getAudioInputStream(soundFile);
 
 			// Get a sound clip
