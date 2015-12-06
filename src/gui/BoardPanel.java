@@ -72,6 +72,18 @@ public class BoardPanel extends JPanel {
 		this.p1Spaces = p1Spaces;
 		this.p2Spaces = p2Spaces;
 	}
+	
+	private static boolean occupied(Set<BytePair> bottom, Color[][] board) {
+		for (BytePair space : bottom) {
+			int x = GameUtil.modulo((int) space.getX(), GameUtil.BOARD_WIDTH);
+			int y = (int) space.getY();
+			
+			if (!board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private static Set<BytePair> findGhostLocation(Set<BytePair> spaces, Color[][] board) {
 		Set<BytePair> rest = new HashSet<BytePair>();
@@ -81,6 +93,10 @@ public class BoardPanel extends JPanel {
 		List<BytePair> newRest = new LinkedList<BytePair>(rest);
 		
 		movePieceDown(newBottom, newRest);
+
+		if (occupied(bottom, board)) {
+			movePieceUp(newBottom, newRest);
+		}
 		
 		while (canMoveDown(newBottom, board)) {
 			movePieceDown(newBottom, newRest);
@@ -159,6 +175,18 @@ public class BoardPanel extends JPanel {
 		for (int i = 0; i < rest.size(); i++) {
 			BytePair space = rest.get(i);
 			rest.set(i, new BytePair(space.getX(), (byte) (space.getY() + 1)));
+		}
+	}
+	
+	private static void movePieceUp(List<BytePair> bottom, List<BytePair> rest) {
+		for (int i = 0; i < bottom.size(); i++) {
+			BytePair space = bottom.get(i);
+			bottom.set(i, new BytePair(space.getX(), (byte) (space.getY() - 1)));
+		}
+
+		for (int i = 0; i < rest.size(); i++) {
+			BytePair space = rest.get(i);
+			rest.set(i, new BytePair(space.getX(), (byte) (space.getY() - 1)));
 		}
 	}
 
