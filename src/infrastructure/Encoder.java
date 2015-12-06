@@ -161,7 +161,7 @@ public class Encoder {
 		BytePair s = itr.next();
 		encoding += s.getY();
 		encoding <<= BYTE;  // shift it over a byte
-		encoding += s.getX();
+		encoding += GameUtil.modulo(s.getX(), GameUtil.BOARD_WIDTH);
 		
 		for (int i = 0; i < piece.size() - 1; i++) {
 			BytePair space = itr.next();
@@ -169,7 +169,7 @@ public class Encoder {
 			encoding <<= BYTE;
 			encoding += space.getY();
 			encoding <<= BYTE;  // shift it over a byte
-			encoding += space.getX();
+			encoding += GameUtil.modulo(space.getX(), GameUtil.BOARD_WIDTH);
 		}
 		return encoding;
 	}
