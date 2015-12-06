@@ -21,6 +21,8 @@ public class MainFrame extends JFrame {
 	private GamePanel gamePanel;
 	private OptionsPanel optionsPanel;
 	private WaitingPanel waitingPanel;
+	
+	private MusicPlayer musicPlayer;
 
 	public MainFrame(String title, String hostName, int portNum) {		
 		super(title);
@@ -29,6 +31,8 @@ public class MainFrame extends JFrame {
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setVisible(true);
+		
+		musicPlayer = new MusicPlayer();
 
 		// Set layout manager
 		setLayout(new BorderLayout());
@@ -37,7 +41,7 @@ public class MainFrame extends JFrame {
 		menuPanel = new MenuPanel();
 		helpPanel = new HelpPanel();
 		//gamePanel = new GamePanel();
-		optionsPanel = new OptionsPanel();
+		optionsPanel = new OptionsPanel(musicPlayer);
 		waitingPanel = new WaitingPanel();
 
 

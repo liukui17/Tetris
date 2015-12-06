@@ -1,31 +1,59 @@
 package gui;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.FloatControl;
 
 public class MusicPlayer {
-	Clip clip;
-	AudioInputStream audioIn;
-	
-	public MusicPlayer() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-        File soundFile = new File("bgm.wav");
-		audioIn = AudioSystem.getAudioInputStream(soundFile);
-		 
-        // Get a sound clip
-        clip = AudioSystem.getClip();
+	private Clip clip;
+	private AudioInputStream audioIn;
+
+	private static final String BGM = "bgm.wav";
+
+	public MusicPlayer() {
+		try {
+			File soundFile = new File(BGM);
+			audioIn = AudioSystem.getAudioInputStream(soundFile);
+
+			// Get a sound clip
+			clip = AudioSystem.getClip();
+			clip.open(audioIn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	/*
 	 * Starts the music. Loops indefinitely
 	 */
-	public void start() throws LineUnavailableException, IOException {
-        clip.open(audioIn);
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
+	public void start() {
+		try {
+			if (!clip.isActive()) {
+				clip.loop(Clip.LOOP_CONTINUOUSLY);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * Stops the music
+	 */
+	public void stop() {
+		clip.stop();
+	}
+
+	/*
+	 * Adjusts the volume of the clip
+	 * Positive float to increase, negative float to decrease
+	 */
+	public void adjustVolume(Float change) {
+		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+
+		float currentValue = volume.getValue();
+		volume.setValue(currentValue + change);
 	}
 }

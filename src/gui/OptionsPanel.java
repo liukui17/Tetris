@@ -6,8 +6,11 @@ import javax.swing.*;
 
 public class OptionsPanel extends JPanel implements ActionListener {
 	private ButtonListener buttonListener;
+	private MusicPlayer musicPlayer;
 
-	public OptionsPanel() {
+	public OptionsPanel(MusicPlayer musicPlayer) {
+		
+		this.musicPlayer = musicPlayer;
 
 		// Set Layout Manager
 		GridBagLayout layout = new GridBagLayout();
@@ -27,10 +30,11 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		gbc.gridy = 0;
 		add(title, gbc);
 
-		JLabel label1 = new JLabel("Option 1");
+		// Add the labels
+		JLabel musicLabel = new JLabel("Music");
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		add(label1, gbc);
+		add(musicLabel, gbc);
 
 		JLabel label2 = new JLabel("Option 2");
 		gbc.gridx = 0;
@@ -42,12 +46,49 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		gbc.gridy = 3;
 		add(label3, gbc);
 
-		JLabel leftKey = new JLabel("");
-		Image imgLeftKey = new ImageIcon(this.getClass().getResource("/img/arrow-left.png")).getImage();
-		leftKey.setIcon(new ImageIcon(imgLeftKey));
+		// Add the buttons
+		//gbc.fill = GridBagConstraints.HORIZONTAL;
+		JButton musicStop = new JButton("Stop");
+		//musicStop.setFont(new Font("Dialog", Font.BOLD, 30));
 		gbc.gridx = 2;
 		gbc.gridy = 1;
-		add(leftKey, gbc);
+		add(musicStop, gbc);
+		musicStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				musicPlayer.stop();
+			}
+		});
+		
+		JButton musicMinus = new JButton("-");
+		musicMinus.setFont(new Font("Dialog", Font.BOLD, 30));
+		gbc.gridx = 3;
+		gbc.gridy = 1;
+		add(musicMinus, gbc);
+		musicMinus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				musicPlayer.start();
+				musicPlayer.adjustVolume(-2.0f);
+			}
+		});
+		
+		JButton musicPlus = new JButton("+");
+		musicPlus.setFont(new Font("Dialog", Font.BOLD, 30));
+		gbc.gridx = 4;
+		gbc.gridy = 1;
+		add(musicPlus, gbc);
+		musicPlus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				musicPlayer.start();
+				musicPlayer.adjustVolume(2.0f);
+			}
+		});
+		
+//		JLabel leftKey = new JLabel("");
+//		Image imgLeftKey = new ImageIcon(this.getClass().getResource("/img/arrow-left.png")).getImage();
+//		leftKey.setIcon(new ImageIcon(imgLeftKey));
+//		gbc.gridx = 2;
+//		gbc.gridy = 1;
+//		add(leftKey, gbc);
 
 		JLabel rightKey = new JLabel("");
 		Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();

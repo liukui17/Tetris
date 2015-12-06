@@ -23,24 +23,16 @@ import infrastructure.GameState;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private BoardPanel boardPanel;
 	private ScorePanel scorePanel;
 	private EndPanel endPanel;
 
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> gameState; 
-	
-	private MusicPlayer musicPlayer; 
 
 	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne) {
-		try {
-			musicPlayer = new MusicPlayer();
-			musicPlayer.start();
-		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
-			e1.printStackTrace();
-		}
-		
+
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
 
@@ -64,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// Score Panel
 		scorePanel = new ScorePanel();
 		add(scorePanel);
-		
+
 		endPanel = new EndPanel();
 
 		// Keyboard Dispatcher
@@ -92,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+
 			// Check if game over
 			if (state.getIsGameOver()) {
 				removeAll();
