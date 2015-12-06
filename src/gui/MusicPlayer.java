@@ -17,6 +17,7 @@ public class MusicPlayer {
 
 	public MusicPlayer() {
 		try {
+			// Opens the default clip: BGM
 			openClip(BGM);
 		} catch (Exception e) {
 			e.printStackTrace();

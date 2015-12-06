@@ -94,11 +94,9 @@ public class MainFrame extends JFrame {
 								boolean isPlayerOne = in.readBoolean();
 
 								c.remove(waitingPanel);
-								//musicPlayer.stop();
 
 								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer, endPanel);
 								Thread gameThread = new Thread(gamePanel);
-//								gameThread.start();
 								c.add(gamePanel, BorderLayout.CENTER);
 								gameThread.start();
 								revalidate();
@@ -124,11 +122,11 @@ public class MainFrame extends JFrame {
 			public void buttonClicked(String s) {
 				if (s.equals("Back")) {
 					c.add(menuPanel, BorderLayout.CENTER);
+					c.remove(helpPanel);
+					revalidate();
+					repaint();
 				}
 
-				c.remove(helpPanel);
-				revalidate();
-				repaint();
 			}
 		});
 
@@ -136,11 +134,11 @@ public class MainFrame extends JFrame {
 			public void buttonClicked(String s) {
 				if (s.equals("Back")) {
 					c.add(menuPanel, BorderLayout.CENTER);
+					c.remove(optionsPanel);
+					revalidate();
+					repaint();
 				}
-
-				c.remove(optionsPanel);
-				revalidate();
-				repaint();
+				
 			}
 		});
 		
@@ -148,12 +146,13 @@ public class MainFrame extends JFrame {
 			public void buttonClicked(String s) {
 				if (s.equals("Back to Menu")) {
 					c.add(menuPanel, BorderLayout.CENTER);
+					c.remove(gamePanel);
+					revalidate();
+					repaint();
+					
+					musicPlayer.stop();
 				}
 
-				c.remove(gamePanel);
-				revalidate();
-				repaint();
-				musicPlayer.stop();
 			}
 		});
 

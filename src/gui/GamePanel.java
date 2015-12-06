@@ -107,9 +107,13 @@ public class GamePanel extends JPanel implements Runnable {
 			// Check if game over
 			if (state.getIsGameOver()) {
 				removeAll();
-				add(endPanel);
+				setLayout(new BorderLayout());
+				setBackground(Color.LIGHT_GRAY);
+				endPanel.setScore(state.getScore());
+				add(endPanel, BorderLayout.CENTER);
 				revalidate();
 				repaint();
+				
 				System.out.println("GAME OVER");
 				break;
 			}
@@ -117,12 +121,12 @@ public class GamePanel extends JPanel implements Runnable {
 			// Update score
 			scorePanel.updateScore(state.getScore());
 			scorePanel.revalidate();
-			scorePanel.repaint(1);
+			scorePanel.repaint();
 
 			// Update grid
 			boardPanel.updateGrid(state.getBoard(), state.getSpaces(0), state.getSpaces(1));
 			boardPanel.revalidate();
-			boardPanel.repaint(1);
+			boardPanel.repaint();
 		}
 	}
 }

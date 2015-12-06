@@ -29,6 +29,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		// Set Layout Manager
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
+		setBackground(Color.LIGHT_GRAY);
 
 		// Create & Add Swing Components
 		JLabel title = new JLabel("Options");
@@ -182,7 +183,6 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		back.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(back);
 
-		setBackground(Color.LIGHT_GRAY);
 	}
 
 	@Override
