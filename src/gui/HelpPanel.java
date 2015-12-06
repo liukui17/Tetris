@@ -107,6 +107,7 @@ public class HelpPanel extends JPanel implements ActionListener {
 		setBackground(Color.LIGHT_GRAY);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (buttonListener != null) {
 			buttonListener.buttonClicked(e.getActionCommand());

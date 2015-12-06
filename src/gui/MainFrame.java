@@ -10,8 +10,6 @@ import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-// Controller
-// All communication to/from components goes through here
 public class MainFrame extends JFrame {
 	private static final int WIDTH = 680;
 	private static final int HEIGHT = 780;
@@ -21,6 +19,7 @@ public class MainFrame extends JFrame {
 	private GamePanel gamePanel;
 	private OptionsPanel optionsPanel;
 	private WaitingPanel waitingPanel;
+	private EndPanel endPanel;
 	
 	private MusicPlayer musicPlayer;
 
@@ -42,8 +41,8 @@ public class MainFrame extends JFrame {
 		helpPanel = new HelpPanel();
 		//gamePanel = new GamePanel();
 		optionsPanel = new OptionsPanel(musicPlayer);
-		waitingPanel = new WaitingPanel();
-
+		waitingPanel = new WaitingPanel(musicPlayer);
+		endPanel = new EndPanel();
 
 		// Add Swing components to content pane
 		Container c = getContentPane();
@@ -95,8 +94,9 @@ public class MainFrame extends JFrame {
 								boolean isPlayerOne = in.readBoolean();
 
 								c.remove(waitingPanel);
+								//musicPlayer.stop();
 
-								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer);
+								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer, endPanel);
 								Thread gameThread = new Thread(gamePanel);
 //								gameThread.start();
 								c.add(gamePanel, BorderLayout.CENTER);
@@ -141,6 +141,19 @@ public class MainFrame extends JFrame {
 				c.remove(optionsPanel);
 				revalidate();
 				repaint();
+			}
+		});
+		
+		endPanel.setButtonListener(new ButtonListener() {
+			public void buttonClicked(String s) {
+				if (s.equals("Back to Menu")) {
+					c.add(menuPanel, BorderLayout.CENTER);
+				}
+
+				c.remove(gamePanel);
+				revalidate();
+				repaint();
+				musicPlayer.stop();
 			}
 		});
 
