@@ -7,25 +7,49 @@ package infrastructure;
 public class BytePair {
 	private byte x;
 	private byte y;
-	
+
 	public BytePair(byte x, byte y) {
 		this.x= x;
 		this.y = y;
 	}
-	
+
 	public byte getX() {
 		return x;
 	}
-	
+
 	public byte getY() {
 		return y;
+	}
+
+	public void setX(byte x) {
+		this.x = x;
+	}
+
+	public void setY(byte y) {
+		this.y = y;
+	}
+	
+	public void incrX() {
+		x++;
+	}
+	
+	public void incrY() {
+		y++;
+	}
+	
+	public void decrX() {
+		x--;
+	}
+	
+	public void decrY() {
+		y--;
 	}
 	
 	@Override
 	public int hashCode() {
 		return 31 * x + 19 * y;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof BytePair)) {
@@ -34,7 +58,7 @@ public class BytePair {
 		BytePair b = (BytePair) o;
 		return x == b.x && y == b.y;
 	}
-	
+
 	/**
 	 * Returns a String representation of this BytePair. The format is the same
 	 * as how a point is expressed in mathematics: (x, y)
