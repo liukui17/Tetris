@@ -19,6 +19,7 @@ public class MainFrame extends JFrame {
 	private GamePanel gamePanel;
 	private OptionsPanel optionsPanel;
 	private WaitingPanel waitingPanel;
+	private EndPanel endPanel;
 	
 	private MusicPlayer musicPlayer;
 
@@ -41,7 +42,7 @@ public class MainFrame extends JFrame {
 		//gamePanel = new GamePanel();
 		optionsPanel = new OptionsPanel(musicPlayer);
 		waitingPanel = new WaitingPanel(musicPlayer);
-
+		endPanel = new EndPanel();
 
 		// Add Swing components to content pane
 		Container c = getContentPane();
@@ -93,9 +94,9 @@ public class MainFrame extends JFrame {
 								boolean isPlayerOne = in.readBoolean();
 
 								c.remove(waitingPanel);
-								musicPlayer.stop();
+								//musicPlayer.stop();
 
-								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer);
+								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer, endPanel);
 								Thread gameThread = new Thread(gamePanel);
 //								gameThread.start();
 								c.add(gamePanel, BorderLayout.CENTER);
@@ -140,6 +141,19 @@ public class MainFrame extends JFrame {
 				c.remove(optionsPanel);
 				revalidate();
 				repaint();
+			}
+		});
+		
+		endPanel.setButtonListener(new ButtonListener() {
+			public void buttonClicked(String s) {
+				if (s.equals("Back to Menu")) {
+					c.add(menuPanel, BorderLayout.CENTER);
+				}
+
+				c.remove(gamePanel);
+				revalidate();
+				repaint();
+				musicPlayer.stop();
 			}
 		});
 

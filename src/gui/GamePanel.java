@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.KeyEventDispatcher;
@@ -33,13 +34,15 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	private MusicPlayer musicPlayer;
 
-	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne, MusicPlayer musicPlayer) {
+	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne, MusicPlayer musicPlayer, EndPanel endPanel) {
 
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
 		
 		this.musicPlayer = musicPlayer;
 		musicPlayer.playBGM();
+		
+		this.endPanel = endPanel;
 
 		Thread managerThread = new Thread(new ClientConnectionManager(commands, gameState, in, out));
 		managerThread.start();
@@ -62,7 +65,6 @@ public class GamePanel extends JPanel implements Runnable {
 		scorePanel = new ScorePanel();
 		add(scorePanel);
 
-		endPanel = new EndPanel();
 
 		// Keyboard Dispatcher
 		// Instead of printing, need to send input to network

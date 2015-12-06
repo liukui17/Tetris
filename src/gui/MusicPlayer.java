@@ -23,8 +23,6 @@ public class MusicPlayer {
 		}
 	}
 
-
-
 	/*
 	 * Starts the music. Loops indefinitely
 	 */
@@ -63,16 +61,35 @@ public class MusicPlayer {
 		return clip.isActive();
 	}
 	
+	/*
+	 * Plays crickets
+	 * If something is already playing, stops it first
+	 */
 	public void playCrickets() {
+		if (isPlaying()) {
+			stop();
+		}
+		
 		openClip(CRICKETS);
 		start();
 	}
 	
+	/*
+	 * Plays BGM
+	 * If something is already playing, stops it first
+	 */
 	public void playBGM() {
+		if (isPlaying()) {
+			stop();
+		}
+		
 		openClip(BGM);
 		start();
 	}
 	
+	/*
+	 * Tries to open the clip with the given name
+	 */
 	private void openClip(String name) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
