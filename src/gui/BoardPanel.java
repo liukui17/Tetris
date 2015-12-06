@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
-
 import javax.swing.JPanel;
 
 import infrastructure.BytePair;
@@ -27,8 +25,8 @@ public class BoardPanel extends JPanel {
 
 	public BoardPanel() {
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-		p1Spaces = new TreeSet<BytePair>();
-		p2Spaces = new TreeSet<BytePair>();
+		p1Spaces = new HashSet<BytePair>();
+		p2Spaces = new HashSet<BytePair>();
 	}
 
 	@Override
@@ -46,13 +44,19 @@ public class BoardPanel extends JPanel {
 				}
 			}
 		}
-
+		
 		// draw the outlines of the falling pieces
 		Set<Line> p1Sides = findSides(p1Spaces); 
 		Set<Line> p2Sides = findSides(p2Spaces);
 
 		drawPieceOutLine(g, Color.BLACK, p1Sides);
 		drawPieceOutLine(g, Color.PINK, p2Sides);
+		
+//		assert p1Spaces.size() > 0;
+//		assert p2Spaces.size() > 0;
+
+//		drawGhost(g, p1Spaces);
+//		drawGhost(g, p2Spaces);
 	}
 
 	public void updateGrid(Color[][] grid, Set<BytePair> p1Spaces, Set<BytePair> p2Spaces) {
@@ -61,7 +65,116 @@ public class BoardPanel extends JPanel {
 		this.p2Spaces = p2Spaces;
 	}
 
-	private void drawPieceOutLine(Graphics g, Color color, Set<Line> sides) {
+	private void drawGhost(Graphics g, Set<BytePair> spaces) {
+		Set<BytePair> rest = new HashSet<BytePair>();
+		Set<BytePair> bottom = groupSpaces(spaces, rest);
+		
+		Set<BytePair> ghostLocation = determineGhostLocation(bottom, rest, grid);
+		
+		g.setColor(Color.GRAY);
+		for (BytePair ghost : ghostLocation) {
+			int x = ghost.getX() * CELL_LENGTH;
+			int y = ghost.getY() * CELL_LENGTH;
+			
+			g.fill3DRect(x, y, CELL_LENGTH, CELL_LENGTH, true);
+		}
+	}
+	
+	/**
+	 * Categorizes the specified spaces into "bottom" spaces (the spaces closest
+	 * to the bottom of the board for each column) and non-bottom pieces. Returns
+	 * the non-bottom spaces through the specified output parameter rest and
+	 * returns the "bottom" spaces through the regular return value.
+	 * 
+	 * @param spaces the spaces to categorize
+	 * @param rest the OUTPUT PARAMETER of the non-bottom spaces
+	 * 
+	 * @requires spaces != null && rest != null
+	 * 
+	 * @return the Set of bottom spaces
+	 */
+	private static Set<BytePair> groupSpaces(Set<BytePair> spaces, Set<BytePair> rest) {
+		Map<Byte, BytePair> tempBottom = new HashMap<Byte, BytePair>();
+		
+		for (BytePair s : spaces) {
+			byte x = s.getX();
+			byte y = s.getY();
+			
+			if (tempBottom.containsKey(x)) {
+				BytePair spaceInMap = tempBottom.get(x);
+				
+				/*
+				 * The new space is lower than the current one, so replace it and put
+				 * the current bottom space into rest
+				 */
+				if (spaceInMap.getY() > y) {
+					BytePair oldSpace = tempBottom.put(x, s);
+					assert oldSpace == spaceInMap;
+					rest.add(spaceInMap);
+				} else {
+					rest.add(s);
+				}
+			} else {
+				tempBottom.put(x, s);
+			}
+		}
+		
+		Set<BytePair> bottom = new HashSet<BytePair>();
+		for (Byte key : tempBottom.keySet()) {
+			bottom.add(tempBottom.get(key));
+		}
+		
+		return bottom;
+	}
+	
+	private static Set<BytePair> determineGhostLocation(Set<BytePair> bottom,
+																							 Set<BytePair> rest,
+																							 Color[][] board) {	
+		Set<BytePair> newBottom = new HashSet<BytePair>(bottom);
+		Set<BytePair> newRest = new HashSet<BytePair>(rest);
+		while (canMoveDown(newBottom, board)) {
+			for (BytePair space : newBottom) {
+				newBottom.add(new BytePair(space.getX(), (byte) (space.getY() + 1)));
+			}
+			
+			for (BytePair space : newRest) {
+				newRest.add(new BytePair(space.getX(), (byte) (space.getY() + 1)));
+			}
+			
+			// update the coordinates of all spaces
+			newBottom = new HashSet<BytePair>();
+			newRest = new HashSet<BytePair>();
+		}
+		
+		Set<BytePair> ghostLocation = new HashSet<BytePair>();
+		
+		for (BytePair space : newBottom) {
+			ghostLocation.add(space);
+		}
+		
+		for (BytePair space : newRest) {
+			ghostLocation.add(space);
+		}
+		
+		return ghostLocation;
+	}
+	
+	private static boolean canMoveDown(Set<BytePair> bottom, Color[][] board) {
+		if (bottom.isEmpty()) {
+			return false;
+		}
+		for (BytePair space : bottom) {
+			byte x = space.getX();
+			byte y = space.getY();
+			
+			if (board[y + 1][GameUtil.modulo(x, GameUtil.BOARD_WIDTH)].equals(GameUtil.PIECE_COLORS[0])) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private static void drawPieceOutLine(Graphics g, Color color, Set<Line> sides) {
 		g.setColor(color);
 		
 		for (Line l : sides) {
