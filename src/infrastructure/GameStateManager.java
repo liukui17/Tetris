@@ -10,15 +10,21 @@ public class GameStateManager {
 	private static final int SCORE_INCREASE_RATE = 10;
 	
 	private Board board;
-	private int score;
+	private int p1Score;
+	private int p2Score;
 	
 	public GameStateManager() {
 		board = new Board();
-		score = 0;
+		p1Score = 0;
+		p2Score = 0;
 	}
 	
-	public synchronized int getScore() {
-		return score;
+	public synchronized int getScore(int player) {
+		if (player == 0) {
+			return p1Score;
+		} else {
+			return p2Score;
+		}
 	}
 	
 	/**
@@ -37,42 +43,42 @@ public class GameStateManager {
 		Set<BytePair> p1Piece = board.getPiece(0).getBytePairs();
 		Set<BytePair> p2Piece = board.getPiece(1).getBytePairs();
 		
-		return new GameState(currentBoard, p1Piece, p2Piece, score, board.isGameOver());
+		return new GameState(currentBoard, p1Piece, p2Piece, p1Score, p2Score, board.isGameOver());
 	}
 	
 	public synchronized boolean tryMoveLeft(int player) {
 		boolean moved = board.tryMoveLeft(player);
-		updateScore();
+		updateScore(player);
 		return moved;
 	}
 	
 	public synchronized boolean tryMoveRight(int player) {
 		boolean moved = board.tryMoveRight(player);
-		updateScore();
+		updateScore(player);
 		return moved;
 	}
 	
 	public synchronized boolean tryMoveDown(int player) {
 		boolean moved = board.tryMoveDown(player);
-		updateScore();
+		updateScore(player);
 		return moved;
 	}
 	
 	public synchronized boolean tryRotateLeft(int player) {
 		boolean moved = board.tryRotateLeft(player);
-		updateScore();
+		updateScore(player);
 		return moved;
 	}
 	
 	public synchronized boolean tryRotateRight(int player) {
 		boolean moved = board.tryRotateRight(player);
-		updateScore();
+		updateScore(player);
 		return moved;
 	}
 	
 	public synchronized void drop(int player) {
 		board.drop(player);
-		updateScore();
+		updateScore(player);
 	}
 	
 	public synchronized boolean isGameOver() {
@@ -83,7 +89,13 @@ public class GameStateManager {
 		return board.getPiece(player);
 	}
 	
-	private synchronized void updateScore() {
-		score += SCORE_INCREASE_RATE * board.removeFullRows();
+	private synchronized void updateScore(int player) {
+		int change = SCORE_INCREASE_RATE * board.removeFullRows();
+		
+		if (player == 0) {
+			p1Score += change;
+		} else {
+			p2Score += change;
+		}
 	}
 }

@@ -61,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// Filler
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		JLabel leftScoreLabel = new JLabel("Score");
+		JLabel leftScoreLabel = new JLabel("P1 Score");
 		leftScoreLabel.setFont(LABEL_FONT);
 		leftScoreLabel.setPreferredSize(LABEL_SIZE);
 		leftScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -100,7 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// Filler
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		JLabel rightScoreLabel = new JLabel("Score");
+		JLabel rightScoreLabel = new JLabel("P2 Score");
 		rightScoreLabel.setFont(LABEL_FONT);
 		rightScoreLabel.setPreferredSize(LABEL_SIZE);
 		rightScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -172,7 +172,8 @@ public class GamePanel extends JPanel implements Runnable {
 				removeAll();
 				setLayout(new BorderLayout());
 
-				endPanel.setScore(state.getScore());
+				endPanel.setScore(0, state.getScore(0));
+				endPanel.setScore(1, state.getScore(1));
 				add(endPanel, BorderLayout.CENTER);
 				revalidate();
 				repaint();
@@ -182,8 +183,8 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			// Update score
-			leftScore.setText(Integer.toString(state.getScore()));
-			rightScore.setText(Integer.toString(state.getScore()));
+			leftScore.setText(Integer.toString(state.getScore(0)));
+			rightScore.setText(Integer.toString(state.getScore(1)));
 
 			// Update grid
 			boardPanel.updateGrid(state.getBoard(), state.getSpaces(0), state.getSpaces(1));

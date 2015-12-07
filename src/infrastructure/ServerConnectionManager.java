@@ -125,9 +125,12 @@ public class ServerConnectionManager implements Runnable {
 				}
 
 				// send out the score and isGameOver
-				int score = state.getScore();
+				int p1Score = state.getScore(0);
+				int p2Score = state.getScore(1);
+				out.writeInt(p1Score);
+				out.writeInt(p2Score);
+				
 				boolean isGameOver = state.getIsGameOver();
-				out.writeInt(score);
 				out.writeBoolean(isGameOver);
 				
 				// send out player 1's then player 2's falling piece spaces

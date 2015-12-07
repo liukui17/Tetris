@@ -47,7 +47,8 @@ public class ClientConnectionManager implements Runnable {
 					}
 
 					// read the score and isGameOver
-					int score = inFromServer.readInt();
+					int p1Score = inFromServer.readInt();
+					int p2Score = inFromServer.readInt();
 					boolean isGameOver = inFromServer.readBoolean();
 					
 					// read the pieces of each player
@@ -55,7 +56,7 @@ public class ClientConnectionManager implements Runnable {
 					Set<BytePair> p2Spaces = Encoder.decodeSpaces(inFromServer.readLong());
 					
 					// put the board state, score and isGameOver in a GameState struct
-					GameState state = new GameState(board, p1Spaces, p2Spaces, score, isGameOver);
+					GameState state = new GameState(board, p1Spaces, p2Spaces, p1Score, p2Score, isGameOver);
 					
 					// wait for synchronization
 					long delay = inFromServer.readLong();

@@ -102,7 +102,7 @@ public class GameThread implements Runnable {
 				 * speed up the timer if we've reached the current threshold and update
 				 * the threshold
 				 */
-				if (gameState.getScore() >= threshold) {
+				if (gameState.getScore(0) + gameState.getScore(1) >= threshold) {
 					timer.speedUp();
 					threshold += THRESHOLD_INCREASE_RATE;
 				}

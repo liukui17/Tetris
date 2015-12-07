@@ -18,7 +18,8 @@ import javax.swing.border.EmptyBorder;
 public class EndPanel extends JPanel implements ActionListener {
 	private ButtonListener buttonListener;
 	
-	JLabel scoreLabel;
+	JLabel p1ScoreLabel;
+	JLabel p2ScoreLabel;
 	
 	public EndPanel() {
 
@@ -37,11 +38,17 @@ public class EndPanel extends JPanel implements ActionListener {
 		
 		add(Box.createVerticalGlue());
 		
-		scoreLabel = new JLabel("Score: 0");
-		scoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(scoreLabel);
+		p1ScoreLabel = new JLabel("P1 Score: 0");
+		p1ScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+		p1ScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		p1ScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(p1ScoreLabel);
+		
+		p2ScoreLabel = new JLabel("P2 Score: 0");
+		p2ScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+		p2ScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		p2ScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(p2ScoreLabel);
 		
 		add(Box.createVerticalGlue());
 		
@@ -67,7 +74,13 @@ public class EndPanel extends JPanel implements ActionListener {
 	/*
 	 * Sets the score
 	 */
-	public void setScore(int score) {
-		scoreLabel.setText("score: " + score);
+	public void setScore(int player, int score) {
+		if (player == 0) {
+			p1ScoreLabel.setText("P1 Score: " + score);
+		} else {
+			p2ScoreLabel.setText("P2 Score: " + score);
+		}
 	}
+	
+	
 }
