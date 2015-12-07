@@ -24,7 +24,8 @@ import infrastructure.GameState;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
-	//private static final Dimension PANEL_WIDTH = new Dimension(100, 9999);
+	private static final Dimension LABEL_SIZE = new Dimension(100, 20);
+	private static final Font LABEL_FONT = new Font("Dialog", Font.PLAIN, 20);
 
 	private BoardPanel boardPanel;
 	private EndPanel endPanel;
@@ -50,7 +51,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 		// Set Layout Manager
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		//setBackground(Color.LIGHT_GRAY);
 
 		// Create & Add Swing Components
 		// Left Panel
@@ -62,18 +62,17 @@ public class GamePanel extends JPanel implements Runnable {
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		JLabel leftScoreLabel = new JLabel("Score");
-		leftScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		leftScoreLabel.setPreferredSize(new Dimension(100, 20));
+		leftScoreLabel.setFont(LABEL_FONT);
+		leftScoreLabel.setPreferredSize(LABEL_SIZE);
 		leftScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
-		//leftScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		leftPanel.add(leftScoreLabel);
 		
 		// Filler
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		leftScore = new JLabel("0");
-		leftScore.setFont(new Font("Dialog", Font.PLAIN, 20));
-		leftScore.setPreferredSize(new Dimension(100, 20));
+		leftScore.setFont(LABEL_FONT);
+		leftScore.setPreferredSize(LABEL_SIZE);
 		leftScore.setAlignmentX(CENTER_ALIGNMENT);
 		leftPanel.add(leftScore);
 		
@@ -81,8 +80,8 @@ public class GamePanel extends JPanel implements Runnable {
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 		
 		JLabel leftNextLabel = new JLabel("Next");
-		leftNextLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		leftNextLabel.setPreferredSize(new Dimension(100, 20));
+		leftNextLabel.setFont(LABEL_FONT);
+		leftNextLabel.setPreferredSize(LABEL_SIZE);
 		leftNextLabel.setAlignmentX(CENTER_ALIGNMENT);
 		leftPanel.add(leftNextLabel);
 		
@@ -102,8 +101,8 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		JLabel rightScoreLabel = new JLabel("Score");
-		rightScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		rightScoreLabel.setPreferredSize(new Dimension(100, 20));
+		rightScoreLabel.setFont(LABEL_FONT);
+		rightScoreLabel.setPreferredSize(LABEL_SIZE);
 		rightScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
 		rightPanel.add(rightScoreLabel);
 		
@@ -111,8 +110,8 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		rightScore = new JLabel("0");
-		rightScore.setFont(new Font("Dialog", Font.PLAIN, 20));
-		rightScore.setPreferredSize(new Dimension(100, 20));
+		rightScore.setFont(LABEL_FONT);
+		rightScore.setPreferredSize(LABEL_SIZE);
 		rightScore.setAlignmentX(CENTER_ALIGNMENT);
 		rightPanel.add(rightScore);
 		
@@ -120,8 +119,8 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 		
 		JLabel rightNextLabel = new JLabel("Next");
-		rightNextLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		rightNextLabel.setPreferredSize(new Dimension(100, 20));
+		rightNextLabel.setFont(LABEL_FONT);
+		rightNextLabel.setPreferredSize(LABEL_SIZE);
 		rightNextLabel.setAlignmentX(CENTER_ALIGNMENT);
 		rightPanel.add(rightNextLabel);
 		
@@ -190,6 +189,8 @@ public class GamePanel extends JPanel implements Runnable {
 			boardPanel.updateGrid(state.getBoard(), state.getSpaces(0), state.getSpaces(1));
 			boardPanel.revalidate();
 			boardPanel.repaint();
+			
+			revalidate();
 			repaint();
 		}
 	}

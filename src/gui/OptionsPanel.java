@@ -17,10 +17,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class OptionsPanel extends JPanel implements ActionListener {
+	private static final Font LABEL_FONT = new Font("Dialog", Font.BOLD, 30);
+	private static final Font BUTTON_FONT = new Font("Dialog", Font.PLAIN, 30);
+	private static final Dimension BUTTON_DIM = new Dimension(130, 0);
+	private static final Dimension PANEL_DIM = new Dimension(0, 100);
+	
 	private ButtonListener buttonListener;
 	private MusicPlayer musicPlayer;
-
-	private static final Dimension BUTTON_DIM = new Dimension(130, 0);
 
 	public OptionsPanel(MusicPlayer musicPlayer) {
 
@@ -45,19 +48,19 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		JPanel option1 = new JPanel();
 		option1.setBackground(Color.LIGHT_GRAY);
 		option1.setLayout(new BoxLayout(option1, BoxLayout.X_AXIS));
-		option1.setPreferredSize(new Dimension(0, 100));
+		option1.setPreferredSize(PANEL_DIM);
 		add(option1);
 
 		// Add the labels
 		JLabel label1 = new JLabel("Music: ");
-		label1.setFont(new Font("Dialog", Font.PLAIN, 40));
+		label1.setFont(LABEL_FONT);
 		option1.add(label1);
 
 		option1.add(Box.createHorizontalGlue());
 
 		// Add the buttons
 		JButton musicStop = new JButton("Stop");
-		musicStop.setFont(new Font("Dialog", Font.BOLD, 30));
+		musicStop.setFont(BUTTON_FONT);
 		musicStop.setPreferredSize(BUTTON_DIM);
 		musicStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -69,7 +72,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		option1.add(Box.createRigidArea(new Dimension(10, 0)));
 
 		JButton musicMinus = new JButton("-");
-		musicMinus.setFont(new Font("Dialog", Font.BOLD, 30));
+		musicMinus.setFont(BUTTON_FONT);
 		musicMinus.setPreferredSize(BUTTON_DIM);
 		musicMinus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -82,7 +85,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		option1.add(Box.createRigidArea(new Dimension(10, 0)));
 
 		JButton musicPlus = new JButton("+");
-		musicPlus.setFont(new Font("Dialog", Font.BOLD, 30));
+		musicPlus.setFont(BUTTON_FONT);
 		musicPlus.setPreferredSize(BUTTON_DIM);
 		musicPlus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -99,19 +102,19 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		JPanel option2 = new JPanel();
 		option2.setBackground(Color.LIGHT_GRAY);
 		option2.setLayout(new BoxLayout(option2, BoxLayout.X_AXIS));
-		option2.setPreferredSize(new Dimension(0, 100));
+		option2.setPreferredSize(PANEL_DIM);
 		add(option2);
 
 		// Add the labels
 		JLabel label2 = new JLabel("Label 2: ");
-		label2.setFont(new Font("Dialog", Font.PLAIN, 40));
+		label2.setFont(LABEL_FONT);
 		option2.add(label2);
 
 		option2.add(Box.createHorizontalGlue());
 
 		// Add the buttons
 		JButton opt2but1 = new JButton("but 1");
-		opt2but1.setFont(new Font("Dialog", Font.BOLD, 30));
+		opt2but1.setFont(BUTTON_FONT);
 		opt2but1.setPreferredSize(BUTTON_DIM);
 		opt2but1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -123,7 +126,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		option2.add(Box.createRigidArea(new Dimension(10, 0)));
 		
 		JButton opt2but2 = new JButton("but 2");
-		opt2but2.setFont(new Font("Dialog", Font.BOLD, 30));
+		opt2but2.setFont(BUTTON_FONT);
 		opt2but2.setPreferredSize(BUTTON_DIM);
 		opt2but2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -139,19 +142,19 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		JPanel option3 = new JPanel();
 		option3.setBackground(Color.LIGHT_GRAY);
 		option3.setLayout(new BoxLayout(option3, BoxLayout.X_AXIS));
-		option3.setPreferredSize(new Dimension(0, 100));
+		option3.setPreferredSize(PANEL_DIM);
 		add(option3);
 
 		// Add the labels
 		JLabel label3 = new JLabel("Label 3: ");
-		label3.setFont(new Font("Dialog", Font.PLAIN, 40));
+		label3.setFont(LABEL_FONT);
 		option3.add(label3);
 
 		option3.add(Box.createHorizontalGlue());
 
 		// Add the buttons
 		JButton opt3but1 = new JButton("but 1");
-		opt3but1.setFont(new Font("Dialog", Font.BOLD, 30));
+		opt3but1.setFont(BUTTON_FONT);
 		opt3but1.setPreferredSize(BUTTON_DIM);
 		opt3but1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -163,7 +166,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
 		JButton opt3but2 = new JButton("but 2");
-		opt3but2.setFont(new Font("Dialog", Font.BOLD, 30));
+		opt3but2.setFont(BUTTON_FONT);
 		opt3but2.setPreferredSize(BUTTON_DIM);
 		opt3but2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

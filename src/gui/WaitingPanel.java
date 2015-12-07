@@ -10,12 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class WaitingPanel extends JPanel implements ComponentListener {
-	private MusicPlayer musicPlayer;
+public class WaitingPanel extends JPanel {
 	
-	public WaitingPanel(MusicPlayer musicPlayer) {
-		
-		this.musicPlayer = musicPlayer;
+	public WaitingPanel() {
 
 		// Set Layout Manager
 		setLayout(new BorderLayout());
@@ -25,29 +22,6 @@ public class WaitingPanel extends JPanel implements ComponentListener {
 		JLabel waiting = new JLabel("Waiting for other player");
 		waiting.setFont(new Font("Dialog", Font.PLAIN, 40));
 		waiting.setHorizontalAlignment(SwingConstants.CENTER);
-		this.addComponentListener(this);
 		add(waiting, BorderLayout.CENTER);
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-		musicPlayer.playCrickets();
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-		musicPlayer.playCrickets();
-		
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-		musicPlayer.playCrickets();
-		
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-		musicPlayer.stop();
 	}
 }

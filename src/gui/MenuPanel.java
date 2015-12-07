@@ -64,6 +64,7 @@ public class MenuPanel extends JPanel implements ActionListener {
 		start.addActionListener(this);
 		add(start);
 
+		// Make buttons uniform size
 		int maxWidth = Math.max(Math.max((int)options.getPreferredSize().getWidth(), (int)help.getPreferredSize().getWidth()), (int)start.getPreferredSize().getWidth());
 		Dimension buttonDim = new Dimension(maxWidth, 0);
 		options.setMaximumSize(buttonDim);

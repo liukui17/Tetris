@@ -29,7 +29,7 @@ public class MusicPlayer {
 	 */
 	public void start() {
 		try {
-			if (!clip.isActive()) {
+			if (!clip.isActive() || clip.isRunning()) {
 				clip.loop(Clip.LOOP_CONTINUOUSLY);
 			}
 		} catch (Exception e) {
@@ -39,9 +39,11 @@ public class MusicPlayer {
 
 	/*
 	 * Stops the music
+	 * Closes the clip
 	 */
 	public void stop() {
 		clip.stop();
+		clip.close();
 	}
 
 	/*
@@ -59,7 +61,7 @@ public class MusicPlayer {
 	}
 
 	public boolean isPlaying() {
-		return clip.isActive();
+		return clip.isActive() || clip.isRunning();
 	}
 	
 	/*

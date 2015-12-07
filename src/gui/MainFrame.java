@@ -41,9 +41,8 @@ public class MainFrame extends JFrame {
 		// Create Swing component
 		menuPanel = new MenuPanel();
 		helpPanel = new HelpPanel();
-		//gamePanel = new GamePanel();
 		optionsPanel = new OptionsPanel(musicPlayer);
-		waitingPanel = new WaitingPanel(musicPlayer);
+		waitingPanel = new WaitingPanel();
 		endPanel = new EndPanel();
 
 		// Add Swing components to content pane
@@ -66,6 +65,7 @@ public class MainFrame extends JFrame {
 					break;
 				case "Start":
 					c.add(waitingPanel, BorderLayout.CENTER);
+					musicPlayer.playCrickets();
 					revalidate();
 					repaint();
 
@@ -147,12 +147,11 @@ public class MainFrame extends JFrame {
 		endPanel.setButtonListener(new ButtonListener() {
 			public void buttonClicked(String s) {
 				if (s.equals("Back to Menu")) {
+					musicPlayer.stop();
 					c.add(menuPanel, BorderLayout.CENTER);
 					c.remove(gamePanel);
 					revalidate();
 					repaint();
-					
-					musicPlayer.stop();
 				}
 
 			}

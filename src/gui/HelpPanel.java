@@ -43,8 +43,7 @@ public class HelpPanel extends JPanel implements ActionListener {
 		JPanel body = new JPanel();
 		GridBagLayout layout = new GridBagLayout();
 		body.setLayout(layout);
-		//body.setBackground(Color.LIGHT_GRAY);
-		//setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
+		body.setBackground(Color.LIGHT_GRAY);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1;
