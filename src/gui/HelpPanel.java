@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,6 +11,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,91 +26,147 @@ public class HelpPanel extends JPanel implements ActionListener {
 	public HelpPanel() {
 
 		// Set Layout Manager
-		GridBagLayout layout = new GridBagLayout();
-		setLayout(layout);
-		setBackground(Color.LIGHT_GRAY);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-
+		setBackground(Color.LIGHT_GRAY);
+		
 		// Create & Add Swing Components
 		JLabel title = new JLabel("Help");
 		title.setFont(new Font("Dialog", Font.BOLD, 50));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
-		gbc.fill = GridBagConstraints.BOTH;
-		//gbc.insets = new Insets(20, 20, 20, 20);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		add(title, gbc);
-
-		JLabel moveLeft = new JLabel("Move Left");
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		add(moveLeft, gbc);
-
-		JLabel moveRight = new JLabel("Move Right");
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		add(moveRight, gbc);
+		title.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(title);
 		
-		JLabel moveDown = new JLabel("Move Down");
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		add(moveDown, gbc);
+		// Filler
+		add(Box.createRigidArea(new Dimension(0, 100)));
+		
+		JPanel body = new JPanel();
+		GridBagLayout layout = new GridBagLayout();
+		body.setLayout(layout);
+		//body.setBackground(Color.LIGHT_GRAY);
+		//setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
 
-		JLabel rotate = new JLabel("Rotate");
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		add(rotate, gbc);
-
-		JLabel drop = new JLabel("Drop");
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		add(drop, gbc);
-
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.ipadx = 30;
+		
 		JLabel leftKey = new JLabel("");
 		Image imgLeftKey = new ImageIcon(this.getClass().getResource("/img/arrow-left.png")).getImage();
 		leftKey.setIcon(new ImageIcon(imgLeftKey));
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		add(leftKey, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		body.add(leftKey, gbc);
 
 		JLabel rightKey = new JLabel("");
 		Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();
 		rightKey.setIcon(new ImageIcon(imgRightKey));
-		gbc.gridx = 2;
-		gbc.gridy = 2;
-		add(rightKey, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		body.add(rightKey, gbc);
 		
 		JLabel downKey = new JLabel("");
 		Image imgDownKey = new ImageIcon(this.getClass().getResource("/img/arrow-down.png")).getImage();
 		downKey.setIcon(new ImageIcon(imgDownKey));
-		gbc.gridx = 2;
-		gbc.gridy = 3;
-		add(downKey, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		body.add(downKey, gbc);
 		
 		JLabel upKey = new JLabel("");
 		Image imgUpKey = new ImageIcon(this.getClass().getResource("/img/arrow-up.png")).getImage();
 		upKey.setIcon(new ImageIcon(imgUpKey));
-		gbc.gridx = 2;
-		gbc.gridy = 4;
-		add(upKey, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		body.add(upKey, gbc);
 
 		JLabel spaceKey = new JLabel("");
 		Image imgSpaceKey = new ImageIcon(this.getClass().getResource("/img/space.png")).getImage();
 		spaceKey.setIcon(new ImageIcon(imgSpaceKey));
-		gbc.gridx = 2;
-		gbc.gridy = 5;
-		add(spaceKey, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		body.add(spaceKey, gbc);
+		
+		gbc.anchor = GridBagConstraints.WEST;
 
-		JButton test = new JButton("Back");
-		test.setFont(new Font("Dialog", Font.PLAIN, 40));
-		test.addActionListener(this);
+		JLabel moveLeft = new JLabel("Move Left");
+		moveLeft.setFont(new Font("Dialog", Font.PLAIN, 20));
 		gbc.gridx = 1;
-		gbc.gridy = 6;
-		add(test, gbc);
+		gbc.gridy = 0;
+		body.add(moveLeft, gbc);
+
+		JLabel moveRight = new JLabel("Move Right");
+		moveRight.setFont(new Font("Dialog", Font.PLAIN, 20));
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		body.add(moveRight, gbc);
+		
+		JLabel moveDown = new JLabel("Move Down");
+		moveDown.setFont(new Font("Dialog", Font.PLAIN, 20));
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		body.add(moveDown, gbc);
+
+		JLabel rotate = new JLabel("Rotate");
+		rotate.setFont(new Font("Dialog", Font.PLAIN, 20));
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		body.add(rotate, gbc);
+
+		JLabel drop = new JLabel("Drop");
+		drop.setFont(new Font("Dialog", Font.PLAIN, 20));
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		body.add(drop, gbc);
+
+		
+		//	Column 2
+		
+		gbc.anchor = GridBagConstraints.EAST;
+		
+		JLabel mKey = new JLabel("");
+		Image imgMKey = new ImageIcon(this.getClass().getResource("/img/mkey.png")).getImage();
+		mKey.setIcon(new ImageIcon(imgMKey));
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		body.add(mKey, gbc);
+
+//		JLabel rightKey2 = new JLabel("");
+//		//Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();
+//		rightKey2.setIcon(new ImageIcon(imgRightKey));
+//		gbc.gridx = 2;
+//		gbc.gridy = 1;
+//		body.add(rightKey2, gbc);
+		
+		gbc.anchor = GridBagConstraints.WEST;
+		
+		JLabel mute = new JLabel("Toggle Music");
+		mute.setFont(new Font("Dialog", Font.PLAIN, 20));
+		gbc.gridx = 3;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.LINE_START;
+		body.add(mute, gbc);
+
+//		JLabel label = new JLabel("label");
+//		label.setFont(new Font("Dialog", Font.PLAIN, 20));
+//		gbc.gridx = 3;
+//		gbc.gridy = 1;
+//		body.add(label, gbc);
+
+		//////////////////////////////////
+		
+		add(body);
+		
+		// Filler
+		add(Box.createRigidArea(new Dimension(0, 100)));
+		
+		JButton back = new JButton("Back");
+		back.setFont(new Font("Dialog", Font.PLAIN, 40));
+		back.setHorizontalAlignment(SwingConstants.CENTER);
+		back.setAlignmentX(Component.CENTER_ALIGNMENT);
+		back.addActionListener(this);
+		add(back);
 
 	}
 
