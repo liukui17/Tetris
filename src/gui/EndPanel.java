@@ -25,6 +25,7 @@ public class EndPanel extends JPanel implements ActionListener {
 		// Set Layout Manager
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
+		setAlignmentX(Component.CENTER_ALIGNMENT);
 		setBackground(Color.LIGHT_GRAY);
 
 		// Create & Add Swing Components
