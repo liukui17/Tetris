@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -18,6 +19,7 @@ public class WaitingPanel extends JPanel implements ComponentListener {
 
 		// Set Layout Manager
 		setLayout(new BorderLayout());
+		setBackground(Color.LIGHT_GRAY);
 
 		// Create & Add Swing Components
 		JLabel waiting = new JLabel("Waiting for other player");
@@ -30,7 +32,6 @@ public class WaitingPanel extends JPanel implements ComponentListener {
 	@Override
 	public void componentResized(ComponentEvent e) {
 		musicPlayer.playCrickets();
-		
 	}
 
 	@Override
@@ -47,7 +48,6 @@ public class WaitingPanel extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
-		System.out.println("HIDDEN");
 		musicPlayer.stop();
 	}
 }

@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class HelpPanel extends JPanel implements ActionListener {
 	private ButtonListener buttonListener;
@@ -23,6 +24,8 @@ public class HelpPanel extends JPanel implements ActionListener {
 		// Set Layout Manager
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
+		setBackground(Color.LIGHT_GRAY);
+		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1;
@@ -33,7 +36,7 @@ public class HelpPanel extends JPanel implements ActionListener {
 		title.setFont(new Font("Dialog", Font.BOLD, 50));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(20, 20, 20, 20);
+		//gbc.insets = new Insets(20, 20, 20, 20);
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		add(title, gbc);
@@ -99,12 +102,12 @@ public class HelpPanel extends JPanel implements ActionListener {
 		add(spaceKey, gbc);
 
 		JButton test = new JButton("Back");
+		test.setFont(new Font("Dialog", Font.PLAIN, 40));
 		test.addActionListener(this);
 		gbc.gridx = 1;
 		gbc.gridy = 6;
 		add(test, gbc);
 
-		setBackground(Color.LIGHT_GRAY);
 	}
 
 	@Override

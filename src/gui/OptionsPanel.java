@@ -20,7 +20,7 @@ public class OptionsPanel extends JPanel implements ActionListener {
 	private ButtonListener buttonListener;
 	private MusicPlayer musicPlayer;
 
-	private static final Dimension BUTTON_DIM = new Dimension(150, 0);
+	private static final Dimension BUTTON_DIM = new Dimension(130, 0);
 
 	public OptionsPanel(MusicPlayer musicPlayer) {
 

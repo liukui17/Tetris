@@ -49,11 +49,12 @@ public class GamePanel extends JPanel implements Runnable {
 
 		// Set Layout Manager
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(Color.LIGHT_GRAY);
 
 		// Create & Add Swing Components
-		Dimension minSize = new Dimension(100, 20);
-		Dimension prefSize = new Dimension(100, 20);
-		Dimension maxSize = new Dimension(100, 20);
+		Dimension minSize = new Dimension(100, 0);
+		Dimension prefSize = new Dimension(100, 0);
+		Dimension maxSize = new Dimension(100, 0);
 
 		// Filler
 		add(new Box.Filler(minSize, prefSize, maxSize));
@@ -92,7 +93,6 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		});
 
-		setBackground(Color.LIGHT_GRAY);
 	}
 
 	public void run() {
@@ -108,7 +108,7 @@ public class GamePanel extends JPanel implements Runnable {
 			if (state.getIsGameOver()) {
 				removeAll();
 				setLayout(new BorderLayout());
-				setBackground(Color.LIGHT_GRAY);
+				//setBackground(Color.LIGHT_GRAY);
 				endPanel.setScore(state.getScore());
 				add(endPanel, BorderLayout.CENTER);
 				revalidate();

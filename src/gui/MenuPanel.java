@@ -63,7 +63,6 @@ public class MenuPanel extends JPanel implements ActionListener {
 		start.setAlignmentX(Component.CENTER_ALIGNMENT);
 		start.addActionListener(this);
 		add(start);
-		
 
 		int maxWidth = Math.max(Math.max((int)options.getPreferredSize().getWidth(), (int)help.getPreferredSize().getWidth()), (int)start.getPreferredSize().getWidth());
 		Dimension buttonDim = new Dimension(maxWidth, 0);

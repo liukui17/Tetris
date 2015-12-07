@@ -12,6 +12,7 @@ import javax.swing.SwingConstants;
 public class ScorePanel extends JPanel {
 	private JLabel scoreLabel;
 	private JLabel score;
+	
 	public ScorePanel() {
 
 		// Set Layout Manager
