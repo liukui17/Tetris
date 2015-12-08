@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -18,8 +19,8 @@ import javax.swing.border.EmptyBorder;
 public class EndPanel extends JPanel implements ActionListener {
 	private ButtonListener buttonListener;
 	
-	JLabel p1ScoreLabel;
-	JLabel p2ScoreLabel;
+	private JLabel p1ScoreLabel;
+	private JLabel p2ScoreLabel;
 	
 	public EndPanel() {
 
@@ -43,6 +44,9 @@ public class EndPanel extends JPanel implements ActionListener {
 		p1ScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		p1ScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(p1ScoreLabel);
+		
+		// Filler
+		add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		p2ScoreLabel = new JLabel("P2 Score: 0");
 		p2ScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));

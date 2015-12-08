@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -61,7 +62,17 @@ public class GamePanel extends JPanel implements Runnable {
 		// Filler
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		JLabel leftScoreLabel = new JLabel("P1 Score");
+		JLabel leftTitle = new JLabel("Player 1");
+		leftTitle.setFont(LABEL_FONT);
+		leftTitle.setPreferredSize(LABEL_SIZE);
+		leftTitle.setAlignmentX(CENTER_ALIGNMENT);
+		leftTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+		leftPanel.add(leftTitle);
+		
+		// Filler
+		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		JLabel leftScoreLabel = new JLabel("Score");
 		leftScoreLabel.setFont(LABEL_FONT);
 		leftScoreLabel.setPreferredSize(LABEL_SIZE);
 		leftScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -100,7 +111,17 @@ public class GamePanel extends JPanel implements Runnable {
 		// Filler
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		JLabel rightScoreLabel = new JLabel("P2 Score");
+		JLabel rightTitle = new JLabel("Player 2");
+		rightTitle.setFont(LABEL_FONT);
+		rightTitle.setPreferredSize(LABEL_SIZE);
+		rightTitle.setAlignmentX(CENTER_ALIGNMENT);
+		rightTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+		rightPanel.add(rightTitle);
+		
+		// Filler
+		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		JLabel rightScoreLabel = new JLabel("Score");
 		rightScoreLabel.setFont(LABEL_FONT);
 		rightScoreLabel.setPreferredSize(LABEL_SIZE);
 		rightScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -174,6 +195,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 				endPanel.setScore(0, state.getScore(0));
 				endPanel.setScore(1, state.getScore(1));
+				
 				add(endPanel, BorderLayout.CENTER);
 				revalidate();
 				repaint();
