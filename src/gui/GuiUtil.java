@@ -10,12 +10,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 public class GuiUtil {
 	public static JPanel addBody(JPanel panel) {
 		JPanel body = new JPanel();
 		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
 		body.setBackground(Color.LIGHT_GRAY);
+		body.setBorder(new EmptyBorder(30, 30, 30, 30));
 		panel.add(body, BorderLayout.CENTER);
 		return body;
 	}

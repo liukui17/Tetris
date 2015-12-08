@@ -16,52 +16,28 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class EndPanel extends JPanel implements ActionListener {
+public class EndPanel extends TemplatePanel implements ActionListener {
 	private ButtonListener buttonListener;
 	
 	private JLabel p1ScoreLabel;
 	private JLabel p2ScoreLabel;
 	
 	public EndPanel() {
-
-		// Set Layout Manager
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
-		setAlignmentX(Component.CENTER_ALIGNMENT);
-		setBackground(Color.LIGHT_GRAY);
-
-		// Create & Add Swing Components
-		JLabel gameOver = new JLabel("Game Over");
-		gameOver.setFont(new Font("Dialog", Font.BOLD, 40));
-		gameOver.setHorizontalAlignment(SwingConstants.CENTER);
-		gameOver.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(gameOver);
+		super("Game Over");
 		
-		add(Box.createVerticalGlue());
-		
-		p1ScoreLabel = new JLabel("P1 Score: 0");
-		p1ScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		p1ScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		p1ScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(p1ScoreLabel);
+		body.add(Box.createVerticalGlue());
+
+		p1ScoreLabel = GuiUtil.addLabel(body, "", 30);
 		
 		// Filler
-		add(Box.createRigidArea(new Dimension(0, 10)));
+		body.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		p2ScoreLabel = new JLabel("P2 Score: 0");
-		p2ScoreLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		p2ScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		p2ScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(p2ScoreLabel);
+		p2ScoreLabel = GuiUtil.addLabel(body, "", 30);
 		
-		add(Box.createVerticalGlue());
+		body.add(Box.createVerticalGlue());
 		
-		JButton back = new JButton("Back to Menu");
-		back.setFont(new Font("Dialog", Font.PLAIN, 20));
-		back.setHorizontalAlignment(SwingConstants.CENTER);
-		back.setAlignmentX(Component.CENTER_ALIGNMENT);
-		back.addActionListener(this);
-		add(back);
+		JButton backButton = GuiUtil.addButton(body, "Back to Menu", 30);
+		backButton.addActionListener(this);
 	}
 
 	@Override
