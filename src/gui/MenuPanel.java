@@ -18,21 +18,21 @@ public class MenuPanel extends TemplatePanel implements ActionListener {
 		
 		body.add(Box.createVerticalGlue());
 
-		JButton optionsButton = GuiUtil.addButton(body, "Options", 30);
+		JButton optionsButton = GuiUtil.addButton(body, "Options", 30, buttonList);
 		optionsButton.addActionListener(this);
 		optionsButton.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "none");
 		
 		body.add(Box.createRigidArea(new Dimension(0, 50)));
 
-		JButton helpButton = GuiUtil.addButton(body, "Help", 30);
+		JButton helpButton = GuiUtil.addButton(body, "Help", 30, buttonList);
 		helpButton.addActionListener(this);
 		
 		body.add(Box.createRigidArea(new Dimension(0, 50)));
 
-		JButton startButton = GuiUtil.addButton(body, "Start", 30);
+		JButton startButton = GuiUtil.addButton(body, "Start", 30, buttonList);
 		startButton.addActionListener(this);
 
-		GuiUtil.formatButtons(new HashSet<JButton>(Arrays.asList(optionsButton, helpButton, startButton)));
+		GuiUtil.formatButtons(buttonList);
 	}
 
 	public void actionPerformed(ActionEvent e) {

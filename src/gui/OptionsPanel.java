@@ -1,192 +1,127 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
-public class OptionsPanel extends JPanel implements ActionListener {
-	private static final Font LABEL_FONT = new Font("Dialog", Font.BOLD, 30);
-	private static final Font BUTTON_FONT = new Font("Dialog", Font.PLAIN, 30);
-	private static final Dimension BUTTON_DIM = new Dimension(130, 0);
-	private static final Dimension PANEL_DIM = new Dimension(0, 100);
+public class OptionsPanel extends TemplatePanel implements ActionListener {
+	//private static final Dimension PANEL_DIM = new Dimension(0, 100);
 	
 	private ButtonListener buttonListener;
-	private MusicPlayer musicPlayer;
 
 	public OptionsPanel(MusicPlayer musicPlayer) {
+		super("Options");
 
-		this.musicPlayer = musicPlayer;
-
-		// Set Layout Manager
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
-		setBackground(Color.LIGHT_GRAY);
-
-		// Create & Add Swing Components
-		JLabel title = new JLabel("Options");
-		title.setFont(new Font("Dialog", Font.BOLD, 50));
-		title.setHorizontalAlignment(SwingConstants.CENTER);
-		title.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(title);
-
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 100)));
-
-		// Option 1
+		// Option 1 Panel
 		JPanel option1 = new JPanel();
 		option1.setBackground(Color.LIGHT_GRAY);
 		option1.setLayout(new BoxLayout(option1, BoxLayout.X_AXIS));
-		option1.setPreferredSize(PANEL_DIM);
-		add(option1);
+		body.add(option1);
 
 		// Add the labels
-		JLabel label1 = new JLabel("Music: ");
-		label1.setFont(LABEL_FONT);
-		option1.add(label1);
+		GuiUtil.addLabel(option1, "Music: ", 30);
 
 		option1.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton musicStop = new JButton("Stop");
-		musicStop.setFont(BUTTON_FONT);
-		musicStop.setPreferredSize(BUTTON_DIM);
-		musicStop.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option1, "Stop", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.stop();
 			}
 		});
-		option1.add(musicStop);
 
 		option1.add(Box.createRigidArea(new Dimension(10, 0)));
 
-		JButton musicMinus = new JButton("-");
-		musicMinus.setFont(BUTTON_FONT);
-		musicMinus.setPreferredSize(BUTTON_DIM);
-		musicMinus.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option1, "-", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
 				musicPlayer.adjustVolume(-4.0f);
 			}
 		});
-		option1.add(musicMinus);
 
 		option1.add(Box.createRigidArea(new Dimension(10, 0)));
 
-		JButton musicPlus = new JButton("+");
-		musicPlus.setFont(BUTTON_FONT);
-		musicPlus.setPreferredSize(BUTTON_DIM);
-		musicPlus.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option1, "+", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
 				musicPlayer.adjustVolume(4.0f);
 			}
 		});
-		option1.add(musicPlus);
 		
 		// Filler
-		add(Box.createVerticalGlue());
+		body.add(Box.createRigidArea(new Dimension(0, 50)));
 
-		// Option 2
+		// Option 2 Panel
 		JPanel option2 = new JPanel();
 		option2.setBackground(Color.LIGHT_GRAY);
 		option2.setLayout(new BoxLayout(option2, BoxLayout.X_AXIS));
-		option2.setPreferredSize(PANEL_DIM);
-		add(option2);
+		body.add(option2);
 
 		// Add the labels
-		JLabel label2 = new JLabel("Label 2: ");
-		label2.setFont(LABEL_FONT);
-		option2.add(label2);
+		GuiUtil.addLabel(option2, "Label 2: ", 30);
 
 		option2.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton opt2but1 = new JButton("but 1");
-		opt2but1.setFont(BUTTON_FONT);
-		opt2but1.setPreferredSize(BUTTON_DIM);
-		opt2but1.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option2, "But 1", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Do something
-			}
-		});
-		option2.add(opt2but1);
+			// Do something
+		}
+	});
 		
 		option2.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton opt2but2 = new JButton("but 2");
-		opt2but2.setFont(BUTTON_FONT);
-		opt2but2.setPreferredSize(BUTTON_DIM);
-		opt2but2.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option2, "But 2", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Do something
 			}
 		});
-		option2.add(opt2but2);
 		
 		// Filler
-		add(Box.createVerticalGlue());
+		body.add(Box.createRigidArea(new Dimension(0, 50)));
 
-		// Option 3
+		// Option 3 Panel
 		JPanel option3 = new JPanel();
 		option3.setBackground(Color.LIGHT_GRAY);
 		option3.setLayout(new BoxLayout(option3, BoxLayout.X_AXIS));
-		option3.setPreferredSize(PANEL_DIM);
-		add(option3);
+		body.add(option3);
 
 		// Add the labels
-		JLabel label3 = new JLabel("Label 3: ");
-		label3.setFont(LABEL_FONT);
-		option3.add(label3);
+		GuiUtil.addLabel(option3, "Label 3: ", 30);
 
 		option3.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton opt3but1 = new JButton("but 1");
-		opt3but1.setFont(BUTTON_FONT);
-		opt3but1.setPreferredSize(BUTTON_DIM);
-		opt3but1.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option3, "But 1", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Do something
 			}
 		});
-		option3.add(opt3but1);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton opt3but2 = new JButton("but 2");
-		opt3but2.setFont(BUTTON_FONT);
-		opt3but2.setPreferredSize(BUTTON_DIM);
-		opt3but2.addActionListener(new ActionListener() {
+		GuiUtil.addButton(option3, "But 2", 30, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Do something
 			}
 		});
-		option3.add(opt3but2);
 		
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 100)));
+		body.add(Box.createVerticalGlue());
 		
-		// Add the back button
-		JButton back = new JButton("Back");
-		back.setFont(new Font("Dialog", Font.PLAIN, 40));
-		back.addActionListener(this);
-		back.setHorizontalAlignment(SwingConstants.CENTER);
-		back.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(back);
+		JButton backButton = GuiUtil.addButton(body, "Back", 30, buttonList);
+		backButton.addActionListener(this);
+		
+		GuiUtil.formatButtons(buttonList);
 
 	}
+	
+	//private Dimension find
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

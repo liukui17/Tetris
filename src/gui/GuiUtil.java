@@ -5,7 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.util.Set;
+import java.awt.LayoutManager;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class GuiUtil {
+	
 	public static JPanel addBody(JPanel panel) {
 		JPanel body = new JPanel();
 		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
@@ -31,15 +33,16 @@ public class GuiUtil {
 		return label;
 	}
 	
-	public static JButton addButton(JPanel panel, String name, int fontSize) {
+	public static JButton addButton(JPanel panel, String name, int fontSize, List<JButton> list) {
 		JButton but = new JButton(name);
 		but.setFont(new Font("Dialog", Font.PLAIN, fontSize));
 		but.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(but);
+		list.add(but);
 		return but;
 	}
 	
-	public static void formatButtons(Set<JButton> list) {
+	public static void formatButtons(List<JButton> list) {
 		int maxWidth = 0;
 		int maxHeight = 0;
 		
@@ -52,6 +55,8 @@ public class GuiUtil {
 		
 		for (JButton but : list) {
 			but.setMaximumSize(dim);
+			but.setMinimumSize(dim);
+			but.setPreferredSize(dim);
 		}
 	}
 }

@@ -27,7 +27,7 @@ public class EndPanel extends TemplatePanel implements ActionListener {
 		
 		body.add(Box.createVerticalGlue());
 		
-		JButton backButton = GuiUtil.addButton(body, "Back to Menu", 30);
+		JButton backButton = GuiUtil.addButton(body, "Back to Menu", 30, buttonList);
 		backButton.addActionListener(this);
 	}
 

@@ -1,49 +1,29 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
-public class HelpPanel extends JPanel implements ActionListener {
+public class HelpPanel extends TemplatePanel implements ActionListener {
 	private ButtonListener buttonListener;
 
 	public HelpPanel() {
-
-		// Set Layout Manager
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
-		setBackground(Color.LIGHT_GRAY);
+		super("Help");
 		
-		// Create & Add Swing Components
-		JLabel title = new JLabel("Help");
-		title.setFont(new Font("Dialog", Font.BOLD, 50));
-		title.setHorizontalAlignment(SwingConstants.CENTER);
-		title.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(title);
-		
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 100)));
-		
-		JPanel body = new JPanel();
+		JPanel bodyPanel = new JPanel();
 		GridBagLayout layout = new GridBagLayout();
-		body.setLayout(layout);
-		body.setBackground(Color.LIGHT_GRAY);
+		bodyPanel.setLayout(layout);
+		bodyPanel.setBackground(Color.LIGHT_GRAY);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1;
@@ -57,35 +37,35 @@ public class HelpPanel extends JPanel implements ActionListener {
 		leftKey.setIcon(new ImageIcon(imgLeftKey));
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		body.add(leftKey, gbc);
+		bodyPanel.add(leftKey, gbc);
 
 		JLabel rightKey = new JLabel("");
 		Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();
 		rightKey.setIcon(new ImageIcon(imgRightKey));
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		body.add(rightKey, gbc);
+		bodyPanel.add(rightKey, gbc);
 		
 		JLabel downKey = new JLabel("");
 		Image imgDownKey = new ImageIcon(this.getClass().getResource("/img/arrow-down.png")).getImage();
 		downKey.setIcon(new ImageIcon(imgDownKey));
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		body.add(downKey, gbc);
+		bodyPanel.add(downKey, gbc);
 		
 		JLabel upKey = new JLabel("");
 		Image imgUpKey = new ImageIcon(this.getClass().getResource("/img/arrow-up.png")).getImage();
 		upKey.setIcon(new ImageIcon(imgUpKey));
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		body.add(upKey, gbc);
+		bodyPanel.add(upKey, gbc);
 
 		JLabel spaceKey = new JLabel("");
 		Image imgSpaceKey = new ImageIcon(this.getClass().getResource("/img/space.png")).getImage();
 		spaceKey.setIcon(new ImageIcon(imgSpaceKey));
 		gbc.gridx = 0;
 		gbc.gridy = 4;
-		body.add(spaceKey, gbc);
+		bodyPanel.add(spaceKey, gbc);
 		
 		gbc.anchor = GridBagConstraints.WEST;
 
@@ -93,32 +73,31 @@ public class HelpPanel extends JPanel implements ActionListener {
 		moveLeft.setFont(new Font("Dialog", Font.PLAIN, 20));
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		body.add(moveLeft, gbc);
+		bodyPanel.add(moveLeft, gbc);
 
 		JLabel moveRight = new JLabel("Move Right");
 		moveRight.setFont(new Font("Dialog", Font.PLAIN, 20));
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		body.add(moveRight, gbc);
+		bodyPanel.add(moveRight, gbc);
 		
 		JLabel moveDown = new JLabel("Move Down");
 		moveDown.setFont(new Font("Dialog", Font.PLAIN, 20));
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		body.add(moveDown, gbc);
+		bodyPanel.add(moveDown, gbc);
 
 		JLabel rotate = new JLabel("Rotate");
 		rotate.setFont(new Font("Dialog", Font.PLAIN, 20));
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		body.add(rotate, gbc);
+		bodyPanel.add(rotate, gbc);
 
 		JLabel drop = new JLabel("Drop");
 		drop.setFont(new Font("Dialog", Font.PLAIN, 20));
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		body.add(drop, gbc);
-
+		bodyPanel.add(drop, gbc);
 		
 		//	Column 2
 		
@@ -129,14 +108,14 @@ public class HelpPanel extends JPanel implements ActionListener {
 		mKey.setIcon(new ImageIcon(imgMKey));
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		body.add(mKey, gbc);
+		bodyPanel.add(mKey, gbc);
 
 //		JLabel rightKey2 = new JLabel("");
 //		//Image imgRightKey = new ImageIcon(this.getClass().getResource("/img/arrow-right.png")).getImage();
 //		rightKey2.setIcon(new ImageIcon(imgRightKey));
 //		gbc.gridx = 2;
 //		gbc.gridy = 1;
-//		body.add(rightKey2, gbc);
+//		bodyPanel.add(rightKey2, gbc);
 		
 		gbc.anchor = GridBagConstraints.WEST;
 		
@@ -145,27 +124,20 @@ public class HelpPanel extends JPanel implements ActionListener {
 		gbc.gridx = 3;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.LINE_START;
-		body.add(mute, gbc);
+		bodyPanel.add(mute, gbc);
 
 //		JLabel label = new JLabel("label");
 //		label.setFont(new Font("Dialog", Font.PLAIN, 20));
 //		gbc.gridx = 3;
 //		gbc.gridy = 1;
-//		body.add(label, gbc);
-
-		//////////////////////////////////
+//		bodyPanel.add(label, gbc);
 		
-		add(body);
+		body.add(bodyPanel);
 		
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 100)));
+		body.add(Box.createVerticalGlue());
 		
-		JButton back = new JButton("Back");
-		back.setFont(new Font("Dialog", Font.PLAIN, 40));
-		back.setHorizontalAlignment(SwingConstants.CENTER);
-		back.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JButton back = GuiUtil.addButton(body, "Back", 30, buttonList);
 		back.addActionListener(this);
-		add(back);
 
 	}
 
