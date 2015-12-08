@@ -17,7 +17,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import infrastructure.ClientConnectionManager;
 import infrastructure.Encoder;
@@ -26,7 +25,6 @@ import infrastructure.GameState;
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private static final Dimension LABEL_SIZE = new Dimension(100, 20);
-	private static final Font LABEL_FONT = new Font("Dialog", Font.PLAIN, 20);
 
 	private BoardPanel boardPanel;
 	private EndPanel endPanel;
@@ -59,42 +57,28 @@ public class GamePanel extends JPanel implements Runnable {
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setBackground(Color.LIGHT_GRAY);
 		
-		// Filler
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		JLabel leftTitle = new JLabel("Player 1");
-		leftTitle.setFont(LABEL_FONT);
-		leftTitle.setPreferredSize(LABEL_SIZE);
-		leftTitle.setAlignmentX(CENTER_ALIGNMENT);
+
+		JLabel leftTitle = GuiUtil.addLabel(leftPanel, "Player 1", 20);
 		leftTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
-		leftPanel.add(leftTitle);
+		leftTitle.setPreferredSize(LABEL_SIZE);
 		
-		// Filler
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		JLabel leftScoreLabel = new JLabel("Score");
-		leftScoreLabel.setFont(LABEL_FONT);
-		leftScoreLabel.setPreferredSize(LABEL_SIZE);
-		leftScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
-		leftPanel.add(leftScoreLabel);
+		GuiUtil.addLabel(leftPanel, "Score", 20);
 		
-		// Filler
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		leftScore = new JLabel("0");
-		leftScore.setFont(LABEL_FONT);
-		leftScore.setPreferredSize(LABEL_SIZE);
-		leftScore.setAlignmentX(CENTER_ALIGNMENT);
-		leftPanel.add(leftScore);
+		leftScore = GuiUtil.addLabel(leftPanel, "0", 20);
 		
-		// Filler
-		leftPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-		
-		JLabel leftNextLabel = new JLabel("Next");
-		leftNextLabel.setFont(LABEL_FONT);
-		leftNextLabel.setPreferredSize(LABEL_SIZE);
-		leftNextLabel.setAlignmentX(CENTER_ALIGNMENT);
-		leftPanel.add(leftNextLabel);
+//		// Filler
+//		leftPanel.add(Box.createRigidArea(new Dimension(0, 40)));
+//		
+//		JLabel leftNextLabel = new JLabel("Next");
+//		leftNextLabel.setFont(LABEL_FONT);
+//		leftNextLabel.setPreferredSize(LABEL_SIZE);
+//		leftNextLabel.setAlignmentX(CENTER_ALIGNMENT);
+//		leftPanel.add(leftNextLabel);
 		
 		leftPanel.add(Box.createVerticalGlue());
 		
@@ -108,49 +92,33 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.setBackground(Color.LIGHT_GRAY);
 		
-		// Filler
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		JLabel rightTitle = new JLabel("Player 2");
-		rightTitle.setFont(LABEL_FONT);
-		rightTitle.setPreferredSize(LABEL_SIZE);
-		rightTitle.setAlignmentX(CENTER_ALIGNMENT);
+
+		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Player 1", 20);
 		rightTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
-		rightPanel.add(rightTitle);
+		rightTitle.setPreferredSize(LABEL_SIZE);
 		
-		// Filler
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		JLabel rightScoreLabel = new JLabel("Score");
-		rightScoreLabel.setFont(LABEL_FONT);
-		rightScoreLabel.setPreferredSize(LABEL_SIZE);
-		rightScoreLabel.setAlignmentX(CENTER_ALIGNMENT);
-		rightPanel.add(rightScoreLabel);
+		GuiUtil.addLabel(rightPanel, "Score", 20);
 		
-		// Filler
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		rightScore = new JLabel("0");
-		rightScore.setFont(LABEL_FONT);
-		rightScore.setPreferredSize(LABEL_SIZE);
-		rightScore.setAlignmentX(CENTER_ALIGNMENT);
-		rightPanel.add(rightScore);
+		rightScore = GuiUtil.addLabel(rightPanel, "0", 20);
 		
-		// Filler
-		rightPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-		
-		JLabel rightNextLabel = new JLabel("Next");
-		rightNextLabel.setFont(LABEL_FONT);
-		rightNextLabel.setPreferredSize(LABEL_SIZE);
-		rightNextLabel.setAlignmentX(CENTER_ALIGNMENT);
-		rightPanel.add(rightNextLabel);
+//		// Filler
+//		rightPanel.add(Box.createRigidArea(new Dimension(0, 40)));
+//		
+//		JLabel leftNextLabel = new JLabel("Next");
+//		leftNextLabel.setFont(LABEL_FONT);
+//		leftNextLabel.setPreferredSize(LABEL_SIZE);
+//		leftNextLabel.setAlignmentX(CENTER_ALIGNMENT);
+//		rightPanel.add(leftNextLabel);
 		
 		rightPanel.add(Box.createVerticalGlue());
 		
 		add(rightPanel);
 		
-
-
 		// Keyboard Dispatcher
 		// Instead of printing, need to send input to network
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {

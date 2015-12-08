@@ -19,6 +19,7 @@ public class MusicPlayer {
 		try {
 			// Opens the default clip: BGM
 			openClip(BGM);
+			adjustVolume(-100.0f);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
