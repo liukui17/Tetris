@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class GuiUtil {
 	public static JLabel addLabel(JPanel panel, String name, int fontSize) {
 		JLabel label = new JLabel(name);
 		label.setFont(new Font("Dialog", Font.PLAIN, fontSize));
-		label.setAlignmentX(panel.CENTER_ALIGNMENT);
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(label);
 		return label;
 	}
@@ -33,7 +34,7 @@ public class GuiUtil {
 	public static JButton addButton(JPanel panel, String name, int fontSize) {
 		JButton but = new JButton(name);
 		but.setFont(new Font("Dialog", Font.PLAIN, fontSize));
-		but.setAlignmentX(panel.CENTER_ALIGNMENT);
+		but.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(but);
 		return but;
 	}

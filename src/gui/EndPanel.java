@@ -1,20 +1,12 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 public class EndPanel extends TemplatePanel implements ActionListener {
 	private ButtonListener buttonListener;
@@ -29,7 +21,6 @@ public class EndPanel extends TemplatePanel implements ActionListener {
 
 		p1ScoreLabel = GuiUtil.addLabel(body, "", 30);
 		
-		// Filler
 		body.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		p2ScoreLabel = GuiUtil.addLabel(body, "", 30);

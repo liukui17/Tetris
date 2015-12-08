@@ -1,75 +1,38 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
-public class MenuPanel extends JPanel implements ActionListener {
+public class MenuPanel extends TemplatePanel implements ActionListener {
 	private ButtonListener buttonListener;
 
 	public MenuPanel() {
-
-		// Set Layout Manager
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(new EmptyBorder(new Insets(30, 30, 30, 30)));
-		setBackground(Color.LIGHT_GRAY);
-
-		// Create & Add Swing Components
-		JLabel title = new JLabel("Tetris");
-		title.setFont(new Font("Dialog", Font.BOLD, 50));
-		title.setHorizontalAlignment(SwingConstants.CENTER);
-		title.setAlignmentX(Component.CENTER_ALIGNMENT);
-		add(title);
+		super("Tetris");
 		
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 200)));
-		add(Box.createVerticalGlue());
+		body.add(Box.createVerticalGlue());
 
-		JButton options = new JButton("Options");
-		options.setFont(new Font("Dialog", Font.PLAIN, 40));
-		options.setAlignmentX(Component.CENTER_ALIGNMENT);
-		options.addActionListener(this);
-		options.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "none");
+		JButton optionsButton = GuiUtil.addButton(body, "Options", 30);
+		optionsButton.addActionListener(this);
+		optionsButton.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "none");
 		
-		add(options);
+		body.add(Box.createRigidArea(new Dimension(0, 50)));
+
+		JButton helpButton = GuiUtil.addButton(body, "Help", 30);
+		helpButton.addActionListener(this);
 		
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 50)));
+		body.add(Box.createRigidArea(new Dimension(0, 50)));
 
-		JButton help = new JButton("Help");
-		help.setFont(new Font("Dialog", Font.PLAIN, 40));
-		help.setAlignmentX(Component.CENTER_ALIGNMENT);
-		help.addActionListener(this);
-		add(help);
-		
-		// Filler
-		add(Box.createRigidArea(new Dimension(0, 50)));
+		JButton startButton = GuiUtil.addButton(body, "Start", 30);
+		startButton.addActionListener(this);
 
-		JButton start = new JButton("Start");
-		start.setFont(new Font("Dialog", Font.PLAIN, 40));
-		start.setAlignmentX(Component.CENTER_ALIGNMENT);
-		start.addActionListener(this);
-		add(start);
-
-		// Make buttons uniform size
-		int maxWidth = Math.max(Math.max((int)options.getPreferredSize().getWidth(), (int)help.getPreferredSize().getWidth()), (int)start.getPreferredSize().getWidth());
-		Dimension buttonDim = new Dimension(maxWidth, 0);
-		options.setMaximumSize(buttonDim);
-		help.setMaximumSize(buttonDim);
-		start.setMaximumSize(buttonDim);
+		GuiUtil.formatButtons(new HashSet<JButton>(Arrays.asList(optionsButton, helpButton, startButton)));
 	}
 
 	public void actionPerformed(ActionEvent e) {
