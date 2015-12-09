@@ -102,7 +102,6 @@ public class MainFrame extends JFrame {
 								boolean isPlayerOne = in.readBoolean();
 								
 								out.writeLong(dropInterval);
-								System.out.println(dropInterval);
 
 								c.remove(waitingPanel);
 

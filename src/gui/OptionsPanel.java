@@ -59,44 +59,6 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		// Filler
 		body.add(Box.createRigidArea(new Dimension(0, 50)));
 
-		// Option 2 Panel
-		JPanel option2 = new JPanel();
-		option2.setBackground(Color.LIGHT_GRAY);
-		option2.setLayout(new BoxLayout(option2, BoxLayout.X_AXIS));
-		body.add(option2);
-
-		// Add the labels
-		GuiUtil.addLabel(option2, "Ghost Pieces: ", 30);
-
-		option2.add(Box.createHorizontalGlue());
-
-		// Add the buttons
-		JButton ghostNoBtn = GuiUtil.addButton(option2, "No", 30, buttonList);
-		ghostNoBtn.addActionListener(this);
-		
-		option2.add(Box.createRigidArea(new Dimension(10, 0)));
-		
-		JButton ghostYesBtn = GuiUtil.addButton(option2, "Yes", 30, buttonList);
-		ghostYesBtn.addActionListener(this);
-		
-		// Border the last clicked button
-		ghostNoBtn.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				ghostYesBtn.setBorder(null);
-				ghostNoBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
-			}
-		});
-		
-		ghostYesBtn.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				ghostNoBtn.setBorder(null);
-				ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
-			}
-		});
-		
-		// Filler
-		body.add(Box.createRigidArea(new Dimension(0, 50)));
-
 		// Option 3 Panel
 		JPanel option3 = new JPanel();
 		option3.setBackground(Color.LIGHT_GRAY);
@@ -110,6 +72,7 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 
 		// Add the buttons
 		JButton easyButton = GuiUtil.addButton(option3, "Easy", 30, buttonList);
+		easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 		easyButton.addActionListener(this);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -124,27 +87,68 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		
 		easyButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				mediumButton.setBorder(null);
-				hardButton.setBorder(null);
+				mediumButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				hardButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 			}
 		});
 		
 		mediumButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				easyButton.setBorder(null);
-				hardButton.setBorder(null);
+				easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				hardButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				mediumButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 			}
 		});
 		
 		hardButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				easyButton.setBorder(null);
-				mediumButton.setBorder(null);
+				easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				mediumButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				hardButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 			}
 		});
+		
+		// Filler
+		body.add(Box.createRigidArea(new Dimension(0, 50)));
+
+		// Option 2 Panel
+		JPanel option2 = new JPanel();
+		option2.setBackground(Color.LIGHT_GRAY);
+		option2.setLayout(new BoxLayout(option2, BoxLayout.X_AXIS));
+		body.add(option2);
+
+		// Add the labels
+		GuiUtil.addLabel(option2, "Ghost Pieces: ", 30);
+
+		option2.add(Box.createHorizontalGlue());
+
+		// Add the buttons
+		JButton ghostYesBtn = GuiUtil.addButton(option2, "Yes", 30, buttonList);
+		ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+		ghostYesBtn.addActionListener(this);
+
+		option2.add(Box.createRigidArea(new Dimension(10, 0)));
+		
+		JButton ghostNoBtn = GuiUtil.addButton(option2, "No", 30, buttonList);
+		ghostNoBtn.addActionListener(this);
+		
+		// Border the last clicked button
+		ghostNoBtn.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				ghostNoBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+			}
+		});
+		
+		ghostYesBtn.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				ghostNoBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+			}
+		});
+		
+		//---------------------------------
 		
 		body.add(Box.createVerticalGlue());
 		
