@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class TemplatePanel extends JPanel {
 	
@@ -22,7 +24,7 @@ public class TemplatePanel extends JPanel {
 		setBackground(Color.LIGHT_GRAY);
 
 		addTitle(this, title);
-		body = GuiUtil.addBody(this);
+		body = addBody(this);
 		buttonList = new ArrayList<JButton>();
 	}
 	
@@ -34,4 +36,13 @@ public class TemplatePanel extends JPanel {
 		panel.add(label, BorderLayout.NORTH);
 	}
 
+	
+	private static JPanel addBody(JPanel panel) {
+		JPanel body = new JPanel();
+		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
+		body.setBackground(Color.LIGHT_GRAY);
+		body.setBorder(new EmptyBorder(30, 30, 30, 30));
+		panel.add(body, BorderLayout.CENTER);
+		return body;
+	}
 }

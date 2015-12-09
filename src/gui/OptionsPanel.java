@@ -27,12 +27,12 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		body.add(option1);
 
 		// Add the labels
-		GuiUtil.addLabel(option1, "Music: ", 30);
+		GuiUtil.addLabel(option1, "Volume: ", 30);
 
 		option1.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		GuiUtil.addButton(option1, "Stop", 30, buttonList).addActionListener(new ActionListener() {
+		GuiUtil.addButton(option1, "Stop", 25, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.stop();
 			}
@@ -40,7 +40,7 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 
 		option1.add(Box.createRigidArea(new Dimension(10, 0)));
 
-		GuiUtil.addButton(option1, "-", 30, buttonList).addActionListener(new ActionListener() {
+		GuiUtil.addButton(option1, "-", 25, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
 				musicPlayer.adjustVolume(-4.0f);
@@ -49,7 +49,7 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 
 		option1.add(Box.createRigidArea(new Dimension(10, 0)));
 
-		GuiUtil.addButton(option1, "+", 30, buttonList).addActionListener(new ActionListener() {
+		GuiUtil.addButton(option1, "+", 25, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				musicPlayer.start();
 				musicPlayer.adjustVolume(4.0f);
@@ -66,23 +66,23 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		body.add(option3);
 
 		// Add the labels
-		GuiUtil.addLabel(option3, "Difficulty: ", 30);
+		GuiUtil.addLabel(option3, "Difficulty:", 30).setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		option3.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton easyButton = GuiUtil.addButton(option3, "Easy", 30, buttonList);
+		JButton easyButton = GuiUtil.addButton(option3, "Easy", 25, buttonList);
 		easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 		easyButton.addActionListener(this);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton mediumButton = GuiUtil.addButton(option3, "Medium", 30, buttonList);
+		JButton mediumButton = GuiUtil.addButton(option3, "Medium", 25, buttonList);
 		mediumButton.addActionListener(this);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton hardButton = GuiUtil.addButton(option3, "Hard", 30, buttonList);
+		JButton hardButton = GuiUtil.addButton(option3, "Hard", 25, buttonList);
 		hardButton.addActionListener(this);
 		
 		easyButton.addMouseListener(new MouseAdapter() {
@@ -119,18 +119,18 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		body.add(option2);
 
 		// Add the labels
-		GuiUtil.addLabel(option2, "Ghost Pieces: ", 30);
+		GuiUtil.addLabel(option2, "Ghost Pieces:", 30);
 
 		option2.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton ghostYesBtn = GuiUtil.addButton(option2, "Yes", 30, buttonList);
+		JButton ghostYesBtn = GuiUtil.addButton(option2, "Yes", 25, buttonList);
 		ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 		ghostYesBtn.addActionListener(this);
 
 		option2.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton ghostNoBtn = GuiUtil.addButton(option2, "No", 30, buttonList);
+		JButton ghostNoBtn = GuiUtil.addButton(option2, "No", 25, buttonList);
 		ghostNoBtn.addActionListener(this);
 		
 		// Border the last clicked button
@@ -152,7 +152,7 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		
 		body.add(Box.createVerticalGlue());
 		
-		JButton backButton = GuiUtil.addButton(body, "Back", 30, buttonList);
+		JButton backButton = GuiUtil.addButton(body, "Back", 25, buttonList);
 		backButton.addActionListener(this);
 		
 		GuiUtil.formatButtons(buttonList);
