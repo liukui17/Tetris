@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -63,22 +66,31 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		body.add(option2);
 
 		// Add the labels
-		GuiUtil.addLabel(option2, "Label 2: ", 30);
+		GuiUtil.addLabel(option2, "Ghost Pieces: ", 30);
 
 		option2.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		GuiUtil.addButton(option2, "But 1", 30, buttonList).addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			// Do something
-		}
-	});
+		JButton ghostNoBtn = GuiUtil.addButton(option2, "No", 30, buttonList);
+		ghostNoBtn.addActionListener(this);
 		
 		option2.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		GuiUtil.addButton(option2, "But 2", 30, buttonList).addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Do something
+		JButton ghostYesBtn = GuiUtil.addButton(option2, "Yes", 30, buttonList);
+		ghostYesBtn.addActionListener(this);
+		
+		// Border the last clicked button
+		ghostNoBtn.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				ghostYesBtn.setBorder(null);
+				ghostNoBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+			}
+		});
+		
+		ghostYesBtn.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				ghostNoBtn.setBorder(null);
+				ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 			}
 		});
 		

@@ -23,6 +23,8 @@ public class MainFrame extends JFrame {
 	private WaitingPanel waitingPanel;
 	private EndPanel endPanel;
 	
+	private boolean drawGhosts;
+	
 	private MusicPlayer musicPlayer;
 
 	public MainFrame(String title, String hostName, int portNum) {		
@@ -33,6 +35,7 @@ public class MainFrame extends JFrame {
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setVisible(true);
 		
+		drawGhosts = true;
 		musicPlayer = new MusicPlayer();
 
 		// Set layout manager
@@ -97,7 +100,7 @@ public class MainFrame extends JFrame {
 
 								c.remove(waitingPanel);
 
-								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer, endPanel);
+								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer, endPanel, drawGhosts);
 								Thread gameThread = new Thread(gamePanel);
 								c.add(gamePanel, BorderLayout.CENTER);
 								gameThread.start();
@@ -134,13 +137,20 @@ public class MainFrame extends JFrame {
 
 		optionsPanel.setButtonListener(new ButtonListener() {
 			public void buttonClicked(String s) {
-				if (s.equals("Back")) {
+				switch (s) {
+				case "Back":
 					c.add(menuPanel, BorderLayout.CENTER);
 					c.remove(optionsPanel);
 					revalidate();
 					repaint();
+					break;
+				case "No":
+					drawGhosts = false;
+					break;
+				case "Yes":
+					drawGhosts = true;
+					break;
 				}
-				
 			}
 		});
 		

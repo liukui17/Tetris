@@ -22,17 +22,20 @@ public class BoardPanel extends JPanel {
 	private Color[][] grid;
 	private Set<BytePair> p1Spaces;
 	private Set<BytePair> p2Spaces;
+	private boolean drawGhosts;
 
 	/*
 	 * Length of a side of a square cell
 	 */
 	private static int CELL_LENGTH = 30;
 
-	public BoardPanel() {
+	public BoardPanel(boolean drawGhosts) {
 		setBackground(Color.LIGHT_GRAY);
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 		p1Spaces = new HashSet<BytePair>();
 		p2Spaces = new HashSet<BytePair>();
+		
+		this.drawGhosts = drawGhosts;
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class BoardPanel extends JPanel {
 					
 					g.setColor(c);
 					
-					if (isGhostSpace(j, i, ghostLocations)) {
+					if (drawGhosts && isGhostSpace(j, i, ghostLocations)) {
 						if (c.equals(GameUtil.PIECE_COLORS[0])) {
 							g.setColor(GameUtil.GHOST);
 						} 

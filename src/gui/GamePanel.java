@@ -35,7 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	private MusicPlayer musicPlayer;
 
-	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne, MusicPlayer musicPlayer, EndPanel endPanel) {
+	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne, MusicPlayer musicPlayer, EndPanel endPanel, boolean drawGhosts) {
 
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
@@ -86,7 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		add(Box.createHorizontalGlue());
 
-		boardPanel = new BoardPanel();
+		boardPanel = new BoardPanel(drawGhosts);
 		boardPanel.setPreferredSize(new Dimension(480, 720));
 		boardPanel.setAlignmentX(CENTER_ALIGNMENT);
 		boardPanel.setAlignmentY(CENTER_ALIGNMENT);
