@@ -1,5 +1,6 @@
 package infrastructure;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -27,7 +28,9 @@ public class GameServer {
 				
 				notifyPlayerNumbers(player1, player2);
 				
-				new Thread(new GameThread(player1, player2)).start();
+				long dropInterval = getInitialDropInterval(player1, player2);
+				
+				new Thread(new GameThread(player1, player2, dropInterval)).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -50,5 +53,12 @@ public class GameServer {
 		// arbitrary decision
 		outToP1.writeBoolean(true);
 		outToP2.writeBoolean(false);
+	}
+	
+	private static long getInitialDropInterval(Socket p1, Socket p2) throws IOException {
+		DataInputStream inFromP1 = new DataInputStream(p1.getInputStream());
+		DataInputStream inFromP2 = new DataInputStream(p2.getInputStream());
+		
+		return (inFromP1.readLong() + inFromP2.readLong()) / 2;
 	}
 }

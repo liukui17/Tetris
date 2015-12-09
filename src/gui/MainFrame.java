@@ -3,8 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -15,6 +13,9 @@ import javax.swing.SwingUtilities;
 public class MainFrame extends JFrame {
 	private static final int WIDTH = 680;
 	private static final int HEIGHT = 720;
+	private static final long EASY_INTERVAL = 1000;
+	private static final long MEDIUM_INTERVAL = 500;
+	private static final long HARD_INTERVAL = 250;
 
 	private MenuPanel menuPanel;
 	private HelpPanel helpPanel;
@@ -24,6 +25,7 @@ public class MainFrame extends JFrame {
 	private EndPanel endPanel;
 	
 	private boolean drawGhosts;
+	private long dropInterval;
 	
 	private MusicPlayer musicPlayer;
 
@@ -36,6 +38,7 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 		
 		drawGhosts = true;
+		dropInterval = EASY_INTERVAL;
 		musicPlayer = new MusicPlayer();
 
 		// Set layout manager
@@ -97,6 +100,9 @@ public class MainFrame extends JFrame {
 
 								// Should block here until server sends boolean
 								boolean isPlayerOne = in.readBoolean();
+								
+								out.writeLong(dropInterval);
+								System.out.println(dropInterval);
 
 								c.remove(waitingPanel);
 
@@ -149,6 +155,15 @@ public class MainFrame extends JFrame {
 					break;
 				case "Yes":
 					drawGhosts = true;
+					break;
+				case "Easy":
+					dropInterval = EASY_INTERVAL;
+					break;
+				case "Medium":
+					dropInterval = MEDIUM_INTERVAL;
+					break;
+				case "Hard":
+					dropInterval = HARD_INTERVAL;
 					break;
 				}
 			}

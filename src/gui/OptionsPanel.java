@@ -104,22 +104,45 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		body.add(option3);
 
 		// Add the labels
-		GuiUtil.addLabel(option3, "Label 3: ", 30);
+		GuiUtil.addLabel(option3, "Difficulty: ", 30);
 
 		option3.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		GuiUtil.addButton(option3, "But 1", 30, buttonList).addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Do something
-			}
-		});
+		JButton easyButton = GuiUtil.addButton(option3, "Easy", 30, buttonList);
+		easyButton.addActionListener(this);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		GuiUtil.addButton(option3, "But 2", 30, buttonList).addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Do something
+		JButton mediumButton = GuiUtil.addButton(option3, "Medium", 30, buttonList);
+		mediumButton.addActionListener(this);
+		
+		option3.add(Box.createRigidArea(new Dimension(10, 0)));
+		
+		JButton hardButton = GuiUtil.addButton(option3, "Hard", 30, buttonList);
+		hardButton.addActionListener(this);
+		
+		easyButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				mediumButton.setBorder(null);
+				hardButton.setBorder(null);
+				easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+			}
+		});
+		
+		mediumButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				easyButton.setBorder(null);
+				hardButton.setBorder(null);
+				mediumButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+			}
+		});
+		
+		hardButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				easyButton.setBorder(null);
+				mediumButton.setBorder(null);
+				hardButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
 			}
 		});
 		

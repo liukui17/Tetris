@@ -29,7 +29,7 @@ public class GameThread implements Runnable {
 	private GameStateManager gameState;
 	private GameTimer timer;
 
-	public GameThread(Socket p1Socket, Socket p2Socket) throws IOException {	
+	public GameThread(Socket p1Socket, Socket p2Socket, long initialDropInterval) throws IOException {	
 		this.p1Socket = p1Socket;
 		this.p2Socket = p2Socket;
 
@@ -39,7 +39,7 @@ public class GameThread implements Runnable {
 		threshold = INITIAL_THRESHOLD;
 
 		gameState = new GameStateManager();
-		timer = new GameTimer(gameState, outStates);
+		timer = new GameTimer(initialDropInterval, gameState, outStates);
 	}
 
 	@Override
