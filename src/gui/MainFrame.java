@@ -148,6 +148,7 @@ public class MainFrame extends JFrame {
 			public void buttonClicked(String s) {
 				if (s.equals("Back to Menu")) {
 					musicPlayer.stop();
+					musicPlayer.close();
 					c.add(menuPanel, BorderLayout.CENTER);
 					c.remove(gamePanel);
 					revalidate();

@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class OptionsPanel extends TemplatePanel implements ActionListener {
-	//private static final Dimension PANEL_DIM = new Dimension(0, 100);
 	
 	private ButtonListener buttonListener;
 

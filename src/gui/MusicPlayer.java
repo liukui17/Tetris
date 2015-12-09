@@ -9,17 +9,20 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
 public class MusicPlayer {
-	private Clip clip;
-	private AudioInputStream audioIn;
-
 	private static final String BGM = "bgm.wav";
 	private static final String CRICKETS = "crickets.wav";
+	private static final float DEFAULT_VOLUME = 1.0f;
+	
+	private Clip clip;
+	private AudioInputStream audioIn;
+	private float volume;
 
 	public MusicPlayer() {
+		volume = DEFAULT_VOLUME;
+		
 		try {
 			// Opens the default clip: BGM
 			openClip(BGM);
-			adjustVolume(-100.0f);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -30,7 +33,7 @@ public class MusicPlayer {
 	 */
 	public void start() {
 		try {
-			if (!clip.isActive() || clip.isRunning()) {
+			if (!clip.isActive()) {
 				clip.loop(Clip.LOOP_CONTINUOUSLY);
 			}
 		} catch (Exception e) {
@@ -40,11 +43,9 @@ public class MusicPlayer {
 
 	/*
 	 * Stops the music
-	 * Closes the clip
 	 */
 	public void stop() {
 		clip.stop();
-		clip.close();
 	}
 
 	/*
@@ -52,13 +53,15 @@ public class MusicPlayer {
 	 * Positive float to increase, negative float to decrease
 	 */
 	public void adjustVolume(Float change) {
-		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		FloatControl volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 
-		float newValue = volume.getValue() + change;
+		float newValue = volumeControl.getValue() + change;
 
-		if (newValue < volume.getMaximum() && newValue > volume.getMinimum()) {
-			volume.setValue(newValue);
+		if (newValue < volumeControl.getMaximum() && newValue > volumeControl.getMinimum()) {
+			volumeControl.setValue(newValue);
 		}
+		
+		volume = newValue;
 	}
 
 	public boolean isPlaying() {
@@ -92,6 +95,13 @@ public class MusicPlayer {
 	}
 	
 	/*
+	 * Closes the clip
+	 */
+	public void close() {
+		clip.close();
+	}
+	
+	/*
 	 * Tries to open the clip with the given name
 	 */
 	private void openClip(String name) {
@@ -103,9 +113,13 @@ public class MusicPlayer {
 			
 			clip = AudioSystem.getClip();
 			clip.open(audioIn);
+			
+			FloatControl volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			volumeControl.setValue(volume);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 }
