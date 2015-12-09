@@ -3,7 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
@@ -50,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		// Set Layout Manager
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(Color.LIGHT_GRAY);
 
 		// Create & Add Swing Components
 		// Left Panel
@@ -83,9 +83,16 @@ public class GamePanel extends JPanel implements Runnable {
 		leftPanel.add(Box.createVerticalGlue());
 		
 		add(leftPanel);
+		
+		add(Box.createHorizontalGlue());
 
 		boardPanel = new BoardPanel();
+		boardPanel.setPreferredSize(new Dimension(480, 720));
+		boardPanel.setAlignmentX(CENTER_ALIGNMENT);
+		boardPanel.setAlignmentY(CENTER_ALIGNMENT);
 		add(boardPanel);
+		
+		add(Box.createHorizontalGlue());
 
 		// Right Panel
 		JPanel rightPanel = new JPanel();
@@ -94,7 +101,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Player 1", 20);
+		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Player 2", 20);
 		rightTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
 		rightTitle.setPreferredSize(LABEL_SIZE);
 		

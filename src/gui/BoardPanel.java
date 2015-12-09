@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import infrastructure.BytePair;
 import infrastructure.GameUtil;
 
 public class BoardPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	
 	private Color[][] grid;
 	private Set<BytePair> p1Spaces;
 	private Set<BytePair> p2Spaces;
@@ -26,9 +26,10 @@ public class BoardPanel extends JPanel {
 	/*
 	 * Length of a side of a square cell
 	 */
-	private static final int CELL_LENGTH = 30;
+	private static int CELL_LENGTH = 30;
 
 	public BoardPanel() {
+		setBackground(Color.LIGHT_GRAY);
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 		p1Spaces = new HashSet<BytePair>();
 		p2Spaces = new HashSet<BytePair>();
@@ -37,7 +38,7 @@ public class BoardPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		this.setBackground(Color.WHITE);
+		CELL_LENGTH = Math.min(getWidth() / GameUtil.BOARD_WIDTH, getHeight() / GameUtil.BOARD_HEIGHT);
 		
 		Set<BytePair> ghostLocations = findGhostLocation(p1Spaces, grid);
 		ghostLocations.addAll(findGhostLocation(p2Spaces, grid));

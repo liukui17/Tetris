@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 
 public class MainFrame extends JFrame {
 	private static final int WIDTH = 680;
-	private static final int HEIGHT = 780;
+	private static final int HEIGHT = 720;
 
 	private MenuPanel menuPanel;
 	private HelpPanel helpPanel;
