@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private EndPanel endPanel;
 	private JLabel leftScore;
 	private JLabel rightScore;
+	private KeyEventDispatcher keyDispatcher;
 
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> gameState;
@@ -128,7 +129,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		// Keyboard Dispatcher
 		// Instead of printing, need to send input to network
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+		keyDispatcher = new KeyEventDispatcher() {
 			public boolean dispatchKeyEvent(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED) {
 					int key = e.getKeyCode();
@@ -150,7 +151,9 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 				return false;
 			}
-		});
+		};
+		
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyDispatcher);
 
 	}
 
@@ -176,6 +179,7 @@ public class GamePanel extends JPanel implements Runnable {
 				repaint();
 				
 				System.out.println("GAME OVER");
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(keyDispatcher);
 				break;
 			}
 
