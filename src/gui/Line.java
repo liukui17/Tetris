@@ -24,10 +24,7 @@ public class Line {
 	
 	@Override
 	public int hashCode() {
-		/*
-		 * Need a better hashCode
-		 */
-		return start.hashCode() + end.hashCode();
+		return start.hashCode() + 37 * end.hashCode();
 	}
 	
 	@Override

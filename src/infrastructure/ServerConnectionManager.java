@@ -20,9 +20,9 @@ public class ServerConnectionManager implements Runnable {
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> outStates;
 	
-	Socket[] playerSockets;
-	DataInputStream[] playerInputStreams;
-	DataOutputStream[] playerOutputStreams;
+	private Socket[] playerSockets;
+	private DataInputStream[] playerInputStreams;
+	private DataOutputStream[] playerOutputStreams;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
@@ -46,7 +46,7 @@ public class ServerConnectionManager implements Runnable {
 	@Override
 	public void run() {
 		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
-			new Thread(new ReadThread(playerInputStreams[i])).start();
+			new Thread(new ReadThread(playerInputStreams[i], i)).start();
 		}
 		new Thread(new WriteManager()).start();
 	}
@@ -58,6 +58,8 @@ public class ServerConnectionManager implements Runnable {
 	public class ReadThread implements Runnable {
 		// the DataInputStream that this thread will read from
 		private DataInputStream player;
+		boolean isFinished;
+		int playerNumber;
 
 		/**
 		 * Constructs a new ReadThread from the specified DataInputStream
@@ -66,20 +68,34 @@ public class ServerConnectionManager implements Runnable {
 		 * 
 		 * @requires player != null
 		 */
-		public ReadThread(DataInputStream player) {
+		public ReadThread(DataInputStream player, int playerNumber) {
 			this.player = player;
+			isFinished = false;
+			this.playerNumber = playerNumber;
 		}
 
 		@Override
 		public void run() {
-			while (true) {
+			while (!isFinished) {
 				try {
 					byte msg = player.readByte();
-					commands.add(msg);
+					if ((msg & Encoder.QUIT_MASK) == 0) {
+						commands.add(msg);
+					} else {
+						break;
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					return;
 				}
+			}
+			try {
+				player.close();
+				playerInputStreams[playerNumber] = null;
+				playerOutputStreams[playerNumber].close();
+				playerOutputStreams[playerNumber] = null;
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -99,15 +115,21 @@ public class ServerConnectionManager implements Runnable {
 
 					Thread[] writeThreads = new Thread[GameUtil.NUM_PLAYERS];
 					for (int i = 0; i < writeThreads.length; i++) {
-						writeThreads[i] = new Thread(new WriteThread(playerOutputStreams[i], state, displayDelay));
+						if (playerOutputStreams[i] != null) {
+							writeThreads[i] = new Thread(new WriteThread(playerOutputStreams[i], state, displayDelay));
+						}
 					}
 					
 					for (int i = 0; i < writeThreads.length; i++) {
-						writeThreads[i].start();
+						if (writeThreads[i] != null) {
+							writeThreads[i].start();
+						}
 					}
 					
 					for (int i = 0; i < writeThreads.length; i++) {
-						writeThreads[i].join();
+						if (writeThreads[i] != null) {
+							writeThreads[i].join();
+						}
 					}
 				}
 			} catch (Exception e) {
