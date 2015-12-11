@@ -28,7 +28,7 @@ public class GameThread implements Runnable {
 	private GameStateManager gameState;
 	private GameTimer timer;
 
-	public GameThread(Socket[] playerSockets) throws IOException {	
+	public GameThread(Socket[] playerSockets, long initialDropInterval) throws IOException {	
 		this.playerSockets = playerSockets;
 
 		commandsFromClient = new LinkedBlockingQueue<Byte>();
@@ -37,7 +37,7 @@ public class GameThread implements Runnable {
 		threshold = INITIAL_THRESHOLD;
 
 		gameState = new GameStateManager();
-		timer = new GameTimer(gameState, outStates);
+		timer = new GameTimer(initialDropInterval, gameState, outStates);
 	}
 
 	@Override
@@ -52,16 +52,16 @@ public class GameThread implements Runnable {
 		 * GameState data to be sent to players will be dequeued from the shared
 		 * outStates BlockingQueue.
 		 */
-		try {
+	/*	try {
 			new Thread(new ServerConnectionManager(commandsFromClient, outStates,
 					new DataInputStream(playerSockets[0].getInputStream()),
 					new DataOutputStream(playerSockets[0].getOutputStream()),
 					new DataInputStream(playerSockets[1].getInputStream()),
-					new DataOutputStream(playerSockets[1].getOutputStream()))).start();
-		//	new Thread(new ServerConnectionsManager(commandsFromClient, outStates, playerSockets)).start();
-		} catch (IOException e) {
+					new DataOutputStream(playerSockets[1].getOutputStream()))).start(); */
+			new Thread(new ServerConnectionsManager(commandsFromClient, outStates, playerSockets)).start();
+	/*	} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} */
 
 		// send out the initial state to the client
 		GameState initialState = gameState.getCurrentState();

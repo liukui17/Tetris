@@ -3,9 +3,6 @@ package infrastructure;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
-/*
- * STILL UNDER DEVELOPMENT; HASN'T BEEN DEPLOYED YET
- */
 public class ServerConnectionsManager implements Runnable {
 	
 	OneClientConnectionHandler[] handlers;

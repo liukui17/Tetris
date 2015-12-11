@@ -88,7 +88,7 @@ public class OneClientConnectionHandler implements Runnable {
 					if ((msg & Encoder.QUIT_MASK) == 0) {
 						commands.add(msg);
 					} else {
-						System.out.println("got here");
+					//	System.out.println("got here");
 						break;
 					}
 				} catch (IOException e) {
@@ -116,7 +116,7 @@ public class OneClientConnectionHandler implements Runnable {
 					writeSingleState();
 				//	OneClientConnectionHandler.this.currOutState = null;
 				}
-				System.out.println(stopWriting);
+			//	System.out.println(stopWriting);
 			/*	if (OneClientConnectionHandler.this.currOutState != prevState) {
 					writeSingleState();
 					prevState = OneClientConnectionHandler.this.currOutState;

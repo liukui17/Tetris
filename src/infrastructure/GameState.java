@@ -13,11 +13,7 @@ import java.util.Set;
 public class GameState {
 	private final Color[][] board;
 	private List<Set<BytePair>> playerSpaces;
-//	private Set<BytePair> p1Spaces;
-//	private Set<BytePair> p2Spaces;
 	private final int[] playerScores;
-//	private final int p1Score;
-//	private final int p2Score;
 	private final boolean isGameOver;
 	
 	public GameState(Color[][] board, List<Set<BytePair>> playerSpaces,
@@ -27,16 +23,6 @@ public class GameState {
 		this.isGameOver = isGameOver;
 		this.playerScores = playerScores;
 	}
-
-/*	public GameState(Color[][] board, Set<BytePair> p1Spaces, Set<BytePair> p2Spaces,
-					 int p1Score, int p2Score, boolean isGameOver) {
-		this.board = board;
-		this.p1Spaces = p1Spaces;
-		this.p2Spaces = p2Spaces;
-		this.p1Score = p1Score;
-		this.p2Score = p2Score;
-		this.isGameOver = isGameOver;
-	} */
 	
 	public Color[][] getBoard() {
 		return board;

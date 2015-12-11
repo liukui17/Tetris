@@ -17,11 +17,8 @@ import infrastructure.Encoder;
 import infrastructure.GameUtil;
 
 public class MainFrame extends JFrame {
-	private static final int WIDTH = BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH +
-			 100 + GamePanel.WIDTH +
-			 (GameUtil.BOARD_WIDTH + 1);
-	private static final int HEIGHT = BoardPanel.CELL_LENGTH * GameUtil.BOARD_HEIGHT +
-				100;
+	private static final int WIDTH = 680;
+	private static final int HEIGHT = 720;
 	private static final long EASY_INTERVAL = 1000;
 	private static final long MEDIUM_INTERVAL = 500;
 	private static final long HARD_INTERVAL = 250;
