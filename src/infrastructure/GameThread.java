@@ -52,7 +52,8 @@ public class GameThread implements Runnable {
 		 * GameState data to be sent to players will be dequeued from the shared
 		 * outStates BlockingQueue.
 		 */
-		new Thread(new ServerConnectionsManager(commandsFromClient, outStates, playerSockets)).start();
+	//	new Thread(new ServerConnectionsManager(commandsFromClient, outStates, playerSockets)).start();
+		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets)).start();
 
 		// send out the initial state to the client
 		GameState initialState = gameState.getCurrentState();

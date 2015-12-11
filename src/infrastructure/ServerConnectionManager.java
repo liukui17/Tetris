@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -18,29 +19,35 @@ public class ServerConnectionManager implements Runnable {
 
 	private BlockingQueue<Byte> commands;
 	private BlockingQueue<GameState> outStates;
-
-	private DataInputStream inFromP1;
-	private DataOutputStream outToP1;
-	private DataInputStream inFromP2;
-	private DataOutputStream outToP2;
+	
+	Socket[] playerSockets;
+	DataInputStream[] playerInputStreams;
+	DataOutputStream[] playerOutputStreams;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
-			DataInputStream inFromP1, DataOutputStream outToP1,
-			DataInputStream inFromP2, DataOutputStream outToP2) {
+			Socket[] playerSockets) {
 		this.commands = commands;
 		this.outStates = outStates;
 
-		this.inFromP1 = inFromP1;
-		this.outToP1 = outToP1;
-		this.inFromP2 = inFromP2;
-		this.outToP2 = outToP2;
+		this.playerSockets = playerSockets;
+		playerInputStreams = new DataInputStream[this.playerSockets.length];
+		playerOutputStreams = new DataOutputStream[this.playerSockets.length];
+		try {
+			for (int i = 0; i < this.playerSockets.length; i++) {
+				playerInputStreams[i] = new DataInputStream(playerSockets[i].getInputStream());
+				playerOutputStreams[i] = new DataOutputStream(playerSockets[i].getOutputStream());
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace(System.err);
+		}
 	}
 
 	@Override
 	public void run() {
-		new Thread(new ReadThread(inFromP1)).start();
-		new Thread(new ReadThread(inFromP2)).start();
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			new Thread(new ReadThread(playerInputStreams[i])).start();
+		}
 		new Thread(new WriteManager()).start();
 	}
 
@@ -90,13 +97,18 @@ public class ServerConnectionManager implements Runnable {
 
 					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
 
-					Thread p1 = new Thread(new WriteThread(outToP1, state, displayDelay));
-					Thread p2 = new Thread(new WriteThread(outToP2, state, displayDelay));
+					Thread[] writeThreads = new Thread[GameUtil.NUM_PLAYERS];
+					for (int i = 0; i < writeThreads.length; i++) {
+						writeThreads[i] = new Thread(new WriteThread(playerOutputStreams[i], state, displayDelay));
+					}
 					
-					p1.start();
-					p2.start();
-					p1.join();
-					p2.join();
+					for (int i = 0; i < writeThreads.length; i++) {
+						writeThreads[i].start();
+					}
+					
+					for (int i = 0; i < writeThreads.length; i++) {
+						writeThreads[i].join();
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

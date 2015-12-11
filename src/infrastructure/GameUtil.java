@@ -25,6 +25,9 @@ public class GameUtil {
 	
 	public static final Color GHOST = Color.LIGHT_GRAY;
 	
+	/**
+	 * Computes positive modulus, i.e. the remainder of doing dividend / divisor
+	 */
 	public static int modulo(int dividend, int divisor) {
 		int res = dividend % divisor;
 		if (res < 0) {

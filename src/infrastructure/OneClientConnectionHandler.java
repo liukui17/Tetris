@@ -18,6 +18,7 @@ public class OneClientConnectionHandler implements Runnable {
 	OneClientConnectionHandler[] otherHandlers;
 	int handleIndex;
 	boolean stopWriting;
+	boolean hasChanged;
 	
 	public OneClientConnectionHandler(Socket clientSocket, BlockingQueue<Byte> commands,
 																		OneClientConnectionHandler[] otherHandlers, int handleIndex) {
@@ -30,6 +31,7 @@ public class OneClientConnectionHandler implements Runnable {
 			this.handleIndex = handleIndex;
 			currOutState = null;
 			stopWriting = false;
+			hasChanged = false;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -37,6 +39,7 @@ public class OneClientConnectionHandler implements Runnable {
 	
 	void giveNewOutState(GameState outState) {
 		currOutState = outState;
+		hasChanged = true;
 	}
 	
 	@Override
@@ -107,19 +110,11 @@ public class OneClientConnectionHandler implements Runnable {
 
 		@Override
 		public void run() {
-		//	GameState prevState = null;
 			while (!stopWriting) {
-				if (OneClientConnectionHandler.this.currOutState != null) {
+				if (OneClientConnectionHandler.this.currOutState != null && hasChanged) {
 					writeSingleState();
-				//	OneClientConnectionHandler.this.currOutState = null;
+					hasChanged = false;
 				}
-			//	System.out.println(stopWriting);
-			/*	if (OneClientConnectionHandler.this.currOutState != prevState) {
-					writeSingleState();
-					prevState = OneClientConnectionHandler.this.currOutState;
-					OneClientConnectionHandler.this.currOutState = null;
-					System.out.println(OneClientConnectionHandler.this.currOutState);
-				} */
 			}
 		}
 		

@@ -1,7 +1,9 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,8 +23,6 @@ public class BoardPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Color[][] grid;
-//	private Set<BytePair> p1Spaces;
-//	private Set<BytePair> p2Spaces;
 	private List<Set<BytePair>> playerSpaces;
 	private boolean drawGhosts;
 
@@ -30,12 +30,15 @@ public class BoardPanel extends JPanel {
 	 * Length of a side of a square cell
 	 */
 	static final int CELL_LENGTH = 30;
+	
+	/*
+	 * Thickness of the border
+	 */
+	static final int BORDER_THICKNESS = 3;
 
 	public BoardPanel(boolean drawGhosts) {
 		setBackground(Color.LIGHT_GRAY);
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-	//	p1Spaces = new HashSet<BytePair>();
-	//	p2Spaces = new HashSet<BytePair>();
 		playerSpaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
 		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
 			playerSpaces.add(new HashSet<BytePair>());
@@ -96,7 +99,7 @@ public class BoardPanel extends JPanel {
 			int x = GameUtil.modulo((int) space.getX(), GameUtil.BOARD_WIDTH);
 			int y = (int) space.getY();
 			
-			if (!board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
+			if (y >= 0 && !board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
 				return true;
 			}
 		}
@@ -243,7 +246,12 @@ public class BoardPanel extends JPanel {
 			int endX = (int) end.getX();
 			int endY = (int) end.getY();
 
-			g.drawLine(startX, startY, endX, endY);
+			// set the thickness
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setStroke(new BasicStroke(BORDER_THICKNESS));
+			
+			// draw the line
+			g2.drawLine(startX, startY, endX, endY);
 		}
 	}
 

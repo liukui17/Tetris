@@ -124,7 +124,6 @@ public class Encoder {
 	 */
 	public static byte encodeKeyPress(int key, int player) {
 		byte encoding = 0;
-		System.out.println(player);
 		encoding += player << (BYTE / 2);
 		switch (key) {
 			case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
