@@ -37,7 +37,7 @@ public abstract class Piece {
 	}
 	
 	public Piece() {
-		squares = new ArrayList<Square>();
+		squares = new ArrayList<Square>(NUM_SQUARES_PER_PIECE);
 		orientation = 0;
 	}
 	

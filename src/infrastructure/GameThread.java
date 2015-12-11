@@ -16,8 +16,7 @@ public class GameThread implements Runnable {
 	private static final int THRESHOLD_INCREASE_RATE = 100;
 
 	// sockets for each player
-	private Socket p1Socket;
-	private Socket p2Socket;
+	Socket[] playerSockets;
 
 	// BlockingQueues allows data transfer between threads
 	private BlockingQueue<Byte> commandsFromClient;
@@ -29,9 +28,8 @@ public class GameThread implements Runnable {
 	private GameStateManager gameState;
 	private GameTimer timer;
 
-	public GameThread(Socket p1Socket, Socket p2Socket, long initialDropInterval) throws IOException {	
-		this.p1Socket = p1Socket;
-		this.p2Socket = p2Socket;
+	public GameThread(Socket[] playerSockets) throws IOException {	
+		this.playerSockets = playerSockets;
 
 		commandsFromClient = new LinkedBlockingQueue<Byte>();
 		outStates = new LinkedBlockingQueue<GameState>();
@@ -39,7 +37,7 @@ public class GameThread implements Runnable {
 		threshold = INITIAL_THRESHOLD;
 
 		gameState = new GameStateManager();
-		timer = new GameTimer(initialDropInterval, gameState, outStates);
+		timer = new GameTimer(gameState, outStates);
 	}
 
 	@Override
@@ -56,10 +54,11 @@ public class GameThread implements Runnable {
 		 */
 		try {
 			new Thread(new ServerConnectionManager(commandsFromClient, outStates,
-					new DataInputStream(p1Socket.getInputStream()),
-					new DataOutputStream(p1Socket.getOutputStream()),
-					new DataInputStream(p2Socket.getInputStream()),
-					new DataOutputStream(p2Socket.getOutputStream()))).start();
+					new DataInputStream(playerSockets[0].getInputStream()),
+					new DataOutputStream(playerSockets[0].getOutputStream()),
+					new DataInputStream(playerSockets[1].getInputStream()),
+					new DataOutputStream(playerSockets[1].getOutputStream()))).start();
+		//	new Thread(new ServerConnectionsManager(commandsFromClient, outStates, playerSockets)).start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -84,25 +83,22 @@ public class GameThread implements Runnable {
 				// get the next command
 				commandByte = commandsFromClient.take();
 
-				// find out whose piece to move
-				int player;
-				if (commandByte >= 0) {
-					player = 0;  // player 1's move
-				} else {
-					player = 1;  // player 2's move
-				}
-
 				// decode the command and perform it
-				Encoder.decodeCommand(commandByte, player, gameState);
+				Encoder.decodeCommand(commandByte, gameState);
 
 				// get the new game state
 				GameState updatedGameState = gameState.getCurrentState();
 
+				int sumScore = 0;
+				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+					sumScore += gameState.getScore(i);
+
+				}
 				/*
 				 * speed up the timer if we've reached the current threshold and update
 				 * the threshold
 				 */
-				if (gameState.getScore(0) + gameState.getScore(1) >= threshold) {
+				if (sumScore >= threshold) {
 					timer.speedUp();
 					threshold += THRESHOLD_INCREASE_RATE;
 				}

@@ -8,6 +8,9 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -17,9 +20,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import infrastructure.BytePair;
 import infrastructure.ClientConnectionManager;
 import infrastructure.Encoder;
 import infrastructure.GameState;
+import infrastructure.GameUtil;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -35,8 +40,11 @@ public class GamePanel extends JPanel implements Runnable {
 	private BlockingQueue<GameState> gameState;
 	
 	private MusicPlayer musicPlayer;
+	
+	ClientConnectionManager manager;
+	int playerNumber;
 
-	public GamePanel(DataInputStream in, DataOutputStream out, boolean isPlayerOne, MusicPlayer musicPlayer, EndPanel endPanel, boolean drawGhosts) {
+	public GamePanel(DataInputStream in, DataOutputStream out, int playerNumber, MusicPlayer musicPlayer, EndPanel endPanel, boolean drawGhosts) {
 
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
@@ -45,7 +53,9 @@ public class GamePanel extends JPanel implements Runnable {
 		this.musicPlayer = musicPlayer;
 		musicPlayer.playBGM();
 
-		Thread managerThread = new Thread(new ClientConnectionManager(commands, gameState, in, out));
+		this.playerNumber = playerNumber;
+		manager = new ClientConnectionManager(commands, gameState, in, out);
+		Thread managerThread = new Thread(manager);
 		managerThread.start();
 
 		// Set Layout Manager
@@ -146,7 +156,7 @@ public class GamePanel extends JPanel implements Runnable {
 						return false;
 					}
 
-					byte msg = Encoder.encodeKeyPress(key, isPlayerOne);
+					byte msg = Encoder.encodeKeyPress(key, playerNumber);
 					commands.add(msg);
 				}
 				return false;
@@ -171,8 +181,9 @@ public class GamePanel extends JPanel implements Runnable {
 				removeAll();
 				setLayout(new BorderLayout());
 
-				endPanel.setScore(0, state.getScore(0));
-				endPanel.setScore(1, state.getScore(1));
+				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+					endPanel.setScore(i, state.getScore(i));
+				}
 				
 				add(endPanel, BorderLayout.CENTER);
 				revalidate();
@@ -188,7 +199,11 @@ public class GamePanel extends JPanel implements Runnable {
 			rightScore.setText(Integer.toString(state.getScore(1)));
 
 			// Update grid
-			boardPanel.updateGrid(state.getBoard(), state.getSpaces(0), state.getSpaces(1));
+			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
+			for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+				spaces.add(state.getSpaces(i));
+			}
+			boardPanel.updateGrid(state.getBoard(), spaces);
 			boardPanel.revalidate();
 			boardPanel.repaint();
 			

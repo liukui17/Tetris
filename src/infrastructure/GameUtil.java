@@ -17,6 +17,12 @@ public class GameUtil {
 		Color.MAGENTA, // T (there is no purple so set this for now)
 		Color.RED // Z
 	};
+	
+	public static final Color[] OUTLINE_COLORS = {
+		Color.BLACK,
+		Color.PINK
+	};
+	
 	public static final Color GHOST = Color.LIGHT_GRAY;
 	
 	public static int modulo(int dividend, int divisor) {

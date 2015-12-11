@@ -1,6 +1,8 @@
 package infrastructure;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import pieces.Board;
@@ -10,20 +12,21 @@ public class GameStateManager {
 	private static final int SCORE_INCREASE_RATE = 10;
 	
 	private Board board;
-	private int p1Score;
-	private int p2Score;
+	private int[] playerScores;
 	
 	public GameStateManager() {
 		board = new Board();
-		p1Score = 0;
-		p2Score = 0;
+		playerScores = new int[GameUtil.NUM_PLAYERS];
+		for (int i = 0; i < playerScores.length; i++) {
+			playerScores[i] = 0;
+		}
 	}
 	
 	public synchronized int getScore(int player) {
-		if (player == 0) {
-			return p1Score;
+		if (player < 0 || player >= playerScores.length) {
+			return -1;
 		} else {
-			return p2Score;
+			return playerScores[player];
 		}
 	}
 	
@@ -39,11 +42,13 @@ public class GameStateManager {
 			currentBoard[i] = board.getRowColors(i);
 		}
 		
-		// get player 1/2 pieces
-		Set<BytePair> p1Piece = board.getPiece(0).getBytePairs();
-		Set<BytePair> p2Piece = board.getPiece(1).getBytePairs();
+		// get player pieces
+		List<Set<BytePair>> playerPieces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			playerPieces.add(board.getPiece(i).getBytePairs());
+		}
 		
-		return new GameState(currentBoard, p1Piece, p2Piece, p1Score, p2Score, board.isGameOver());
+		return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver());
 	}
 	
 	public synchronized boolean tryMoveLeft(int player) {
@@ -90,12 +95,9 @@ public class GameStateManager {
 	}
 	
 	private synchronized void updateScore(int player) {
-		int change = SCORE_INCREASE_RATE * board.removeFullRows();
-		
-		if (player == 0) {
-			p1Score += change;
-		} else {
-			p2Score += change;
+		if (player >= 0 && player < playerScores.length) {
+			int change = SCORE_INCREASE_RATE * board.removeFullRows();
+			playerScores[player] += change;
 		}
 	}
 }

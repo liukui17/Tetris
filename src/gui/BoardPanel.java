@@ -3,6 +3,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,20 +21,25 @@ public class BoardPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Color[][] grid;
-	private Set<BytePair> p1Spaces;
-	private Set<BytePair> p2Spaces;
+//	private Set<BytePair> p1Spaces;
+//	private Set<BytePair> p2Spaces;
+	private List<Set<BytePair>> playerSpaces;
 	private boolean drawGhosts;
 
 	/*
 	 * Length of a side of a square cell
 	 */
-	private static int CELL_LENGTH = 30;
+	static final int CELL_LENGTH = 30;
 
 	public BoardPanel(boolean drawGhosts) {
 		setBackground(Color.LIGHT_GRAY);
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-		p1Spaces = new HashSet<BytePair>();
-		p2Spaces = new HashSet<BytePair>();
+	//	p1Spaces = new HashSet<BytePair>();
+	//	p2Spaces = new HashSet<BytePair>();
+		playerSpaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			playerSpaces.add(new HashSet<BytePair>());
+		}
 		
 		this.drawGhosts = drawGhosts;
 	}
@@ -41,10 +47,12 @@ public class BoardPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		CELL_LENGTH = Math.min(getWidth() / GameUtil.BOARD_WIDTH, getHeight() / GameUtil.BOARD_HEIGHT);
+		this.setBackground(Color.WHITE);
 		
-		Set<BytePair> ghostLocations = findGhostLocation(p1Spaces, grid);
-		ghostLocations.addAll(findGhostLocation(p2Spaces, grid));
+		Set<BytePair> ghostLocations = new HashSet<BytePair>();
+		for (int i = 0; i < playerSpaces.size(); i++) {
+			ghostLocations.addAll(findGhostLocation(playerSpaces.get(i), grid));
+		}
 		
 		// draw the spaces themselves
 		if (grid != null) {			
@@ -54,7 +62,7 @@ public class BoardPanel extends JPanel {
 					
 					g.setColor(c);
 					
-					if (drawGhosts && isGhostSpace(j, i, ghostLocations)) {
+					if (isGhostSpace(j, i, ghostLocations)) {
 						if (c.equals(GameUtil.PIECE_COLORS[0])) {
 							g.setColor(GameUtil.GHOST);
 						} 
@@ -66,17 +74,21 @@ public class BoardPanel extends JPanel {
 		}
 
 		// draw the outlines of the falling pieces
-		Set<Line> p1Sides = findSides(p1Spaces); 
-		Set<Line> p2Sides = findSides(p2Spaces);
-
-		drawPieceOutLine(g, Color.BLACK, p1Sides);
-		drawPieceOutLine(g, Color.PINK, p2Sides);
+		List<Set<Line>> playerSides = new ArrayList<Set<Line>>(GameUtil.NUM_PLAYERS);
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			playerSides.add(findSides(playerSpaces.get(i)));
+		}
+		
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			drawPieceOutLine(g, GameUtil.OUTLINE_COLORS[i % 2], playerSides.get(i));
+		}
 	}
 
-	public void updateGrid(Color[][] grid, Set<BytePair> p1Spaces, Set<BytePair> p2Spaces) {
+	public void updateGrid(Color[][] grid, List<Set<BytePair>> playerSpaces) {
 		this.grid = grid;
-		this.p1Spaces = p1Spaces;
-		this.p2Spaces = p2Spaces;
+		for (int i = 0; i < playerSpaces.size(); i++) {
+			this.playerSpaces.set(i, playerSpaces.get(i));
+		}
 	}
 	
 	private static boolean occupied(Set<BytePair> bottom, Color[][] board) {

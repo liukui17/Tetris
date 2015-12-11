@@ -124,23 +124,28 @@ public class ServerConnectionManager implements Runnable {
 					out.writeLong(msgLong);
 				}
 
-				// send out the player scores
-				int p1Score = state.getScore(0);
-				int p2Score = state.getScore(1);
-				
-				out.writeInt(p1Score);
-				out.writeInt(p2Score);
-				
-				// send out isGameOver
+				// send out the score and isGameOver
+				int[] playerScores = new int[GameUtil.NUM_PLAYERS];
+				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+					playerScores[i] = state.getScore(i);
+				}
+
+				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+					out.writeInt(playerScores[i]);
+				}
+
 				boolean isGameOver = state.getIsGameOver();
 				out.writeBoolean(isGameOver);
 				
 				// send out player 1's then player 2's falling piece spaces
-				long p1Spaces = Encoder.encodeSpacesOfPiece(state.getSpaces(0));
-				long p2Spaces = Encoder.encodeSpacesOfPiece(state.getSpaces(1));
+				long[] pSpaces = new long[GameUtil.NUM_PLAYERS];
+				for (int i = 0; i < pSpaces.length; i++) {
+					pSpaces[i] = Encoder.encodeSpacesOfPiece(state.getSpaces(i));
+				}
 				
-				out.writeLong(p1Spaces);
-				out.writeLong(p2Spaces);
+				for (int i = 0; i < pSpaces.length; i++) {
+					out.writeLong(pSpaces[i]);
+				}
 				
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);

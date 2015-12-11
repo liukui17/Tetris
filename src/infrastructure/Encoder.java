@@ -7,9 +7,16 @@ import java.util.Set;
 
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
-	public static final int MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
+	public static final int COLOR_MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
 	public static final int BYTE = 8;
 	public static final int BYTE_MASK = 255;  // 00..11111111
+	
+	public static final byte COMMAND_MASK = (1 << (BYTE / 2)) - 1; // 00001111
+	
+	public static final int PLAYER_BITS = 3;
+	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << (BYTE / 2); // 01110000
+	
+	public static final byte QUIT_MASK = (byte) (1 << (BYTE - 1)); // 1000000
 
 	public static int colorToInt(Color color) {
 		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
@@ -70,7 +77,7 @@ public class Encoder {
 		 * Decode the long from right to left to allow use of a simple mask
 		 */
 		for (int i = row.length - 1; i >= 0; i--) {
-			int nextColor = (int) (bits & MASK);
+			int nextColor = (int) (bits & COLOR_MASK);
 			row[i] = GameUtil.PIECE_COLORS[nextColor];
 			bits >>= BITS_PER_COLOR;
 		}
@@ -86,23 +93,24 @@ public class Encoder {
 	 * @requires bits must follow the established encoding && player must be
 	 * either 0 or 1 && board != null
 	 */
-	public static void decodeCommand(byte bits, int player, GameStateManager gameState) {
-		/*
-		 * 01111111 = 127
-		 * 
-		 * Ignore the MSB because it indicates the player who made
-		 * the command, which does not provide any information about
-		 * the actual action to be taken.
-		 */
-		byte command = (byte) (bits & 127);
+	public static void decodeCommand(byte bits, GameStateManager gameState) {
+		// get command using from bottom four bits
+		byte command = (byte) (bits & COMMAND_MASK);
+		
+		// get player number from next top three bits
+		int player = (bits & PLAYER_MASK) >> (BYTE / 2);
 
+		System.out.println(player);
+				
 		switch (command) {
 			case 0: gameState.tryMoveLeft(player); break;
 			case 1: gameState.tryMoveRight(player); break;
 			case 2: gameState.tryRotateLeft(player); break;
 			case 4: gameState.tryMoveDown(player); break;
 			case 8: gameState.drop(player); break;
-			default: throw new IllegalArgumentException();
+			default:	// just ignore anything else that is given so the user can
+								// accidentally hit some other key without us having to throw
+								// an illegal argument exception
 		}
 	}
 
@@ -116,21 +124,17 @@ public class Encoder {
 	 * 
 	 * @return an encoded byte of the specified player's key press
 	 */
-	public static byte encodeKeyPress(int key, boolean player) {
-		byte encoding;
-		if (player) {
-			encoding = 0;
-		} else {
-			encoding = -128;
-		}
-
+	public static byte encodeKeyPress(int key, int player) {
+		byte encoding = 0;
+		System.out.println(player);
+		encoding += player << (BYTE / 2);
 		switch (key) {
 			case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
 			case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
 			case KeyEvent.VK_UP: return (byte) (encoding | 2);
 			case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
 			case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
-			default: throw new IllegalArgumentException();
+			default: return COMMAND_MASK; // use 00001111 as default for anything unrecognized
 		}
 	}
 	

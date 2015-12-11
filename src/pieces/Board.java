@@ -60,6 +60,16 @@ public class Board {
 	}
 	
 	/**
+	 * Disables a given player's piece (do this for players
+	 * that disconnect mid-game)
+	 */
+	public void disable(int player) {
+		if (player >= 0 && player < GameUtil.NUM_PLAYERS) {
+			playerPieces[player] = null;
+		}
+	}
+	
+	/**
 	 * Mainly for testing purposes. If you decide to call
 	 * this, do NOT modify the piece. Use it only for
 	 * observing.
@@ -82,6 +92,9 @@ public class Board {
 	}
 	
 	public synchronized boolean tryMoveLeft(int player) {
+		if (playerPieces[player] == null) {
+			return false;
+		}
 		playerPieces[player].moveLeft();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].moveRight();
@@ -91,6 +104,9 @@ public class Board {
 	}
 	
 	public synchronized boolean tryMoveRight(int player) {
+		if (playerPieces[player] == null) {
+			return false;
+		}
 		playerPieces[player].moveRight();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].moveLeft();
@@ -100,6 +116,9 @@ public class Board {
 	}
 	
 	public synchronized boolean tryMoveDown(int player) {
+		if (playerPieces[player] == null) {
+			return false;
+		}
 		playerPieces[player].moveDown();
 		int collisions = checkNoCollisionsMovedPiece(player);
 		if (collisions == 1 || collisions == 3) {
@@ -114,6 +133,9 @@ public class Board {
 	}
 	
 	public synchronized boolean tryRotateLeft(int player) {
+		if (playerPieces[player] == null) {
+			return false;
+		}
 		playerPieces[player].rotateLeft();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].rotateRight();
@@ -123,6 +145,9 @@ public class Board {
 	}
 	
 	public synchronized boolean tryRotateRight(int player) {
+		if (playerPieces[player] == null) {
+			return false;
+		}
 		playerPieces[player].rotateRight();
 		if (checkNoCollisionsMovedPiece(player) != 0) {
 			playerPieces[player].rotateLeft();
@@ -180,6 +205,9 @@ public class Board {
 	 * the bounds of the board.
 	 */
 	private synchronized boolean checkNoCollisionsWithSetSquares(int player) {
+		if (playerPieces[player] == null) {
+			return true;
+		}
 		for (Square square : playerPieces[player].squares) {
 			Square[] row = boardRows.get(square.y);
 			if (row != null) {
@@ -201,7 +229,7 @@ public class Board {
 	 */
 	private synchronized boolean checkNoCollisionsWithOtherPlayers(int player) {
 		for (int i = 0; i < playerPieces.length; i++) {
-			if (i != player) {
+			if (i != player && playerPieces[i] != null) {
 				for (Square square : playerPieces[player].squares) {
 					if (playerPieces[i].containsSquare(square)) {
 						return false;
@@ -233,9 +261,11 @@ public class Board {
 		}
 		// fill in falling piece squares
 		for (int i = 0; i < playerPieces.length; i++) {
-			for (Square square : playerPieces[i].squares) {
-				if (square.y == rowNum) {
-					rowColors[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square.color;
+			if (playerPieces[i] != null) {
+				for (Square square : playerPieces[i].squares) {
+					if (square.y == rowNum) {
+						rowColors[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square.color;
+					}
 				}
 			}
 		}
@@ -269,17 +299,19 @@ public class Board {
 	 * (private utility function; call when appropriate).
 	 */
 	private synchronized void addToSetSquares(int player) {
-		// Adds the given player's current piece into the pieces
-	  // that are no longer moving (hit the bottom).
-		for (Square square : playerPieces[player].squares) {
-			Square[] row = boardRows.get(square.y);
-			if (row == null) {
-				boardRows.put(square.y, new Square[GameUtil.BOARD_WIDTH]);
+		if (playerPieces[player] != null) {
+			// Adds the given player's current piece into the pieces
+		  // that are no longer moving (hit the bottom).
+			for (Square square : playerPieces[player].squares) {
+				Square[] row = boardRows.get(square.y);
+				if (row == null) {
+					boardRows.put(square.y, new Square[GameUtil.BOARD_WIDTH]);
+				}
+				boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 			}
-			boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
+			// generate new piece for the player
+			playerPieces[player] = PieceFactory.generateNewPiece(player);
 		}
-		// generate new piece for the player
-		playerPieces[player] = PieceFactory.generateNewPiece(player);
 	}
 	
 	/**

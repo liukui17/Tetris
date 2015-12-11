@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
@@ -14,6 +17,8 @@ public class ClientConnectionManager implements Runnable {
 	private DataInputStream inFromServer;
 	private DataOutputStream outToServer;
 
+	boolean hasQuit;
+
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
 			DataInputStream inFromServer,
@@ -23,12 +28,32 @@ public class ClientConnectionManager implements Runnable {
 
 		this.inFromServer = inFromServer;
 		this.outToServer = outToServer;
+
+		hasQuit = false;
+	}
+
+	public void toggleHasQuit() {
+		hasQuit = !hasQuit;
 	}
 
 	@Override
 	public void run() {
-		new Thread(new ReadThread()).start();
-		new Thread(new WriteThread()).start();
+		Thread reader = new Thread(new ReadThread());
+		Thread writer = new Thread(new WriteThread());
+		reader.start();
+		writer.start();
+		try {
+			reader.join();
+			writer.join();
+		} catch (InterruptedException ie) {
+			ie.printStackTrace(System.err);
+		}
+		try {
+			inFromServer.close();
+			outToServer.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace(System.err);
+		}
 	}
 
 	/**
@@ -42,21 +67,29 @@ public class ClientConnectionManager implements Runnable {
 					// read the board state
 					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
+						if (hasQuit) {
+							return;
+						}
+					//	System.out.println(i);
 						long rowLong = inFromServer.readLong();
 						Encoder.networkMessageToGridRow(rowLong, board[i]);
 					}
 
 					// read the score and isGameOver
-					int p1Score = inFromServer.readInt();
-					int p2Score = inFromServer.readInt();
+					int[] playerScores = new int[GameUtil.NUM_PLAYERS];
+					for (int i = 0; i < playerScores.length; i++) {
+						playerScores[i] = inFromServer.readInt();
+					}
 					boolean isGameOver = inFromServer.readBoolean();
 					
 					// read the pieces of each player
-					Set<BytePair> p1Spaces = Encoder.decodeSpaces(inFromServer.readLong());
-					Set<BytePair> p2Spaces = Encoder.decodeSpaces(inFromServer.readLong());
+					List<Set<BytePair>> playerSpaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
+					for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+						playerSpaces.add(Encoder.decodeSpaces(inFromServer.readLong()));
+					}
 					
 					// put the board state, score and isGameOver in a GameState struct
-					GameState state = new GameState(board, p1Spaces, p2Spaces, p1Score, p2Score, isGameOver);
+					GameState state = new GameState(board, playerSpaces, playerScores, isGameOver);
 					
 					// wait for synchronization
 					long delay = inFromServer.readLong();

@@ -3,16 +3,25 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import infrastructure.Encoder;
+import infrastructure.GameUtil;
+
 public class MainFrame extends JFrame {
-	private static final int WIDTH = 680;
-	private static final int HEIGHT = 720;
+	private static final int WIDTH = BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH +
+			 100 + GamePanel.WIDTH +
+			 (GameUtil.BOARD_WIDTH + 1);
+	private static final int HEIGHT = BoardPanel.CELL_LENGTH * GameUtil.BOARD_HEIGHT +
+				100;
 	private static final long EASY_INTERVAL = 1000;
 	private static final long MEDIUM_INTERVAL = 500;
 	private static final long HARD_INTERVAL = 250;
@@ -23,6 +32,8 @@ public class MainFrame extends JFrame {
 	private OptionsPanel optionsPanel;
 	private WaitingPanel waitingPanel;
 	private EndPanel endPanel;
+	
+	private Socket socket;
 	
 	private boolean drawGhosts;
 	private long dropInterval;
@@ -77,7 +88,7 @@ public class MainFrame extends JFrame {
 
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							Socket socket = null;
+							socket = null;
 							boolean connected = false;
 							while (!connected) {
 								try {
@@ -99,13 +110,13 @@ public class MainFrame extends JFrame {
 								DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
 								// Should block here until server sends boolean
-								boolean isPlayerOne = in.readBoolean();
+								int playerNumber = in.readInt();
 								
 								out.writeLong(dropInterval);
 
 								c.remove(waitingPanel);
 
-								gamePanel = new GamePanel(in, out, isPlayerOne, musicPlayer, endPanel, drawGhosts);
+								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts);
 								Thread gameThread = new Thread(gamePanel);
 								c.add(gamePanel, BorderLayout.CENTER);
 								gameThread.start();
@@ -182,6 +193,46 @@ public class MainFrame extends JFrame {
 			}
 		});
 
+		addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent e) {}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (socket != null) {
+					DataOutputStream out;
+					try {
+						out = new DataOutputStream(socket.getOutputStream());
+						out.writeByte(Encoder.QUIT_MASK);
+						if (gamePanel != null) {
+							gamePanel.manager.toggleHasQuit();
+						}
+						out.close();
+						socket.close();
+					} catch (IOException e1) {
+						System.out.println("Failed to notify server...");
+					//	e1.printStackTrace();
+					}
+				}
+			}
+
+			@Override
+			public void windowClosed(WindowEvent e) {}
+
+			@Override
+			public void windowIconified(WindowEvent e) {}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {}
+
+			@Override
+			public void windowActivated(WindowEvent e) {}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {}
+			
+		});
 	}
 
 }
