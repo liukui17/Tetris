@@ -99,8 +99,6 @@ public class Encoder {
 		
 		// get player number from next top three bits
 		int player = (bits & PLAYER_MASK) >> (BYTE / 2);
-
-		System.out.println(player);
 				
 		switch (command) {
 			case 0: gameState.tryMoveLeft(player); break;
@@ -109,8 +107,8 @@ public class Encoder {
 			case 4: gameState.tryMoveDown(player); break;
 			case 8: gameState.drop(player); break;
 			default:	// just ignore anything else that is given so the user can
-								// accidentally hit some other key without us having to throw
-								// an illegal argument exception
+						// accidentally hit some other key without us having to throw
+						// an illegal argument exception
 		}
 	}
 

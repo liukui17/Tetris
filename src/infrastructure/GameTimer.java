@@ -79,8 +79,9 @@ public class GameTimer extends Thread {
 	private class Dropper extends TimerTask {
 		@Override
 		public void run() {
-			gameState.tryMoveDown(0);
-			gameState.tryMoveDown(1);
+			for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+				gameState.tryMoveDown(i);
+			}
 
 			GameState currentState = gameState.getCurrentState();
 

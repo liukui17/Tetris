@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
-/*
- * STILL UNDER DEVELOPMENT; HASN'T BEEN DEPLOYED YET
- */
 public class OneClientConnectionHandler implements Runnable {
 	private static final long DISPLAY_DELAY = 100;
 	

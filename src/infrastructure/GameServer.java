@@ -57,6 +57,16 @@ public class GameServer {
 		}
 	}
 	
+	/**
+	 * Obtains the initial dropping interval from the player's difficult settings.
+	 * The initial dropping interval is defined to be the average of all of the
+	 * players' settings.
+	 * 
+	 * @param playerSockets
+	 * 						socket connections to the players
+	 * @return the initial dropping interval
+	 * @throws IOException iff error on reading the dropping intervals from each player
+	 */
 	private static long getInitialDropInterval(Socket[] playerSockets) throws IOException {
 		DataInputStream[] streams = new DataInputStream[playerSockets.length];
 		for (int i = 0; i < streams.length; i++) {

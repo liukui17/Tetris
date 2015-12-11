@@ -9,9 +9,7 @@ public class ServerConnectionsManager implements Runnable {
 	BlockingQueue<Byte> commands;
 	BlockingQueue<GameState> outStates;
 	
-	public ServerConnectionsManager(BlockingQueue<Byte> commands,
-																	BlockingQueue<GameState> outStates,
-																	Socket[] clientSockets) {
+	public ServerConnectionsManager(BlockingQueue<Byte> commands, BlockingQueue<GameState> outStates, Socket[] clientSockets) {
 		handlers = new OneClientConnectionHandler[GameUtil.NUM_PLAYERS];
 		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
 			handlers[i] = new OneClientConnectionHandler(clientSockets[i], commands, handlers, i);
@@ -29,8 +27,8 @@ public class ServerConnectionsManager implements Runnable {
 		while (true) {
 			try {
 				nextState = outStates.take();
+				// give each client handler the next state
 				for (int i = 0; i < handlers.length; i++) {
-				//	System.out.println(nextState);
 					if (handlers[i] != null) {
 						handlers[i].giveNewOutState(nextState);
 					}
