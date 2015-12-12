@@ -37,6 +37,7 @@ public class MainFrame extends JFrame {
 	
 	private boolean drawGhosts;
 	private long dropInterval;
+	private int numPlayers;
 	
 	private MusicPlayer musicPlayer;
 	
@@ -211,6 +212,7 @@ public class MainFrame extends JFrame {
 
 								c.remove(waitingPanel);
 								
+								numPlayers = getNumPlayers();
 								System.out.println("from MainFrame " + numPlayers);
 
 								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, numPlayers);
