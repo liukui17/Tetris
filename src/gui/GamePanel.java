@@ -202,6 +202,7 @@ public class GamePanel extends JPanel implements Runnable {
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
 			for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
 				spaces.add(state.getSpaces(i));
+			//	System.out.println(state.getSpaces(i));
 			}
 			boardPanel.updateGrid(state.getBoard(), spaces);
 			boardPanel.revalidate();

@@ -9,7 +9,7 @@ public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int COLOR_MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
 	public static final int BYTE = 8;
-	public static final int BYTE_MASK = 255;  // 00..11111111
+	public static final long BYTE_MASK = 255;  // 00..11111111
 	
 	public static final byte COMMAND_MASK = (1 << (BYTE / 2)) - 1; // 00001111
 	
@@ -160,17 +160,17 @@ public class Encoder {
 		Iterator<BytePair> itr = piece.iterator();
 		
 		BytePair s = itr.next();
-		encoding += GameUtil.modulo(s.getX(), GameUtil.BOARD_WIDTH);
+		encoding |= GameUtil.modulo(s.getX(), GameUtil.BOARD_WIDTH);
 		encoding <<= BYTE;  // shift it over a byte
-		encoding += s.getY();
+		encoding |= (s.getY() & BYTE_MASK);
 		
 		for (int i = 0; i < piece.size() - 1; i++) {
 			BytePair space = itr.next();
 			
 			encoding <<= BYTE;
-			encoding += GameUtil.modulo(space.getX(), GameUtil.BOARD_WIDTH);
+			encoding |= GameUtil.modulo(space.getX(), GameUtil.BOARD_WIDTH);
 			encoding <<= BYTE;  // shift it over a byte
-			encoding += space.getY();
+			encoding |= (space.getY() & BYTE_MASK);
 		}
 		return encoding;
 	}
@@ -187,13 +187,14 @@ public class Encoder {
 		Set<BytePair> spaces = new HashSet<BytePair>();
 
 		for (int i = 0; i < 4; i++) {
-			byte y = (byte) (encoding & BYTE_MASK);
+			long y = encoding & BYTE_MASK;
 			encoding >>= BYTE;
-			byte x = (byte) (encoding & BYTE_MASK);
+			long x = encoding & BYTE_MASK;
 			encoding >>= BYTE;
-			spaces.add(new BytePair(x, y));
+			spaces.add(new BytePair((byte) x, (byte) y));
 		}
 		
 		return spaces;
 	}
+
 }

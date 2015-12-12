@@ -70,7 +70,6 @@ public class ClientConnectionManager implements Runnable {
 						if (hasQuit) {
 							return;
 						}
-					//	System.out.println(i);
 						long rowLong = inFromServer.readLong();
 						Encoder.networkMessageToGridRow(rowLong, board[i]);
 					}
