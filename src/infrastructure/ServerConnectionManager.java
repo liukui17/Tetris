@@ -183,6 +183,8 @@ public class ServerConnectionManager implements Runnable {
 				
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);
+				
+				System.out.println("sent delay");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
