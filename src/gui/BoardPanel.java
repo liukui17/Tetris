@@ -227,7 +227,7 @@ public class BoardPanel extends JPanel {
 
 			// collide with another piece
 			int newX = GameUtil.modulo(x, GameUtil.BOARD_WIDTH);
-			if (!board[y + 1][newX].equals(GameUtil.PIECE_COLORS[0])) {
+			if (y >= -1 && !board[y + 1][newX].equals(GameUtil.PIECE_COLORS[0])) {
 				return false;
 			}
 		}
