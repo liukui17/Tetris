@@ -66,7 +66,7 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		body.add(option3);
 
 		// Add the labels
-		GuiUtil.addLabel(option3, "Difficulty:", 30).setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		GuiUtil.addLabel(option3, "Difficulty:", 30);
 
 		option3.add(Box.createHorizontalGlue());
 
