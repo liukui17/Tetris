@@ -22,7 +22,7 @@ public class GameServer {
 	public static final byte SUCCESS_CREATION = 2;
 	public static final byte GAME_DOES_NOT_EXIST = 3;
 	public static final byte SUCCESS_JOIN = 4;
-	public static final byte VALID_NUM_PLAYERS = 5;
+	public static final byte VALID_NUM_PLAYERS = 4;
 	
 	public static void main(String[] args) {
 		try {

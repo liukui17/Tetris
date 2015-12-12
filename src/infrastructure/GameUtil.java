@@ -4,8 +4,9 @@ import java.awt.Color;
 
 public class GameUtil {
 	//public static final int NUM_PLAYERS = 2;
-	public static final int PLAYER_START_SECTION_WIDTH = 8;
-	//public static final int BOARD_WIDTH = NUM_PLAYERS * PLAYER_START_SECTION_WIDTH;
+	//public static final int PLAYER_START_SECTION_WIDTH = 7;
+	public static final int LONG_SIZE = 64;
+	public static final int BOARD_WIDTH = LONG_SIZE / Encoder.BITS_PER_COLOR;
 	public static final int BOARD_HEIGHT = 24;
 
 	public static final Color[] OUTLINE_COLORS = {
@@ -15,6 +16,10 @@ public class GameUtil {
 	
 	public static final Color EMPTY = Color.WHITE;
 	public static final Color GHOST = Color.LIGHT_GRAY;
+	
+	public static int computeSectionWidth(int numPlayers) {
+		return BOARD_WIDTH / numPlayers;
+	}
 	
 	/**
 	 * Computes positive modulus, i.e. the remainder of doing dividend / divisor

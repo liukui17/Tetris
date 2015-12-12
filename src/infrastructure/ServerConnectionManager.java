@@ -160,7 +160,7 @@ public class ServerConnectionManager implements Runnable {
 			try {
 				// send out the Color[][] first
 				for (Color[] row : state.getBoard()) {
-					long msgLong = Encoder.gridRowToNetworkMessage(row, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
+					long msgLong = Encoder.gridRowToNetworkMessage(row, GameUtil.BOARD_WIDTH);
 					out.writeLong(msgLong);
 				}
 
@@ -180,7 +180,7 @@ public class ServerConnectionManager implements Runnable {
 				// send out the player's pieces
 				long[] pSpaces = new long[numPlayers];
 				for (int i = 0; i < pSpaces.length; i++) {
-					pSpaces[i] = Encoder.encodeSpacesOfPiece(state.getSpaces(i), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
+					pSpaces[i] = Encoder.encodeSpacesOfPiece(state.getSpaces(i), GameUtil.BOARD_WIDTH);
 				}
 				
 				for (int i = 0; i < pSpaces.length; i++) {
