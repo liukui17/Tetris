@@ -25,6 +25,7 @@ public class BoardPanel extends JPanel {
 	private Color[][] grid;
 	private List<Set<BytePair>> playerSpaces;
 	private boolean drawGhosts;
+	private int numPlayers;
 
 	/*
 	 * Length of a side of a square cell
@@ -36,11 +37,14 @@ public class BoardPanel extends JPanel {
 	 */
 	static final int BORDER_THICKNESS = 3;
 
-	public BoardPanel(boolean drawGhosts) {
+	public BoardPanel(boolean drawGhosts, int numPlayers) {
+		this.numPlayers = numPlayers;
+		System.out.println("from boardPanel  " + numPlayers);
+		
 		setBackground(Color.LIGHT_GRAY);
-		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
-		playerSpaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
-		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+		grid = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
+		playerSpaces = new ArrayList<Set<BytePair>>(numPlayers);
+		for (int i = 0; i < numPlayers; i++) {
 			playerSpaces.add(new HashSet<BytePair>());
 		}
 		
@@ -55,7 +59,7 @@ public class BoardPanel extends JPanel {
 		Set<BytePair> ghostLocations = new HashSet<BytePair>();
 		for (int i = 0; i < playerSpaces.size(); i++) {
 			Set<BytePair> nextSpaces = playerSpaces.get(i);
-			if (nextSpaces != null) {
+			if (drawGhosts && nextSpaces != null) {
 				ghostLocations.addAll(findGhostLocation(playerSpaces.get(i), grid));
 			}
 		}
@@ -63,7 +67,7 @@ public class BoardPanel extends JPanel {
 		// draw the spaces themselves
 		if (grid != null) {			
 			for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-				for (int j = 0; j < GameUtil.BOARD_WIDTH; j++) {
+				for (int j = 0; j < numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH; j++) {
 					Color c = grid[i][j];
 					
 					g.setColor(c);
@@ -80,8 +84,8 @@ public class BoardPanel extends JPanel {
 		}
 
 		// draw the outlines of the falling pieces
-		List<Set<Line>> playerSides = new ArrayList<Set<Line>>(GameUtil.NUM_PLAYERS);
-		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+		List<Set<Line>> playerSides = new ArrayList<Set<Line>>(numPlayers);
+		for (int i = 0; i < numPlayers; i++) {
 			Set<BytePair> nextSpaces = playerSpaces.get(i);
 			if (nextSpaces != null) {
 				playerSides.add(findSides(nextSpaces));
@@ -100,9 +104,9 @@ public class BoardPanel extends JPanel {
 		}
 	}
 	
-	private static boolean occupied(Set<BytePair> bottom, Color[][] board) {
+	private boolean occupied(Set<BytePair> bottom, Color[][] board) {
 		for (BytePair space : bottom) {
-			int x = GameUtil.modulo((int) space.getX(), GameUtil.BOARD_WIDTH);
+			int x = GameUtil.modulo((int) space.getX(), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
 			int y = (int) space.getY();
 			
 			if (y >= 0 && y < GameUtil.BOARD_HEIGHT && !board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
@@ -112,7 +116,7 @@ public class BoardPanel extends JPanel {
 		return false;
 	}
 
-	private static Set<BytePair> findGhostLocation(Set<BytePair> spaces, Color[][] board) {
+	private Set<BytePair> findGhostLocation(Set<BytePair> spaces, Color[][] board) {
 		Set<BytePair> rest = new HashSet<BytePair>();
 		Set<BytePair> bottom = groupSpaces(spaces, rest);
 
@@ -217,7 +221,7 @@ public class BoardPanel extends JPanel {
 		}
 	}
 
-	private static boolean canMoveDown(Collection<BytePair> bottom, Color[][] board) {
+	private boolean canMoveDown(Collection<BytePair> bottom, Color[][] board) {
 		if (bottom.isEmpty()) {
 			return false;
 		}
@@ -232,7 +236,7 @@ public class BoardPanel extends JPanel {
 			}
 
 			// collide with another piece
-			int newX = GameUtil.modulo(x, GameUtil.BOARD_WIDTH);
+			int newX = GameUtil.modulo(x, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
 			if (y >= -1 && !board[y + 1][newX].equals(GameUtil.PIECE_COLORS[0])) {
 				return false;
 			}
@@ -261,11 +265,11 @@ public class BoardPanel extends JPanel {
 		}
 	}
 
-	private static Set<Line> findSides(Set<BytePair> spaces) {
+	private Set<Line> findSides(Set<BytePair> spaces) {
 		Map<Line, Integer> sideCounts = new HashMap<Line, Integer>();
 
 		for (BytePair p : spaces) {
-			int x = GameUtil.modulo(p.getX(), GameUtil.BOARD_WIDTH) * CELL_LENGTH;
+			int x = GameUtil.modulo(p.getX(), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH) * CELL_LENGTH;
 			int y = p.getY() * CELL_LENGTH;
 
 			Point upperLeft = new Point(x, y);

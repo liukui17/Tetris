@@ -23,6 +23,8 @@ public class GameTimer extends Thread {
 
 	// The current interval between drops in milliseconds
 	private long dropInterval;
+	
+	private int numPlayers;
 
 	private GameStateManager gameState;
 
@@ -33,19 +35,20 @@ public class GameTimer extends Thread {
 	 * with
 	 */
 	public GameTimer(long initialDropInterval, GameStateManager gameState,
-			BlockingQueue<GameState> out) {
+			BlockingQueue<GameState> out, int numPlayers) {
 		timer = Executors.newSingleThreadScheduledExecutor();
 		dropper = new Dropper();
 		dropInterval = initialDropInterval;
 		this.gameState = gameState;
 		this.out = out;
+		this.numPlayers = numPlayers;
 	}
 
 	/**
 	 * Constructs a new GameTimer with the default drop interval.
 	 */
-	public GameTimer(GameStateManager gameState, BlockingQueue<GameState> out) {
-		this(DEFAULT_DROP_INTERVAL, gameState, out);
+	public GameTimer(GameStateManager gameState, BlockingQueue<GameState> out, int numPlayers) {
+		this(DEFAULT_DROP_INTERVAL, gameState, out, numPlayers);
 	}
 
 	@Override
@@ -81,7 +84,7 @@ public class GameTimer extends Thread {
 	private class Dropper extends TimerTask {
 		@Override
 		public void run() {
-			for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			for (int i = 0; i < numPlayers; i++) {
 				gameState.tryMoveDown(i);
 			}
 

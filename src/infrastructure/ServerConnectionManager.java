@@ -23,12 +23,16 @@ public class ServerConnectionManager implements Runnable {
 	private Socket[] playerSockets;
 	private DataInputStream[] playerInputStreams;
 	private DataOutputStream[] playerOutputStreams;
+	
+	private int numPlayers;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
 			Socket[] playerSockets) {
 		this.commands = commands;
 		this.outStates = outStates;
+		this.numPlayers = playerSockets.length;
+		System.out.println("from serverconnmanager " + numPlayers);
 
 		this.playerSockets = playerSockets;
 		playerInputStreams = new DataInputStream[this.playerSockets.length];
@@ -45,7 +49,7 @@ public class ServerConnectionManager implements Runnable {
 
 	@Override
 	public void run() {
-		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+		for (int i = 0; i < numPlayers; i++) {
 			new Thread(new ReadThread(playerInputStreams[i], i)).start();
 		}
 		new Thread(new WriteManager()).start();
@@ -115,7 +119,7 @@ public class ServerConnectionManager implements Runnable {
 
 					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
 
-					Thread[] writeThreads = new Thread[GameUtil.NUM_PLAYERS];
+					Thread[] writeThreads = new Thread[numPlayers];
 					for (int i = 0; i < writeThreads.length; i++) {
 						if (playerOutputStreams[i] != null) {
 							writeThreads[i] = new Thread(new WriteThread(playerOutputStreams[i], state, displayDelay));
@@ -156,17 +160,17 @@ public class ServerConnectionManager implements Runnable {
 			try {
 				// send out the Color[][] first
 				for (Color[] row : state.getBoard()) {
-					long msgLong = Encoder.gridRowToNetworkMessage(row);
+					long msgLong = Encoder.gridRowToNetworkMessage(row, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
 					out.writeLong(msgLong);
 				}
 
 				// send out the score and isGameOver
-				int[] playerScores = new int[GameUtil.NUM_PLAYERS];
-				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+				int[] playerScores = new int[numPlayers];
+				for (int i = 0; i < numPlayers; i++) {
 					playerScores[i] = state.getScore(i);
 				}
 
-				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+				for (int i = 0; i < numPlayers; i++) {
 					out.writeInt(playerScores[i]);
 				}
 
@@ -174,9 +178,9 @@ public class ServerConnectionManager implements Runnable {
 				out.writeBoolean(isGameOver);
 				
 				// send out the player's pieces
-				long[] pSpaces = new long[GameUtil.NUM_PLAYERS];
+				long[] pSpaces = new long[numPlayers];
 				for (int i = 0; i < pSpaces.length; i++) {
-					pSpaces[i] = Encoder.encodeSpacesOfPiece(state.getSpaces(i));
+					pSpaces[i] = Encoder.encodeSpacesOfPiece(state.getSpaces(i), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
 				}
 				
 				for (int i = 0; i < pSpaces.length; i++) {

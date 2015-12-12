@@ -38,12 +38,12 @@ public class Encoder {
 	 * @return a long containing the bits encoding the colors that can
 	 * 				 sent over the network
 	 */
-	public static long gridRowToNetworkMessage(Color[] row) {
+	public static long gridRowToNetworkMessage(Color[] row, int width) {
 		long networkFormat = 0;
 
 		// empty row
 		if (row == null) {
-			for (int i = 0; i < GameUtil.BOARD_WIDTH; i++) {
+			for (int i = 0; i < width; i++) {
 				networkFormat += colorToInt(Color.GRAY);
 				networkFormat <<= BITS_PER_COLOR;
 			}
@@ -147,7 +147,7 @@ public class Encoder {
 	 * 
 	 * @return an encoded long of the spaces
 	 */
-	public static long encodeSpacesOfPiece(Set<BytePair> piece) {
+	public static long encodeSpacesOfPiece(Set<BytePair> piece, int width) {
 		if (piece == null) {
 			return -1;
 		}
@@ -165,7 +165,7 @@ public class Encoder {
 		Iterator<BytePair> itr = piece.iterator();
 		
 		BytePair s = itr.next();
-		encoding |= GameUtil.modulo(s.getX(), GameUtil.BOARD_WIDTH);
+		encoding |= GameUtil.modulo(s.getX(), width);
 		encoding <<= BYTE;  // shift it over a byte
 		encoding |= (s.getY() & BYTE_MASK);
 		
@@ -173,7 +173,7 @@ public class Encoder {
 			BytePair space = itr.next();
 			
 			encoding <<= BYTE;
-			encoding |= GameUtil.modulo(space.getX(), GameUtil.BOARD_WIDTH);
+			encoding |= GameUtil.modulo(space.getX(), width);
 			encoding <<= BYTE;  // shift it over a byte
 			encoding |= (space.getY() & BYTE_MASK);
 		}

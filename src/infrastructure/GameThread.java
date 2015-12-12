@@ -25,17 +25,20 @@ public class GameThread implements Runnable {
 
 	private GameStateManager gameState;
 	private GameTimer timer;
+	
+	private int numPlayers;
 
 	public GameThread(Socket[] playerSockets, long initialDropInterval) throws IOException {	
 		this.playerSockets = playerSockets;
+		numPlayers = playerSockets.length;
 
 		commandsFromClient = new LinkedBlockingQueue<Byte>();
 		outStates = new LinkedBlockingQueue<GameState>();
 
 		threshold = INITIAL_THRESHOLD;
 
-		gameState = new GameStateManager();
-		timer = new GameTimer(initialDropInterval, gameState, outStates);
+		gameState = new GameStateManager(numPlayers);
+		timer = new GameTimer(initialDropInterval, gameState, outStates, numPlayers);
 	}
 
 	@Override
@@ -86,7 +89,7 @@ public class GameThread implements Runnable {
 				GameState updatedGameState = gameState.getCurrentState();
 
 				int sumScore = 0;
-				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+				for (int i = 0; i < numPlayers; i++) {
 					sumScore += gameState.getScore(i);
 				}
 				

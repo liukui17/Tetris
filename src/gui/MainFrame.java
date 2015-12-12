@@ -19,7 +19,7 @@ import infrastructure.GameServer;
 import infrastructure.GameUtil;
 
 public class MainFrame extends JFrame {
-	private static final int WIDTH = BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH + 200;
+	private static final int WIDTH = 500;/*BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH + 200;*/
 	private static final int HEIGHT = BoardPanel.CELL_LENGTH * GameUtil.BOARD_HEIGHT + (GameUtil.BOARD_HEIGHT + 1) + 100;
 	private static final long EASY_INTERVAL = 1000;
 	private static final long MEDIUM_INTERVAL = 500;
@@ -189,8 +189,10 @@ public class MainFrame extends JFrame {
 								out.writeLong(dropInterval);
 
 								c.remove(waitingPanel);
+								
+								System.out.println("from MainFrame " + numPlayers);
 
-								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts);
+								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, numPlayers);
 								Thread gameThread = new Thread(gamePanel);
 								c.add(gamePanel, BorderLayout.CENTER);
 								gameThread.start();

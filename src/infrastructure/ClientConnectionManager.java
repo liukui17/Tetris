@@ -15,18 +15,22 @@ public class ClientConnectionManager implements Runnable {
 
 	private DataInputStream inFromServer;
 	private DataOutputStream outToServer;
+	
+	private int numPlayers;
 
 	boolean hasQuit;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
 			DataInputStream inFromServer,
-			DataOutputStream outToServer) {
+			DataOutputStream outToServer, int numPlayers) {
 		this.outputCommandBytes = commands;
 		this.inputStates = inputStates;
 
 		this.inFromServer = inFromServer;
 		this.outToServer = outToServer;
+		this.numPlayers = numPlayers;
+		System.out.println("from clientconnectionmanager " + numPlayers);
 
 		hasQuit = false;
 	}
@@ -67,7 +71,7 @@ public class ClientConnectionManager implements Runnable {
 			while (true) {
 				try {
 					// read the board state
-					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
+					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
 					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 						if (hasQuit) {
 							return;
@@ -81,7 +85,7 @@ public class ClientConnectionManager implements Runnable {
 					}
 
 					// read the score and isGameOver
-					int[] playerScores = new int[GameUtil.NUM_PLAYERS];
+					int[] playerScores = new int[numPlayers];
 					for (int i = 0; i < playerScores.length; i++) {
 						playerScores[i] = inFromServer.readInt();
 					}
@@ -90,8 +94,8 @@ public class ClientConnectionManager implements Runnable {
 					boolean isGameOver = inFromServer.readBoolean();
 					
 					// read the pieces of each player
-					List<Set<BytePair>> playerSpaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
-					for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+					List<Set<BytePair>> playerSpaces = new ArrayList<Set<BytePair>>(numPlayers);
+					for (int i = 0; i < numPlayers; i++) {
 						playerSpaces.add(Encoder.decodeSpaces(inFromServer.readLong()));
 					}
 					

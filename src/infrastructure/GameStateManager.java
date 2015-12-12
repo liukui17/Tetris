@@ -13,13 +13,18 @@ public class GameStateManager {
 	
 	private Board board;
 	private int[] playerScores;
+	private int numPlayers;
 	
-	public GameStateManager() {
-		board = new Board();
-		playerScores = new int[GameUtil.NUM_PLAYERS];
+	public GameStateManager(int numPlayers) {
+		this.numPlayers = numPlayers;
+		
+		board = new Board(numPlayers);
+		playerScores = new int[numPlayers];
 		for (int i = 0; i < playerScores.length; i++) {
 			playerScores[i] = 0;
 		}
+		
+		System.out.println("from Gamestatemanager " + numPlayers);
 	}
 	
 	public synchronized int getScore(int player) {
@@ -37,14 +42,14 @@ public class GameStateManager {
 	 */
 	public synchronized GameState getCurrentState() {
 		// convert board into a Color[][]
-		Color[][] currentBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
+		Color[][] currentBoard = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
 		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 			currentBoard[i] = board.getRowColors(i);
 		}
 		
 		// get player pieces
-		List<Set<BytePair>> playerPieces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
-		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+		List<Set<BytePair>> playerPieces = new ArrayList<Set<BytePair>>(numPlayers);
+		for (int i = 0; i < numPlayers; i++) {
 			Piece nextPlayerPiece = board.getPiece(i);
 			if (nextPlayerPiece != null) {
 				playerPieces.add(nextPlayerPiece.getBytePairs());

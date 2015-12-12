@@ -62,9 +62,9 @@ public abstract class Piece {
 		return orientation;
 	}
 	
-	public synchronized boolean containsSquare(Square other) {
+	public synchronized boolean containsSquare(Square other, int width) {
 		for (Square square : squares) {
-			if (GameUtil.modulo(other.x, GameUtil.BOARD_WIDTH) == GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)
+			if (GameUtil.modulo(other.x, width) == GameUtil.modulo(square.x, width)
 					&& other.y == square.y) {
 				return true;
 			}
@@ -130,10 +130,10 @@ public abstract class Piece {
 		for (Square square : squares) {
 			int oldX = square.x - pivot.x;
 			int oldY = square.y - pivot.y;
-		//	int newX = GameUtil.modulo(-oldY, GameUtil.BOARD_WIDTH) + pivot.x;
+		//	int newX = GameUtil.modulo(-oldY, numPlayers) + pivot.x;
 			int newX = -oldY + pivot.x;
 			int newY = oldX + pivot.y;
-		//	square.x = GameUtil.modulo(newX, GameUtil.BOARD_WIDTH);
+		//	square.x = GameUtil.modulo(newX, numPlayers);
 			square.x = newX;
 			square.y = newY;
 		}
@@ -144,10 +144,10 @@ public abstract class Piece {
 		for (Square square : squares) {
 			int oldX = square.x - pivot.x;
 			int oldY = square.y - pivot.y;
-		//	int newX = GameUtil.modulo(oldY, GameUtil.BOARD_WIDTH) + pivot.x;
+		//	int newX = GameUtil.modulo(oldY, numPlayers) + pivot.x;
 			int newX = oldY + pivot.x;
 			int newY = -oldX + pivot.y;
-		//	square.x = GameUtil.modulo(newX, GameUtil.BOARD_WIDTH);
+		//	square.x = GameUtil.modulo(newX, numPlayers);
 			square.x = newX;
 			square.y = newY;
 		}
