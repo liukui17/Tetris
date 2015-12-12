@@ -65,6 +65,35 @@ public class GameThread implements Runnable {
 		timer.start();
 
 		/*
+		 * Thread that checks if socket closes and tells the gameState
+		 */
+		new Thread() {
+			public void run() {
+				while (true) {
+					boolean remaining = false;
+
+					for (int i = 0; i < playerSockets.length; i++) {
+						if (playerSockets[i] == null ) {
+							gameState.disable(i);
+						} else {
+							remaining = true;
+						}
+					}
+					
+					if (!remaining) {
+						return;
+					}
+
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}.start();
+
+		/*
 		 * Dequeues command bytes from the command BlockingQueue, parses it,
 		 * updates the board, and enqueues the new game state to the outStates
 		 * BlockingQueue.
@@ -72,12 +101,6 @@ public class GameThread implements Runnable {
 		while (true) {
 			byte commandByte;
 			try {
-				
-				for (int i = 0; i < playerSockets.length; i++) {
-					if (playerSockets[i] == null) {
-						gameState.disable(i);
-					}
-				}
 				
 				// get the next command
 				commandByte = commandsFromClient.take();
