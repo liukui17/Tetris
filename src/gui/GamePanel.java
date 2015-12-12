@@ -108,10 +108,11 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.setBackground(Color.LIGHT_GRAY);
 		
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		GuiUtil.addLabel(rightPanel, "Next", 30);
+		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Next", 30);
+		rightTitle.setPreferredSize(LABEL_SIZE);
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		//rightPanel.add(Box.createVerticalGlue());
+		rightPanel.add(Box.createVerticalGlue());
 		
 		add(rightPanel);
 		
