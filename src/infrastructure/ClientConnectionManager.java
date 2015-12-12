@@ -71,7 +71,7 @@ public class ClientConnectionManager implements Runnable {
 			while (true) {
 				try {
 					// read the board state
-					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
+					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 						if (hasQuit) {
 							return;

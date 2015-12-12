@@ -40,11 +40,11 @@ public class BoardPanel extends JPanel {
 
 	public BoardPanel(boolean drawGhosts, int numPlayers) {
 		this.numPlayers = numPlayers;
-		this.setPreferredSize(new Dimension(numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
+		this.setPreferredSize(new Dimension(GameUtil.BOARD_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
 		System.out.println("from boardPanel  " + numPlayers);
 		
 		setBackground(Color.LIGHT_GRAY);
-		grid = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
+		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 		playerSpaces = new ArrayList<Set<BytePair>>(numPlayers);
 		for (int i = 0; i < numPlayers; i++) {
 			playerSpaces.add(new HashSet<BytePair>());
@@ -69,7 +69,7 @@ public class BoardPanel extends JPanel {
 		// draw the spaces themselves
 		if (grid != null) {			
 			for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
-				for (int j = 0; j < numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH; j++) {
+				for (int j = 0; j < GameUtil.BOARD_WIDTH; j++) {
 					Color c = grid[i][j];
 					
 					g.setColor(c);
@@ -108,7 +108,7 @@ public class BoardPanel extends JPanel {
 	
 	private boolean occupied(Set<BytePair> bottom, Color[][] board) {
 		for (BytePair space : bottom) {
-			int x = GameUtil.modulo((int) space.getX(), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
+			int x = GameUtil.modulo((int) space.getX(), GameUtil.BOARD_WIDTH);
 			int y = (int) space.getY();
 			
 			if (y >= 0 && y < GameUtil.BOARD_HEIGHT && !board[y][x].equals(GameUtil.EMPTY)) {
@@ -238,7 +238,7 @@ public class BoardPanel extends JPanel {
 			}
 
 			// collide with another piece
-			int newX = GameUtil.modulo(x, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
+			int newX = GameUtil.modulo(x, GameUtil.BOARD_WIDTH);
 			if (y >= -1 && !board[y + 1][newX].equals(GameUtil.EMPTY)) {
 				return false;
 			}
@@ -271,7 +271,7 @@ public class BoardPanel extends JPanel {
 		Map<Line, Integer> sideCounts = new HashMap<Line, Integer>();
 
 		for (BytePair p : spaces) {
-			int x = GameUtil.modulo(p.getX(), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH) * CELL_LENGTH;
+			int x = GameUtil.modulo(p.getX(), GameUtil.BOARD_WIDTH) * CELL_LENGTH;
 			int y = p.getY() * CELL_LENGTH;
 
 			Point upperLeft = new Point(x, y);
