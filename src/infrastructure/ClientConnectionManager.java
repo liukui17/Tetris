@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -32,6 +31,9 @@ public class ClientConnectionManager implements Runnable {
 		hasQuit = false;
 	}
 
+	/**
+	 * Notifies this ClientConnectionManager that the this client has quit
+	 */
 	public void toggleHasQuit() {
 		hasQuit = !hasQuit;
 	}
@@ -70,7 +72,6 @@ public class ClientConnectionManager implements Runnable {
 						if (hasQuit) {
 							return;
 						}
-					//	System.out.println(i);
 						long rowLong = inFromServer.readLong();
 						Encoder.networkMessageToGridRow(rowLong, board[i]);
 					}

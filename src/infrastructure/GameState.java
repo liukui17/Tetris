@@ -1,14 +1,13 @@
 package infrastructure;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 /**
  * A GameState is a "struct" to store information about the game state.
- * It stores the Color[][] representing the board itself, the current p1Score,
- * and a boolean of whether the game is over.
+ * It stores the board itself, the current scores for each player, and whether
+ * the game is over.
  */
 public class GameState {
 	private final Color[][] board;

@@ -1,7 +1,5 @@
 package infrastructure;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
@@ -46,13 +44,12 @@ public class GameThread implements Runnable {
 		 * Set-up and start the thread that reads commandsFromClient from players and
 		 * sends out GameState responses.
 		 * 
-		 * Commands issued by either player will be enqueued into the shared
+		 * Commands issued by any player will be enqueued into the shared
 		 * commandsFromClient BlockingQueue.
 		 * 
 		 * GameState data to be sent to players will be dequeued from the shared
 		 * outStates BlockingQueue.
 		 */
-	//	new Thread(new ServerConnectionsManager(commandsFromClient, outStates, playerSockets)).start();
 		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets)).start();
 
 		// send out the initial state to the client
@@ -84,8 +81,8 @@ public class GameThread implements Runnable {
 				int sumScore = 0;
 				for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
 					sumScore += gameState.getScore(i);
-
 				}
+				
 				/*
 				 * speed up the timer if we've reached the current threshold and update
 				 * the threshold

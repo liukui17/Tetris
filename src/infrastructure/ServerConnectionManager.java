@@ -13,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ServerConnectionManager implements Runnable {
 	/*
-	 * The delay to send to both players simultaneously (in ms)
+	 * The delay to send to all players simultaneously (in ms)
 	 */
 	private static final long DISPLAY_DELAY = 100;
 
@@ -102,7 +102,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/** 
 	 * The thread that is responsible for writing out the board
-	 * state to both players to both players simultaneously AND fairly.
+	 * state to all players to both players simultaneously AND fairly.
 	 */
 	public class WriteManager implements Runnable {
 		@Override
@@ -171,7 +171,7 @@ public class ServerConnectionManager implements Runnable {
 				boolean isGameOver = state.getIsGameOver();
 				out.writeBoolean(isGameOver);
 				
-				// send out player 1's then player 2's falling piece spaces
+				// send out the player's pieces
 				long[] pSpaces = new long[GameUtil.NUM_PLAYERS];
 				for (int i = 0; i < pSpaces.length; i++) {
 					pSpaces[i] = Encoder.encodeSpacesOfPiece(state.getSpaces(i));
