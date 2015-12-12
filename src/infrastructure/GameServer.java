@@ -8,7 +8,7 @@ import java.net.Socket;
 
 /**
  * The server application that will connect players together to
- * play a game of collaborative Tetris.
+ * play a game of competitive Tetris.
  */
 public class GameServer {
 	public static final int PORT_NUM = 3333;
@@ -38,11 +38,12 @@ public class GameServer {
 	}
 	
 	/**
-	 * Notifies the players connected to sockets p1 and p2 which player number
-	 * they are
+	 * Notifies the players connected to sockets in the specified Socket[] which
+	 * player number they are.
 	 * 
-	 * @param p1 player 1's socket
-	 * @param p2 player 2's socket
+	 * @param playerSockets the Socket[] that contains the Sockets for each player
+	 * 
+	 * @requires playerSockets != null
 	 * 
 	 * @throws IOException on IO errors
 	 */

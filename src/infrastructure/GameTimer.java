@@ -50,7 +50,6 @@ public class GameTimer extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("Started timer");
 		timer.scheduleAtFixedRate(dropper, 0, dropInterval, TimeUnit.MILLISECONDS);
 	}
 
@@ -59,7 +58,6 @@ public class GameTimer extends Thread {
 	 */
 	public void end() {
 		timer.shutdownNow();
-		System.out.println("Ended Timer");
 	}
 
 	/**
@@ -74,7 +72,7 @@ public class GameTimer extends Thread {
 	}
 
 	/**
-	 * The TimerTask that will drop the blocks for both players
+	 * The TimerTask that will drop the blocks for all players
 	 */
 	private class Dropper extends TimerTask {
 		@Override
