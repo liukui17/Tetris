@@ -41,7 +41,6 @@ public class BoardPanel extends JPanel {
 	public BoardPanel(boolean drawGhosts, int numPlayers) {
 		this.numPlayers = numPlayers;
 		this.setPreferredSize(new Dimension(GameUtil.BOARD_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
-		System.out.println("from boardPanel  " + numPlayers);
 		
 		setBackground(Color.LIGHT_GRAY);
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];

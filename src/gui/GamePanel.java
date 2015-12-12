@@ -56,8 +56,6 @@ public class GamePanel extends JPanel implements Runnable {
 		this.numPlayers = numPlayers;
 		musicPlayer.playBGM();
 		
-		System.out.println("from gamepanel " + numPlayers);
-
 		this.playerNumber = playerNumber;
 		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers);
 		Thread managerThread = new Thread(manager);

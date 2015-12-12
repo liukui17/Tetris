@@ -24,7 +24,6 @@ public class GameStateManager {
 			playerScores[i] = 0;
 		}
 		
-		System.out.println("from Gamestatemanager " + numPlayers);
 	}
 	
 	public synchronized int getScore(int player) {
