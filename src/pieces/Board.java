@@ -3,11 +3,18 @@ package pieces;
 import infrastructure.*;
 
 import java.util.Map;
+import java.util.Queue;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Board {
 	static final int DEBUG = 0;
+	
+	// size of the queue of upcoming pieces for each player
+	static final int PIECE_QUEUE_SIZE = 3;
 	
 	/* 
 	 * 0 indicates no collision
@@ -38,10 +45,11 @@ public class Board {
 	 */
 	
 	/*
-	 * playerPieces[0] = player 1's falling piece
-	 * playerPieces[1] = player 2's falling piece
+	 * array holding each player's currently falling piece
 	 */
 	Piece[] playerPieces;
+	
+	List<Queue<Piece>> playerUpcomingPieces;
 	
 	/*
 	 * boardRows stores the FIXED rows of the Tetris game. It only stores the
@@ -56,6 +64,14 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			playerPieces[i] = PieceFactory.generateNewPiece(i);
 		}
+		playerUpcomingPieces = new ArrayList<Queue<Piece>>(GameUtil.NUM_PLAYERS);
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			Queue<Piece> nextQueue = new LinkedList<Piece>();
+			for (int j = 0; j < PIECE_QUEUE_SIZE; j++) {
+				nextQueue.add(PieceFactory.generateNewPiece(i));
+			}
+			playerUpcomingPieces.add(nextQueue);
+		}
 		checkRep();
 	}
 	
@@ -66,6 +82,7 @@ public class Board {
 	public void disable(int player) {
 		if (player >= 0 && player < GameUtil.NUM_PLAYERS) {
 			playerPieces[player] = null;
+			playerUpcomingPieces.set(player, null);
 		}
 	}
 	
@@ -310,7 +327,9 @@ public class Board {
 				boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 			}
 			// generate new piece for the player
-			playerPieces[player] = PieceFactory.generateNewPiece(player);
+		//	playerPieces[player] = PieceFactory.generateNewPiece(player);
+			playerPieces[player] = playerUpcomingPieces.get(player).remove();
+			playerUpcomingPieces.get(player).add(PieceFactory.generateNewPiece(player));
 		}
 	}
 	
