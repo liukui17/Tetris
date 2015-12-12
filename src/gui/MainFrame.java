@@ -188,13 +188,22 @@ public class MainFrame extends JFrame {
 									socket = new Socket(hostName, portNum);
 								} catch (Exception e) {
 									JTextField host = new JTextField();
+									host.setText(hostName);
+									
 									JTextField port = new JTextField();
+									port.setText(Integer.toString(portNum));
+									
 									Object[] message = {"Host name:", host, "Port number:", port};
 									
 									int option = JOptionPane.showConfirmDialog(waitingPanel, message, "Enter a valid Host and Port", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 									if (option == JOptionPane.OK_OPTION) {
 										hostName = host.getText();
-										portNum = Integer.parseInt(port.getText());
+										try {
+											portNum = Integer.parseInt(port.getText());
+										} catch (Exception e1) {
+											JOptionPane.showMessageDialog(waitingPanel, "Port number must be an integer", "Error", JOptionPane.PLAIN_MESSAGE);
+											continue;
+										}
 									} else {
 										c.remove(waitingPanel);
 										c.add(menuPanel);

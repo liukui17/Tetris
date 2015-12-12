@@ -146,6 +146,7 @@ public class GameServer {
 				
 				thread.join();
 				
+				System.out.println("removed game " + name);
 				games.remove(name);
 			} catch (IOException e) {
 				e.printStackTrace();
