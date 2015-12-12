@@ -205,14 +205,15 @@ public class MainFrame extends JFrame {
 									displayMessage("Successfully joined game");
 								}
 								
+								numPlayers = in.readInt();
+								
 								// Should block here until server sends boolean
 								int playerNumber = in.readInt();
 								
 								out.writeLong(dropInterval);
 
 								c.remove(waitingPanel);
-								
-								numPlayers = getNumPlayers();
+
 								System.out.println("from MainFrame " + numPlayers);
 
 								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, numPlayers);

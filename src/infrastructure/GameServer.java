@@ -54,8 +54,8 @@ public class GameServer {
 						games.put(gameName, game);
 
 						if (numPlayers == 1) {
-							// createGame(gameName);
-							new Thread(new GameThreadWrapper(gameName)).start();
+							createGame(gameName);
+							// new Thread(new GameThreadWrapper(gameName)).start();
 						}
 						
 						doneSetup = true;
@@ -72,8 +72,8 @@ public class GameServer {
 						game.playersOut[index] = out;
 						
 						if (game.isReady()) {
-							// createGame(gameName);
-							new Thread(new GameThreadWrapper(gameName)).start();
+							createGame(gameName);
+							// new Thread(new GameThreadWrapper(gameName)).start();
 							doneSetup = true;
 						}
 					}
@@ -121,52 +121,60 @@ public class GameServer {
 		return numPlayers;
 	}
 
-	private static class GameThreadWrapper implements Runnable {
-		private String name;
+//	private static class GameThreadWrapper implements Runnable {
+//		private String name;
+//		
+//		public GameThreadWrapper(String name) {
+//			this.name = name;
+//		}
+//		
+//		@Override
+//		public void run() {
+//			try {
+//				Game game = games.get(name);
+//				Socket[] clientSockets = game.playerSockets;
+//				
+//				notifyPlayerNumbers(game.playersOut);
+//
+//				long dropInterval = getInitialDropInterval(game.playersIn);
+//
+//				Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
+//				
+//				thread.start();
+//				thread.join();
+//
+//				games.remove(game);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+	
+	private static void createGame(String name) throws IOException {
+		Game game = games.get(name);
+		Socket[] clientSockets = game.playerSockets;
 		
-		public GameThreadWrapper(String name) {
-			this.name = name;
-		}
+		notifyNumberOfPlayers(game.playersOut);
 		
-		@Override
-		public void run() {
-			try {
-				Game game = games.get(name);
-				Socket[] clientSockets = game.playerSockets;
-				
-				notifyPlayerNumbers(game.playersOut);
+		notifyPlayerNumbers(game.playersOut);
 
-				long dropInterval = getInitialDropInterval(game.playersIn);
+		long dropInterval = getInitialDropInterval(game.playersIn);
 
-				Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
-				
-				thread.start();
-				thread.join();
+		Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
+		
+		thread.start();
 
-				games.remove(game);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		games.remove(game);
 	}
 	
-//	private static void createGame(String name) throws IOException {
-//		Game game = games.get(name);
-//		Socket[] clientSockets = game.playerSockets;
-//		
-//		notifyPlayerNumbers(game.playersOut);
-//
-//		long dropInterval = getInitialDropInterval(game.playersIn);
-//
-//		Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
-//		
-//		thread.start();
-//
-//		games.remove(game);
-//	}
+	private static void notifyNumberOfPlayers(DataOutputStream[] out) throws IOException {
+		for (int i = 0; i < out.length; i++) {
+			out[i].writeInt(out.length);
+		}
+	}
 	
 	/**
 	 * Notifies the players connected to sockets in the specified Socket[] which
