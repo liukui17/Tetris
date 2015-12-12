@@ -18,6 +18,7 @@ import infrastructure.Encoder;
 import infrastructure.GameServer;
 import infrastructure.GameUtil;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 	private static final int WIDTH = BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH + 200;
 	private static final int HEIGHT = BoardPanel.CELL_LENGTH * GameUtil.BOARD_HEIGHT + (GameUtil.BOARD_HEIGHT + 1) + 100;
@@ -83,14 +84,39 @@ public class MainFrame extends JFrame {
 		JOptionPane.showMessageDialog(waitingPanel, message);
 	}
 	
-	private boolean canStartGame(byte response) {
-		switch(response) {
-			case GameServer.GAME_ALREADY_EXISTS : displayError("Game already exists"); return false;
-			case GameServer.GAME_DOES_NOT_EXIST : displayError("Game does not exist"); return false;
-			case GameServer.ILLEGAL_NUM_PLAYERS : displayError("Illegal number of players"); return false;
-			case GameServer.SUCCESS_CREATION : displayMessage("Successfully created game"); return true;
-			case GameServer.SUCCESS_JOIN : displayMessage("Successfully joined game"); return true;
-			default : return false;
+	private void sendNameToServer(boolean creating, DataInputStream in, DataOutputStream out) throws IOException {
+		byte response;
+		String gameName = ""; 
+		while (true) {
+			gameName = getGameName();
+			out.writeUTF(gameName);
+			response = in.readByte();
+			if (creating) {
+				if (response != GameServer.GAME_ALREADY_EXISTS) {
+					break;
+				} else {
+					displayMessage("Game already exists");
+				}
+			} else {
+				if (response != GameServer.GAME_DOES_NOT_EXIST) {
+					break;
+				} else {
+					displayMessage("Game does not exist");
+				}
+			}
+		}
+	}
+	
+	private void sendNumPlayersToServer(DataInputStream in, DataOutputStream out) throws IOException {
+		byte response;
+		int numPlayers = -1;
+		while (true) {
+			numPlayers = getNumPlayers();
+			out.writeInt(numPlayers);
+			response = in.readByte();
+			if (response != GameServer.ILLEGAL_NUM_PLAYERS) {
+				break;
+			}
 		}
 	}
 
@@ -142,11 +168,6 @@ public class MainFrame extends JFrame {
 
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							boolean createOrJoin = getCreateOrJoin();
-							
-//							String gameName = getGameName();
-//							int numPlayers = getNumPlayers();
-
 							socket = null;
 							boolean connected = false;
 							while (!connected) {
@@ -168,21 +189,21 @@ public class MainFrame extends JFrame {
 								DataInputStream in = new DataInputStream(socket.getInputStream());
 								DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				
+								boolean createOrJoin = getCreateOrJoin();
+								
 								out.writeBoolean(createOrJoin);
 								
-								String gameName;
-								int numPlayers;
-								
-								while (true) {
-									gameName = getGameName();
-									numPlayers = getNumPlayers();
-									out.writeUTF(gameName);
-									out.writeInt(numPlayers);
-									if (canStartGame(in.readByte())) {
-										break;
-									}
+								// create
+								if (createOrJoin) {
+									sendNameToServer(true, in, out);
+									sendNumPlayersToServer(in, out);
+									
+									displayMessage("Sucessfully created game");
+								} else {  // join
+									sendNameToServer(false, in, out);
+									displayMessage("Successfully joined game");
 								}
-
+								
 								// Should block here until server sends boolean
 								int playerNumber = in.readInt();
 								
@@ -286,7 +307,6 @@ public class MainFrame extends JFrame {
 						socket.close();
 					} catch (IOException e1) {
 						System.out.println("Failed to notify server...");
-					//	e1.printStackTrace();
 					}
 				}
 			}
@@ -308,5 +328,4 @@ public class MainFrame extends JFrame {
 			
 		});
 	}
-
 }

@@ -22,6 +22,7 @@ public class GameServer {
 	public static final byte SUCCESS_CREATION = 2;
 	public static final byte GAME_DOES_NOT_EXIST = 3;
 	public static final byte SUCCESS_JOIN = 4;
+	public static final byte VALID_NUM_PLAYERS = 5;
 	
 	public static void main(String[] args) {
 		try {
@@ -38,55 +39,42 @@ public class GameServer {
 					DataOutputStream out = new DataOutputStream(player.getOutputStream());
 					
 					boolean makingGame = in.readBoolean();
-					String gameName = in.readUTF();
-					int numPlayers = in.readInt();
-
-					/*
-					 * 0 = can't create game; it already exists
-					 * 1 = illegal number of players
-					 * 2 = game successfully created
-					 */
+					
 					if (makingGame) {
-						if (games.containsKey(gameName)) {
-							out.writeByte(GAME_ALREADY_EXISTS);
-						} else {
-							if (numPlayers <= 0) {
-								out.writeByte(ILLEGAL_NUM_PLAYERS);
-							} else {
-								Game game = new Game(numPlayers);
-								
-								game.numConnectedPlayers++;
-								game.playerSockets[0] = player;
-								game.playersIn[0] = in;
-								game.playersOut[0] = out;
-								
-								games.put(gameName, game);
+						String gameName = getGameName(true, in, out);
+						int numPlayers = getNumPlayers(in, out);
 
-								out.writeByte(SUCCESS_CREATION);
-								if (numPlayers == 1) {
-									createGame(game);
-								}
-								doneSetup = true;
-							}
+						Game game = new Game(numPlayers);
+						
+						game.numConnectedPlayers++;
+						game.playerSockets[0] = player;
+						game.playersIn[0] = in;
+						game.playersOut[0] = out;
+						
+						games.put(gameName, game);
+
+						if (numPlayers == 1) {
+							// createGame(gameName);
+							new Thread(new GameThreadWrapper(gameName)).start();
 						}
+						
+						doneSetup = true;
 					} else {
-						if (games.containsKey(gameName)) {
-							Game game = games.get(gameName);
-							
-							game.numConnectedPlayers++;
-							
-							int index = game.numConnectedPlayers - 1;
-							game.playerSockets[index] = player;
-							game.playersIn[index] = in;
-							game.playersOut[index] = out;
-							
-							out.writeByte(SUCCESS_JOIN);
-							if (game.isReady()) {
-								createGame(game);
-								doneSetup = true;
-							}
-						} else {
-							out.writeByte(GAME_DOES_NOT_EXIST);
+						String gameName = getGameName(false, in, out);
+						
+						Game game = games.get(gameName);
+						
+						game.numConnectedPlayers++;
+						
+						int index = game.numConnectedPlayers - 1;
+						game.playerSockets[index] = player;
+						game.playersIn[index] = in;
+						game.playersOut[index] = out;
+						
+						if (game.isReady()) {
+							// createGame(gameName);
+							new Thread(new GameThreadWrapper(gameName)).start();
+							doneSetup = true;
 						}
 					}
 				}
@@ -96,15 +84,89 @@ public class GameServer {
 		}
 	}
 
-	private static void createGame(Game game) throws IOException {
-		Socket[] clientSockets = game.playerSockets;
-		
-		notifyPlayerNumbers(game.playersOut);
-
-		long dropInterval = getInitialDropInterval(game.playersIn);
-
-		new Thread(new GameThread(clientSockets, dropInterval)).start();
+	private static String getGameName(boolean creating, DataInputStream in, DataOutputStream out) throws IOException {
+		String gameName = "";
+		while (true) {
+			gameName = in.readUTF();
+			if (creating) {
+				if (games.containsKey(gameName)) {
+					out.writeByte(GAME_ALREADY_EXISTS);
+				} else {
+					out.writeByte(GAME_DOES_NOT_EXIST);
+					break;
+				}
+			} else {
+				if (games.containsKey(gameName)) {
+					out.writeByte(GAME_ALREADY_EXISTS);
+					break;
+				} else {
+					out.writeByte(GAME_DOES_NOT_EXIST);
+				}
+			}
+		}	
+		return gameName;
 	}
+	
+	private static int getNumPlayers(DataInputStream in, DataOutputStream out) throws IOException {
+		int numPlayers = in.readInt();
+		while (true) {
+			if (numPlayers <= 0) {
+				out.writeByte(ILLEGAL_NUM_PLAYERS);
+			} else {
+				out.writeByte(VALID_NUM_PLAYERS);
+				break;
+			}
+			numPlayers = in.readInt();
+		}
+		return numPlayers;
+	}
+
+	private static class GameThreadWrapper implements Runnable {
+		private String name;
+		
+		public GameThreadWrapper(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				Game game = games.get(name);
+				Socket[] clientSockets = game.playerSockets;
+				
+				notifyPlayerNumbers(game.playersOut);
+
+				long dropInterval = getInitialDropInterval(game.playersIn);
+
+				Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
+				
+				thread.start();
+				thread.join();
+
+				games.remove(game);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+//	private static void createGame(String name) throws IOException {
+//		Game game = games.get(name);
+//		Socket[] clientSockets = game.playerSockets;
+//		
+//		notifyPlayerNumbers(game.playersOut);
+//
+//		long dropInterval = getInitialDropInterval(game.playersIn);
+//
+//		Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
+//		
+//		thread.start();
+//
+//		games.remove(game);
+//	}
 	
 	/**
 	 * Notifies the players connected to sockets in the specified Socket[] which
@@ -119,7 +181,6 @@ public class GameServer {
 	private static void notifyPlayerNumbers(DataOutputStream[] out) throws IOException {
 		for (int i = 0; i < out.length; i++) {
 			out[i].writeInt(i);
-			System.out.println("dfdfd");
 		}
 	}
 
