@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.DataInputStream;
@@ -44,6 +45,7 @@ public class MainFrame extends JFrame {
 	private boolean drawGhosts;
 	private boolean upcomingAssistance;
 	private long dropInterval;
+	private int playerNumber;
 	private int numPlayers;
 	private String hostName;
 	private int portNum;
@@ -242,7 +244,7 @@ public class MainFrame extends JFrame {
 								numPlayers = in.readInt();
 								
 								// Should block here until server sends boolean
-								int playerNumber = in.readInt();
+								playerNumber = in.readInt();
 								
 								out.writeLong(dropInterval);
 
@@ -368,7 +370,7 @@ public class MainFrame extends JFrame {
 					DataOutputStream out;
 					try {
 						out = new DataOutputStream(socket.getOutputStream());
-						out.writeByte(Encoder.QUIT_MASK);
+						out.writeByte(Encoder.encodeKeyPress(KeyEvent.VK_UNDEFINED, playerNumber));
 						if (gamePanel != null) {
 							gamePanel.manager.toggleHasQuit();
 						}

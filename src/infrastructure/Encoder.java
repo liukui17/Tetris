@@ -20,8 +20,6 @@ public class Encoder {
 	public static final int PLAYER_BITS = 2;
 	public static final int PLAYER_BITS_START = COMMAND_BITS + NEXT_PIECE_BITS;
 	public static final byte PLAYER_MASK = (byte) (((1 << PLAYER_BITS) - 1) << PLAYER_BITS_START); // 11000000
-	
-	public static final byte QUIT_MASK = (byte) (1 << (BYTE - 1)); // 1000000
 
 	private static final Color[] PIECE_COLORS = {
 			Color.WHITE, // empty
@@ -110,6 +108,7 @@ public class Encoder {
 	 * either 0 or 1 && board != null
 	 */
 	public static void decodeCommand(byte bits, GameStateManager gameState) {
+		
 		// get command using from bottom four bits
 		byte command = (byte) (bits & COMMAND_MASK);
 
@@ -117,6 +116,7 @@ public class Encoder {
 		int player = (bits & PLAYER_MASK) >>> PLAYER_BITS_START;
 
 		switch (command) {
+			case 0: gameState.disable(player);
 			case 1: gameState.tryMoveLeft(player); break;
 			case 2: gameState.tryMoveRight(player); break;
 			case 3: gameState.tryRotateLeft(player); break;
@@ -142,12 +142,13 @@ public class Encoder {
 		byte encoding = 0;
 		encoding += player << PLAYER_BITS_START;
 		switch (key) {
+			case KeyEvent.VK_UNDEFINED: return (byte) (encoding + 0);
 			case KeyEvent.VK_LEFT: return (byte) (encoding + 1);
 			case KeyEvent.VK_RIGHT: return (byte) (encoding + 2);
 			case KeyEvent.VK_UP: return (byte) (encoding + 3);
 			case KeyEvent.VK_DOWN: return (byte) (encoding + 4);
 			case KeyEvent.VK_SPACE: return (byte) (encoding + 5);
-			default: return COMMAND_MASK; // use 00000111 as default for anything unrecognized
+			default: return (byte) (encoding + COMMAND_MASK); // add 00000111 as default for anything unrecognized
 		}
 	}
 

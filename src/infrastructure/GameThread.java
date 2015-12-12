@@ -73,7 +73,7 @@ public class GameThread implements Runnable {
 					boolean remaining = false;
 
 					for (int i = 0; i < playerSockets.length; i++) {
-						if (playerSockets[i] == null ) {
+						if (playerSockets[i] == null) {
 							gameState.disable(i);
 						} else {
 							remaining = true;
