@@ -14,7 +14,7 @@ public class Board {
 	static final int DEBUG = 0;
 	
 	// size of the queue of upcoming pieces for each player
-	static final int PIECE_QUEUE_SIZE = 3;
+	static final int PIECE_QUEUE_SIZE = 1;
 	
 	/* 
 	 * 0 indicates no collision

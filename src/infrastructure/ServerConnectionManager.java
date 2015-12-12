@@ -83,7 +83,7 @@ public class ServerConnectionManager implements Runnable {
 			while (!isFinished) {
 				try {
 					byte msg = player.readByte();
-					if ((msg & Encoder.QUIT_MASK) == 0) {
+					if ((msg ^ Encoder.QUIT_MASK) != 0) {
 						commands.add(msg);
 					} else {
 						break;

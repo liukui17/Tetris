@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private EndPanel endPanel;
 
 	private JLabel[] scoreLabels;
+	private JLabel[] upcomingLabels;
 
 	private KeyEventDispatcher keyDispatcher;
 
@@ -44,9 +45,9 @@ public class GamePanel extends JPanel implements Runnable {
 	private int numPlayers;
 	
 	ClientConnectionManager manager;
-	int playerNumber;
 
-	public GamePanel(DataInputStream in, DataOutputStream out, int playerNumber, MusicPlayer musicPlayer, EndPanel endPanel, boolean drawGhosts, int numPlayers) {
+	public GamePanel(DataInputStream in, DataOutputStream out, int playerNumber, MusicPlayer musicPlayer,
+					 EndPanel endPanel, boolean drawGhosts, boolean upcomingAssistance, int numPlayers) {
 
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
@@ -58,7 +59,6 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		System.out.println("from gamepanel " + numPlayers);
 
-		this.playerNumber = playerNumber;
 		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers);
 		Thread managerThread = new Thread(manager);
 		managerThread.start();
@@ -110,6 +110,21 @@ public class GamePanel extends JPanel implements Runnable {
 		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Next", 30);
 		rightTitle.setPreferredSize(LABEL_SIZE);
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		if (upcomingAssistance) {
+			upcomingLabels = new JLabel[numPlayers];
+			for (int i = 0; i < numPlayers; i++) {
+				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				JLabel nextTitleLabel = GuiUtil.addLabel(rightPanel, "Player " + i, 20);
+				nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+				nextTitleLabel.setPreferredSize(LABEL_SIZE);
+				
+				leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				scoreLabels[i] =  GuiUtil.addLabel(rightPanel, null, 20);
+			}
+		} else {
+			upcomingLabels = null;
+		}
 		
 		rightPanel.add(Box.createVerticalGlue());
 		
@@ -175,6 +190,10 @@ public class GamePanel extends JPanel implements Runnable {
 			for (int i = 0; i < numPlayers; i++) {
 				scoreLabels[i].setText(Integer.toString(state.getScore(i)));
 			}
+			
+		/*	for (int i = 0; i < numPlayers; i++) {
+				scoreLabels[i].setText(text);
+			} */
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(numPlayers);

@@ -250,7 +250,7 @@ public class MainFrame extends JFrame {
 
 								System.out.println("from MainFrame " + numPlayers);
 
-								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, numPlayers);
+								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, upcomingAssistance, numPlayers);
 								setSize(gamePanel.getPreferredSize());
 								Thread gameThread = new Thread(gamePanel);
 								c.add(gamePanel, BorderLayout.CENTER);

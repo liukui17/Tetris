@@ -14,11 +14,14 @@ public class Encoder {
 	public static final int COMMAND_BITS = 3;
 	public static final byte COMMAND_MASK = (1 << COMMAND_BITS) - 1; // 00000111
 
-	public static final int PLAYER_BITS = 3;
-	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << COMMAND_BITS; // 00111000
-
+	public static final int NEXT_PIECE_BITS = 3;
+	public static final byte NEXT_PIECE_MASK = ((1 << NEXT_PIECE_BITS) - 1) << COMMAND_BITS; // 00111000
+	
+	public static final int PLAYER_BITS = 2;
+	public static final int PLAYER_BITS_START = COMMAND_BITS + NEXT_PIECE_BITS;
+	public static final byte PLAYER_MASK = (byte) (((1 << PLAYER_BITS) - 1) << PLAYER_BITS_START); // 11000000
+	
 	public static final byte QUIT_MASK = (byte) (1 << (BYTE - 1)); // 1000000
-	public static final byte OTHER_QUIT = 1 << (BYTE - 2); // 01000000
 
 	private static final Color[] PIECE_COLORS = {
 			Color.WHITE, // empty
@@ -111,14 +114,14 @@ public class Encoder {
 		byte command = (byte) (bits & COMMAND_MASK);
 
 		// get player number from next top three bits
-		int player = (bits & PLAYER_MASK) >> COMMAND_BITS;
+		int player = (bits & PLAYER_MASK) >>> PLAYER_BITS_START;
 
 		switch (command) {
-			case 0: gameState.tryMoveLeft(player); break;
-			case 1: gameState.tryMoveRight(player); break;
-			case 2: gameState.tryRotateLeft(player); break;
-			case 3: gameState.tryMoveDown(player); break;
-			case 4: gameState.drop(player); break;
+			case 1: gameState.tryMoveLeft(player); break;
+			case 2: gameState.tryMoveRight(player); break;
+			case 3: gameState.tryRotateLeft(player); break;
+			case 4: gameState.tryMoveDown(player); break;
+			case 5: gameState.drop(player); break;
 			default:	// just ignore anything else that is given so the user can
 				// accidentally hit some other key without us having to throw
 				// an illegal argument exception
@@ -137,13 +140,13 @@ public class Encoder {
 	 */
 	public static byte encodeKeyPress(int key, int player) {
 		byte encoding = 0;
-		encoding += player << COMMAND_BITS;
+		encoding += player << PLAYER_BITS_START;
 		switch (key) {
-			case KeyEvent.VK_LEFT: return (byte) (encoding + 0);
-			case KeyEvent.VK_RIGHT: return (byte) (encoding + 1);
-			case KeyEvent.VK_UP: return (byte) (encoding + 2);
-			case KeyEvent.VK_DOWN: return (byte) (encoding + 3);
-			case KeyEvent.VK_SPACE: return (byte) (encoding + 4);
+			case KeyEvent.VK_LEFT: return (byte) (encoding + 1);
+			case KeyEvent.VK_RIGHT: return (byte) (encoding + 2);
+			case KeyEvent.VK_UP: return (byte) (encoding + 3);
+			case KeyEvent.VK_DOWN: return (byte) (encoding + 4);
+			case KeyEvent.VK_SPACE: return (byte) (encoding + 5);
 			default: return COMMAND_MASK; // use 00000111 as default for anything unrecognized
 		}
 	}
