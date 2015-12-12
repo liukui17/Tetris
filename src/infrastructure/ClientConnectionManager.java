@@ -17,8 +17,6 @@ public class ClientConnectionManager implements Runnable {
 	private DataOutputStream outToServer;
 
 	boolean hasQuit;
-	
-	int numActivePlayers;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
@@ -31,14 +29,13 @@ public class ClientConnectionManager implements Runnable {
 		this.outToServer = outToServer;
 
 		hasQuit = false;
-		numActivePlayers = GameUtil.NUM_PLAYERS;
 	}
 
 	/**
 	 * Notifies this ClientConnectionManager that the this client has quit
 	 */
 	public void toggleHasQuit() {
-		hasQuit = !hasQuit;
+		hasQuit = true;
 	}
 
 	@Override
@@ -75,6 +72,10 @@ public class ClientConnectionManager implements Runnable {
 						if (hasQuit) {
 							return;
 						}
+						/*
+						 * likely still get one socket closed exception since the user might close
+						 * the window in the middle of this read, thereby closing the socket
+						 */
 						long rowLong = inFromServer.readLong();
 						Encoder.networkMessageToGridRow(rowLong, board[i]);
 					}
@@ -84,6 +85,8 @@ public class ClientConnectionManager implements Runnable {
 					for (int i = 0; i < playerScores.length; i++) {
 						playerScores[i] = inFromServer.readInt();
 					}
+					
+					// read if the game has ended or not
 					boolean isGameOver = inFromServer.readBoolean();
 					
 					// read the pieces of each player
@@ -102,8 +105,7 @@ public class ClientConnectionManager implements Runnable {
 					// send it to the GUI
 					inputStates.add(state);
 				} catch (IOException e) {
-					e.printStackTrace();
-					return;
+				//	e.printStackTrace();
 				}
 			}
 		}
