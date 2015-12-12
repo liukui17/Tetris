@@ -18,12 +18,13 @@ public class ClientConnectionManager implements Runnable {
 	
 	private int numPlayers;
 
-	boolean hasQuit;
+	private boolean hasQuit;
+	private boolean upcomingAssist;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
 			DataInputStream inFromServer,
-			DataOutputStream outToServer, int numPlayers) {
+			DataOutputStream outToServer, int numPlayers, boolean upcomingAssist) {
 		this.outputCommandBytes = commands;
 		this.inputStates = inputStates;
 
@@ -32,6 +33,7 @@ public class ClientConnectionManager implements Runnable {
 		this.numPlayers = numPlayers;
 
 		hasQuit = false;
+		this.upcomingAssist = upcomingAssist;
 	}
 
 	/**

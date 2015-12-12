@@ -59,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		System.out.println("from gamepanel " + numPlayers);
 
-		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers);
+		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers, upcomingAssistance);
 		Thread managerThread = new Thread(manager);
 		managerThread.start();
 
