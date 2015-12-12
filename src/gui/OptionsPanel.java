@@ -13,9 +13,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class OptionsPanel extends TemplatePanel implements ActionListener {
+public class OptionsPanel extends TemplatePanel {
 	
-	private ButtonListener buttonListener;
+	JButton easyButton;
+	JButton mediumButton;
+	JButton hardButton;
+	JButton ghostYesBtn;
+	JButton ghostNoBtn;
+	JButton upcomingYesButton;
+	JButton upcomingNoButton;
+	JButton backButton;
 
 	public OptionsPanel(MusicPlayer musicPlayer) {
 		super("Options");
@@ -71,19 +78,16 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		option3.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton easyButton = GuiUtil.addButton(option3, "Easy", 25, buttonList);
+		easyButton = GuiUtil.addButton(option3, "Easy", 25, buttonList);
 		easyButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
-		easyButton.addActionListener(this);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton mediumButton = GuiUtil.addButton(option3, "Medium", 25, buttonList);
-		mediumButton.addActionListener(this);
+		mediumButton = GuiUtil.addButton(option3, "Medium", 25, buttonList);
 		
 		option3.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton hardButton = GuiUtil.addButton(option3, "Hard", 25, buttonList);
-		hardButton.addActionListener(this);
+		hardButton = GuiUtil.addButton(option3, "Hard", 25, buttonList);
 		
 		easyButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -124,14 +128,12 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		option2.add(Box.createHorizontalGlue());
 
 		// Add the buttons
-		JButton ghostYesBtn = GuiUtil.addButton(option2, "Yes", 25, buttonList);
+		ghostYesBtn = GuiUtil.addButton(option2, "Yes", 25, buttonList);
 		ghostYesBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
-		ghostYesBtn.addActionListener(this);
 
 		option2.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton ghostNoBtn = GuiUtil.addButton(option2, "No", 25, buttonList);
-		ghostNoBtn.addActionListener(this);
+		ghostNoBtn = GuiUtil.addButton(option2, "No", 25, buttonList);
 		
 		// Border the last clicked button
 		ghostNoBtn.addMouseListener(new MouseAdapter() {
@@ -158,14 +160,12 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		
 		GuiUtil.addLabel(option4, "Show Upcoming:", 30);
 		option4.add(Box.createHorizontalGlue());
-		JButton upcomingYesButton = GuiUtil.addButton(option4, "Yes", 25, buttonList);
+		upcomingYesButton = GuiUtil.addButton(option4, "Yes", 25, buttonList);
 		upcomingYesButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
-		upcomingYesButton.addActionListener(this);
 		
 		option4.add(Box.createRigidArea(new Dimension(10, 0)));
 		
-		JButton upcomingNoButton = GuiUtil.addButton(option4, "No", 25, buttonList);
-		upcomingNoButton.addActionListener(this);
+		upcomingNoButton = GuiUtil.addButton(option4, "No", 25, buttonList);
 		
 		upcomingYesButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -186,24 +186,10 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 		
 		body.add(Box.createVerticalGlue());
 		
-		JButton backButton = GuiUtil.addButton(body, "Back", 25, buttonList);
-		backButton.addActionListener(this);
+		backButton = GuiUtil.addButton(body, "Back", 25, buttonList);
 		
 		GuiUtil.formatButtons(buttonList);
 
-	}
-	
-	//private Dimension find
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (buttonListener != null) {
-			buttonListener.buttonClicked(e.getActionCommand());
-		}
-	}
-
-	public void setButtonListener(ButtonListener listener) {
-		this.buttonListener = listener;
 	}
 
 }

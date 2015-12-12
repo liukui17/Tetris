@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.DataInputStream;
@@ -40,6 +42,7 @@ public class MainFrame extends JFrame {
 	private Socket socket;
 	
 	private boolean drawGhosts;
+	private boolean upcomingAssistance;
 	private long dropInterval;
 	private int numPlayers;
 	private String hostName;
@@ -136,6 +139,7 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 		
 		drawGhosts = true;
+		upcomingAssistance = true;
 		dropInterval = EASY_INTERVAL;
 		musicPlayer = new MusicPlayer();
 
@@ -272,32 +276,62 @@ public class MainFrame extends JFrame {
 
 			}
 		});
-
-		optionsPanel.setButtonListener(new ButtonListener() {
-			public void buttonClicked(String s) {
-				switch (s) {
-				case "Back":
-					c.add(menuPanel, BorderLayout.CENTER);
-					c.remove(optionsPanel);
-					revalidate();
-					repaint();
-					break;
-				case "No":
-					drawGhosts = false;
-					break;
-				case "Yes":
-					drawGhosts = true;
-					break;
-				case "Easy":
-					dropInterval = EASY_INTERVAL;
-					break;
-				case "Medium":
-					dropInterval = MEDIUM_INTERVAL;
-					break;
-				case "Hard":
-					dropInterval = HARD_INTERVAL;
-					break;
-				}
+		
+		optionsPanel.easyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dropInterval = EASY_INTERVAL;
+			//	System.out.println("easy");
+			}
+		});
+		
+		optionsPanel.mediumButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dropInterval = MEDIUM_INTERVAL;
+			//	System.out.println("medium");
+			}
+		});
+		
+		optionsPanel.hardButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dropInterval = HARD_INTERVAL;
+			//	System.out.println("hard");
+			}
+		});
+		
+		optionsPanel.ghostYesBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				drawGhosts = true;
+			//	System.out.println("ghosts: " + drawGhosts);
+			}
+		});
+		
+		optionsPanel.ghostNoBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				drawGhosts = false;
+			//	System.out.println("ghosts: " + drawGhosts);
+			}
+		});
+		
+		optionsPanel.upcomingYesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				upcomingAssistance = true;
+			//	System.out.println("upcoming: " + upcomingAssistance);
+			}
+		});
+		
+		optionsPanel.upcomingNoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				upcomingAssistance = false;
+			//	System.out.println("upcoming: " + upcomingAssistance);
+			}
+		});
+		
+		optionsPanel.backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				c.add(menuPanel, BorderLayout.CENTER);
+				c.remove(optionsPanel);
+				revalidate();
+				repaint();
 			}
 		});
 		
