@@ -180,7 +180,9 @@ public class ServerConnectionManager implements Runnable {
 				}
 				
 				for (int i = 0; i < pSpaces.length; i++) {
-					out.writeLong(pSpaces[i]);
+					if (pSpaces[i] != -1) {
+						out.writeLong(pSpaces[i]);
+					}
 				}
 				
 				// send the delay for the gui to display the game state

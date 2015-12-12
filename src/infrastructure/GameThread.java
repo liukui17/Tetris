@@ -69,6 +69,13 @@ public class GameThread implements Runnable {
 		while (true) {
 			byte commandByte;
 			try {
+				
+				for (int i = 0; i < playerSockets.length; i++) {
+					if (playerSockets[i] == null) {
+						gameState.disable(i);
+					}
+				}
+				
 				// get the next command
 				commandByte = commandsFromClient.take();
 

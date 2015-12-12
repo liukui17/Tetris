@@ -17,6 +17,8 @@ public class ClientConnectionManager implements Runnable {
 	private DataOutputStream outToServer;
 
 	boolean hasQuit;
+	
+	int numActivePlayers;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
@@ -29,6 +31,7 @@ public class ClientConnectionManager implements Runnable {
 		this.outToServer = outToServer;
 
 		hasQuit = false;
+		numActivePlayers = GameUtil.NUM_PLAYERS;
 	}
 
 	/**

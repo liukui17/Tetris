@@ -99,7 +99,7 @@ public class BoardPanel extends JPanel {
 			int x = GameUtil.modulo((int) space.getX(), GameUtil.BOARD_WIDTH);
 			int y = (int) space.getY();
 			
-			if (y >= 0 && !board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
+			if (y >= 0 && y < GameUtil.BOARD_HEIGHT && !board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
 				return true;
 			}
 		}

@@ -11,12 +11,13 @@ public class Encoder {
 	public static final int BYTE = 8;
 	public static final long BYTE_MASK = 255;  // 00..11111111
 	
-	public static final byte COMMAND_MASK = (1 << (BYTE / 2)) - 1; // 00001111
+	public static final byte COMMAND_MASK = (1 << 3) - 1; // 00000111
 	
 	public static final int PLAYER_BITS = 3;
-	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << (BYTE / 2); // 01110000
+	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << 3; // 00111000
 	
 	public static final byte QUIT_MASK = (byte) (1 << (BYTE - 1)); // 1000000
+	public static final byte OTHER_QUIT = 1 << (BYTE - 2); // 01000000
 
 	public static int colorToInt(Color color) {
 		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
@@ -104,8 +105,8 @@ public class Encoder {
 			case 0: gameState.tryMoveLeft(player); break;
 			case 1: gameState.tryMoveRight(player); break;
 			case 2: gameState.tryRotateLeft(player); break;
-			case 4: gameState.tryMoveDown(player); break;
-			case 8: gameState.drop(player); break;
+			case 3: gameState.tryMoveDown(player); break;
+			case 4: gameState.drop(player); break;
 			default:	// just ignore anything else that is given so the user can
 						// accidentally hit some other key without us having to throw
 						// an illegal argument exception
@@ -126,11 +127,11 @@ public class Encoder {
 		byte encoding = 0;
 		encoding += player << (BYTE / 2);
 		switch (key) {
-			case KeyEvent.VK_LEFT: return (byte) (encoding | 0);
-			case KeyEvent.VK_RIGHT: return (byte) (encoding | 1);
-			case KeyEvent.VK_UP: return (byte) (encoding | 2);
-			case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
-			case KeyEvent.VK_SPACE: return (byte) (encoding | 8);
+			case KeyEvent.VK_LEFT: return (byte) (encoding + 0);
+			case KeyEvent.VK_RIGHT: return (byte) (encoding + 1);
+			case KeyEvent.VK_UP: return (byte) (encoding + 2);
+			case KeyEvent.VK_DOWN: return (byte) (encoding + 3);
+			case KeyEvent.VK_SPACE: return (byte) (encoding + 4);
 			default: return COMMAND_MASK; // use 00001111 as default for anything unrecognized
 		}
 	}
@@ -146,6 +147,9 @@ public class Encoder {
 	 * @return an encoded long of the spaces
 	 */
 	public static long encodeSpacesOfPiece(Set<BytePair> piece) {
+		if (piece == null) {
+			return -1;
+		}
 		/*
 		 * This will only work because
 		 *   - all pieces have 4 spaces
