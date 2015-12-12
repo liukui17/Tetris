@@ -36,7 +36,7 @@ public class GameServer {
 					Socket player = server.accept();
 					DataInputStream in = new DataInputStream(player.getInputStream());
 					DataOutputStream out = new DataOutputStream(player.getOutputStream());
-
+					
 					boolean makingGame = in.readBoolean();
 					String gameName = in.readUTF();
 					int numPlayers = in.readInt();
@@ -57,6 +57,8 @@ public class GameServer {
 								
 								game.numConnectedPlayers++;
 								game.playerSockets[0] = player;
+								game.playersIn[0] = in;
+								game.playersOut[0] = out;
 								
 								games.put(gameName, game);
 
@@ -69,10 +71,16 @@ public class GameServer {
 						}
 					} else {
 						if (games.containsKey(gameName)) {
-							out.writeByte(SUCCESS_JOIN);
 							Game game = games.get(gameName);
+							
 							game.numConnectedPlayers++;
-							game.playerSockets[game.numConnectedPlayers] = player;
+							
+							int index = game.numConnectedPlayers - 1;
+							game.playerSockets[index] = player;
+							game.playersIn[index] = in;
+							game.playersOut[index] = out;
+							
+							out.writeByte(SUCCESS_JOIN);
 							if (game.isReady()) {
 								createGame(game);
 								doneSetup = true;
@@ -91,9 +99,9 @@ public class GameServer {
 	private static void createGame(Game game) throws IOException {
 		Socket[] clientSockets = game.playerSockets;
 		
-		notifyPlayerNumbers(clientSockets);
+		notifyPlayerNumbers(game.playersOut);
 
-		long dropInterval = getInitialDropInterval(clientSockets);
+		long dropInterval = getInitialDropInterval(game.playersIn);
 
 		new Thread(new GameThread(clientSockets, dropInterval)).start();
 	}
@@ -108,14 +116,10 @@ public class GameServer {
 	 * 
 	 * @throws IOException on IO errors
 	 */
-	private static void notifyPlayerNumbers(Socket[] playerSockets) throws IOException {
-		DataOutputStream[] notifiers = new DataOutputStream[playerSockets.length];
-		for (int i = 0; i < notifiers.length; i++) {
-			notifiers[i] = new DataOutputStream(playerSockets[i].getOutputStream());
-		}
-
-		for (int i = 0; i < notifiers.length; i++) {
-			notifiers[i].writeInt(i);
+	private static void notifyPlayerNumbers(DataOutputStream[] out) throws IOException {
+		for (int i = 0; i < out.length; i++) {
+			out[i].writeInt(i);
+			System.out.println("dfdfd");
 		}
 	}
 
@@ -129,29 +133,28 @@ public class GameServer {
 	 * @return the initial dropping interval
 	 * @throws IOException iff error on reading the dropping intervals from each player
 	 */
-	private static long getInitialDropInterval(Socket[] playerSockets) throws IOException {
-		DataInputStream[] streams = new DataInputStream[playerSockets.length];
-		for (int i = 0; i < streams.length; i++) {
-			streams[i] = new DataInputStream(playerSockets[i].getInputStream());
-		}
-
+	private static long getInitialDropInterval(DataInputStream[] in) throws IOException {
 		long interval = 0;
-		for (int i = 0; i < streams.length; i++) {
-			interval += streams[i].readLong();
+		for (int i = 0; i < in.length; i++) {
+			interval += in[i].readLong();
 		}
 
-		return interval / streams.length;
+		return interval / in.length;
 	}
 	
 	static class Game {
 		int capacity;
 		int numConnectedPlayers;
 		Socket[] playerSockets;
+		DataInputStream[] playersIn;
+		DataOutputStream[] playersOut;
 		
 		public Game(int numPlayers) {
 			capacity = numPlayers;
 			numConnectedPlayers = 0;
 			playerSockets = new Socket[capacity];
+			playersIn = new DataInputStream[capacity];
+			playersOut = new DataOutputStream[capacity];
 		}
 		
 		public boolean isReady() {

@@ -148,6 +148,36 @@ public class OptionsPanel extends TemplatePanel implements ActionListener {
 			}
 		});
 		
+	/*	JPanel option4 = new JPanel();
+		option3.setBackground(Color.LIGHT_GRAY);
+		option3.setLayout(new BoxLayout(option4, BoxLayout.X_AXIS));
+		body.add(option4);
+		
+		GuiUtil.addLabel(option4, "Upcoming Pieces Display:", 30);
+		option4.add(Box.createHorizontalGlue());
+		JButton upcomingYesButton = GuiUtil.addButton(option4, "Yes", 25, buttonList);
+		upcomingYesButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+		upcomingYesButton.addActionListener(this);
+		
+		JButton upcomingNoButton = GuiUtil.addButton(option4, "No", 25, buttonList);
+		upcomingNoButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+		upcomingNoButton.addActionListener(this);
+		
+		upcomingYesButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				upcomingNoButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				upcomingYesButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+				
+			}
+		});
+		
+		upcomingNoButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				upcomingYesButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				upcomingNoButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+			}
+		}); */
+		
 		//---------------------------------
 		
 		body.add(Box.createVerticalGlue());
