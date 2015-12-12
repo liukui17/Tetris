@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -39,6 +40,7 @@ public class BoardPanel extends JPanel {
 
 	public BoardPanel(boolean drawGhosts, int numPlayers) {
 		this.numPlayers = numPlayers;
+		this.setPreferredSize(new Dimension(numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
 		System.out.println("from boardPanel  " + numPlayers);
 		
 		setBackground(Color.LIGHT_GRAY);

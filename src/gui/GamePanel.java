@@ -17,6 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -24,7 +25,6 @@ import infrastructure.BytePair;
 import infrastructure.ClientConnectionManager;
 import infrastructure.Encoder;
 import infrastructure.GameState;
-import infrastructure.GameUtil;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -95,7 +95,6 @@ public class GamePanel extends JPanel implements Runnable {
 		add(Box.createHorizontalGlue());
 
 		boardPanel = new BoardPanel(drawGhosts, numPlayers);
-		boardPanel.setPreferredSize(new Dimension(480, 720));
 		boardPanel.setAlignmentX(CENTER_ALIGNMENT);
 		boardPanel.setAlignmentY(CENTER_ALIGNMENT);
 		add(boardPanel);
