@@ -166,9 +166,11 @@ public class MainFrame extends JFrame {
 				switch (s) {
 				case "Options":
 					c.add(optionsPanel, BorderLayout.CENTER);
+					setSize(optionsPanel.getPreferredSize());
 					break;
 				case "Help":
 					c.add(helpPanel, BorderLayout.CENTER);
+					setSize(helpPanel.getPreferredSize());
 					break;
 				case "Start":
 					c.add(waitingPanel, BorderLayout.CENTER);
