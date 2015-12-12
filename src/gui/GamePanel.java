@@ -73,15 +73,16 @@ public class GamePanel extends JPanel implements Runnable {
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setBackground(Color.LIGHT_GRAY);
 		
+		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		GuiUtil.addLabel(leftPanel, "Score", 30);
+		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
 		scoreLabels = new JLabel[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 			JLabel nextTitleLabel = GuiUtil.addLabel(leftPanel, "Player " + i, 20);
 			nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
 			nextTitleLabel.setPreferredSize(LABEL_SIZE);
-			
-			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-			GuiUtil.addLabel(leftPanel, "Score", 20);
 			
 			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 			scoreLabels[i] =  GuiUtil.addLabel(leftPanel, "0", 20);
@@ -106,12 +107,15 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.setBackground(Color.LIGHT_GRAY);
 		
-		rightPanel.add(Box.createVerticalGlue());
+		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		GuiUtil.addLabel(rightPanel, "Next", 30);
+		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		//rightPanel.add(Box.createVerticalGlue());
 		
 		add(rightPanel);
 		
 		// Keyboard Dispatcher
-		// Instead of printing, need to send input to network
 		keyDispatcher = new KeyEventDispatcher() {
 			public boolean dispatchKeyEvent(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED) {

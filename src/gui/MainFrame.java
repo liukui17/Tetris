@@ -12,6 +12,7 @@ import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import infrastructure.Encoder;
@@ -25,6 +26,9 @@ public class MainFrame extends JFrame {
 	private static final long EASY_INTERVAL = 1000;
 	private static final long MEDIUM_INTERVAL = 500;
 	private static final long HARD_INTERVAL = 250;
+	
+	private static final String DEFAULT_HOST = "localhost";
+	private static final int DEFAULT_PORT = 3333;
 
 	private MenuPanel menuPanel;
 	private HelpPanel helpPanel;
@@ -38,13 +42,15 @@ public class MainFrame extends JFrame {
 	private boolean drawGhosts;
 	private long dropInterval;
 	private int numPlayers;
+	private String hostName;
+	private int portNum;
 	
 	private MusicPlayer musicPlayer;
 	
 	private boolean getCreateOrJoin() {
 		Object[] options = {"Create a new game", "Join a current game"};
 		int response = JOptionPane.showOptionDialog(waitingPanel, "Would you like to create or join a game",
-				"Create or join a game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				"Create or join a game", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		return response == JOptionPane.YES_OPTION;
 	}
 	
@@ -56,7 +62,7 @@ public class MainFrame extends JFrame {
 		String input = "";
 		while (input.isEmpty()) {
 			input = (String) JOptionPane.showInputDialog(waitingPanel,
-          																						prompt);
+          																						prompt, "Title", JOptionPane.PLAIN_MESSAGE);
 		}
 		return input;
 	}
@@ -67,7 +73,7 @@ public class MainFrame extends JFrame {
 			try {
 				numPlayers = Integer.parseInt((String) JOptionPane.showInputDialog(
             waitingPanel,
-            "Enter number of players"));
+            "Enter number of players", "Players", JOptionPane.PLAIN_MESSAGE));
 				break;
 			} catch (NumberFormatException e) {
 				displayError("Not a number. Try again");
@@ -82,7 +88,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void displayMessage(String message) {
-		JOptionPane.showMessageDialog(waitingPanel, message);
+		JOptionPane.showMessageDialog(waitingPanel, message, "Reponse", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	private void sendNameToServer(boolean creating, DataInputStream in, DataOutputStream out) throws IOException {
@@ -121,7 +127,7 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	public MainFrame(String title, String hostName, int portNum) {		
+	public MainFrame(String title) {		
 		super(title);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,6 +148,9 @@ public class MainFrame extends JFrame {
 		optionsPanel = new OptionsPanel(musicPlayer);
 		waitingPanel = new WaitingPanel();
 		endPanel = new EndPanel();
+		
+		hostName = DEFAULT_HOST;
+		portNum = DEFAULT_PORT;
 
 		// Add Swing components to content pane
 		Container c = getContentPane();
@@ -173,13 +182,23 @@ public class MainFrame extends JFrame {
 							boolean connected = false;
 							while (!connected) {
 								try {
+									System.out.println("Trying to connect to " + hostName + " " + portNum);
 									socket = new Socket(hostName, portNum);
 								} catch (Exception e) {
-									System.out.println("Server not accepting connections");
-									try {
-										Thread.sleep(1000);
-									} catch (InterruptedException e1) {
-										e1.printStackTrace();
+									JTextField host = new JTextField();
+									JTextField port = new JTextField();
+									Object[] message = {"Host name:", host, "Port number:", port};
+									
+									int option = JOptionPane.showConfirmDialog(waitingPanel, message, "Enter a valid Host and Port", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+									if (option == JOptionPane.OK_OPTION) {
+										hostName = host.getText();
+										portNum = Integer.parseInt(port.getText());
+									} else {
+										c.remove(waitingPanel);
+										c.add(menuPanel);
+										revalidate();
+										repaint();
+										return;
 									}
 									continue;
 								}
