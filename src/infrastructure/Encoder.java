@@ -11,10 +11,11 @@ public class Encoder {
 	public static final int BYTE = 8;
 	public static final long BYTE_MASK = 255;  // 00..11111111
 	
-	public static final byte COMMAND_MASK = (1 << 3) - 1; // 00000111
+	public static final int COMMAND_BITS = 3;
+	public static final byte COMMAND_MASK = (1 << COMMAND_BITS) - 1; // 00000111
 	
 	public static final int PLAYER_BITS = 3;
-	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << 3; // 00111000
+	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << COMMAND_BITS; // 00111000
 	
 	public static final byte QUIT_MASK = (byte) (1 << (BYTE - 1)); // 1000000
 	public static final byte OTHER_QUIT = 1 << (BYTE - 2); // 01000000
@@ -99,7 +100,7 @@ public class Encoder {
 		byte command = (byte) (bits & COMMAND_MASK);
 		
 		// get player number from next top three bits
-		int player = (bits & PLAYER_MASK) >> (BYTE / 2);
+		int player = (bits & PLAYER_MASK) >> COMMAND_BITS;
 				
 		switch (command) {
 			case 0: gameState.tryMoveLeft(player); break;
@@ -125,14 +126,14 @@ public class Encoder {
 	 */
 	public static byte encodeKeyPress(int key, int player) {
 		byte encoding = 0;
-		encoding += player << (BYTE / 2);
+		encoding += player << COMMAND_BITS;
 		switch (key) {
 			case KeyEvent.VK_LEFT: return (byte) (encoding + 0);
 			case KeyEvent.VK_RIGHT: return (byte) (encoding + 1);
 			case KeyEvent.VK_UP: return (byte) (encoding + 2);
 			case KeyEvent.VK_DOWN: return (byte) (encoding + 3);
 			case KeyEvent.VK_SPACE: return (byte) (encoding + 4);
-			default: return COMMAND_MASK; // use 00001111 as default for anything unrecognized
+			default: return COMMAND_MASK; // use 00000111 as default for anything unrecognized
 		}
 	}
 	
@@ -188,6 +189,9 @@ public class Encoder {
 	 * @return a Set of BytePairs containing the decoded spaces
 	 */
 	public static Set<BytePair> decodeSpaces(long encoding) {
+		if (encoding == -1) {
+			return null;
+		}
 		Set<BytePair> spaces = new HashSet<BytePair>();
 
 		for (int i = 0; i < 4; i++) {

@@ -54,7 +54,10 @@ public class BoardPanel extends JPanel {
 		
 		Set<BytePair> ghostLocations = new HashSet<BytePair>();
 		for (int i = 0; i < playerSpaces.size(); i++) {
-			ghostLocations.addAll(findGhostLocation(playerSpaces.get(i), grid));
+			Set<BytePair> nextSpaces = playerSpaces.get(i);
+			if (nextSpaces != null) {
+				ghostLocations.addAll(findGhostLocation(playerSpaces.get(i), grid));
+			}
 		}
 		
 		// draw the spaces themselves
@@ -79,10 +82,13 @@ public class BoardPanel extends JPanel {
 		// draw the outlines of the falling pieces
 		List<Set<Line>> playerSides = new ArrayList<Set<Line>>(GameUtil.NUM_PLAYERS);
 		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
-			playerSides.add(findSides(playerSpaces.get(i)));
+			Set<BytePair> nextSpaces = playerSpaces.get(i);
+			if (nextSpaces != null) {
+				playerSides.add(findSides(nextSpaces));
+			}
 		}
 		
-		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+		for (int i = 0; i < playerSides.size(); i++) {
 			drawPieceOutLine(g, GameUtil.OUTLINE_COLORS[i % 2], playerSides.get(i));
 		}
 	}
