@@ -3,7 +3,7 @@ package gui;
 import javax.swing.*;
 
 public class Client {
-	private static final String HOST_NAME = "caspar.cs.washington.edu";
+	private static final String HOST_NAME = "localhost";
 	private static final int PORT_NUM = 3333;
 	
 	public static void main(String[] args) {
