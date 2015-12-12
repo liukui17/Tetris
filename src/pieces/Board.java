@@ -87,15 +87,25 @@ public class Board {
 	}
 	
 	/**
-	 * Mainly for testing purposes. If you decide to call
-	 * this, do NOT modify the piece. Use it only for
-	 * observing.
+	 * Gets the current falling piece for the given player.
+	 * The caller should NOT modify the piece they get.
 	 */
 	public Piece getPiece(int player) {
 		if (player >= playerPieces.length || player < 0) {
 			return null;
 		}
 		return playerPieces[player];
+	}
+	
+	/**
+	 * Gets the queue of upcoming pieces for the given player.
+	 * The caller should NOT modify the queue they get.
+	 */
+	public Queue<Piece> getPlayerPieceQueue(int player) {
+		if (player >= playerPieces.length || player < 0) {
+			return null;
+		}
+		return playerUpcomingPieces.get(player);
 	}
 	
 	/**
@@ -318,7 +328,7 @@ public class Board {
 	private synchronized void addToSetSquares(int player) {
 		if (playerPieces[player] != null) {
 			// Adds the given player's current piece into the pieces
-		  // that are no longer moving (hit the bottom).
+			// that are no longer moving (hit the bottom).
 			for (Square square : playerPieces[player].squares) {
 				Square[] row = boardRows.get(square.y);
 				if (row == null) {
@@ -326,8 +336,11 @@ public class Board {
 				}
 				boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 			}
-			// generate new piece for the player
-		//	playerPieces[player] = PieceFactory.generateNewPiece(player);
+			/*
+			 * Update the current player's falling piece by getting it from the
+			 * next piece in that player's queue. Then, generate a new piece and
+			 * add that to the queue. 
+			 */
 			playerPieces[player] = playerUpcomingPieces.get(player).remove();
 			playerUpcomingPieces.get(player).add(PieceFactory.generateNewPiece(player));
 		}
