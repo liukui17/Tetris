@@ -11,9 +11,11 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import infrastructure.Encoder;
+import infrastructure.GameServer;
 import infrastructure.GameUtil;
 
 public class MainFrame extends JFrame {
@@ -36,6 +38,61 @@ public class MainFrame extends JFrame {
 	private long dropInterval;
 	
 	private MusicPlayer musicPlayer;
+	
+	private boolean getCreateOrJoin() {
+		Object[] options = {"Create a new game", "Join a current game"};
+		int response = JOptionPane.showOptionDialog(waitingPanel, "Would you like to create or join a game",
+				"Create or join a game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		return response == JOptionPane.YES_OPTION;
+	}
+	
+	private String getGameName() {
+		return getTypedInput("Enter a game name");
+	}
+	
+	private String getTypedInput(String prompt) {
+		String input = "";
+		while (input.isEmpty()) {
+			input = (String) JOptionPane.showInputDialog(waitingPanel,
+          																						prompt);
+		}
+		return input;
+	}
+	
+	private int getNumPlayers() {
+		int numPlayers = -1;
+		while (true) {
+			try {
+				numPlayers = Integer.parseInt((String) JOptionPane.showInputDialog(
+            waitingPanel,
+            "Enter number of players"));
+				break;
+			} catch (NumberFormatException e) {
+				displayError("Not a number. Try again");
+			}
+		}
+		return numPlayers;
+	}
+	
+	private void displayError(String message) {
+		JOptionPane.showMessageDialog(waitingPanel,
+		    message, "error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	private void displayMessage(String message) {
+		JOptionPane.showMessageDialog(waitingPanel, message);
+	}
+	
+	private boolean canStartGame(byte response) {
+		switch(response) {
+			case GameServer.GAME_ALREADY_EXISTS : displayError("Game already exists"); return false;
+			case GameServer.GAME_DOES_NOT_EXIST : displayError("Game does not exist"); return false;
+			case GameServer.ILLEGAL_NUM_PLAYERS : displayError("Illegal number of players"); return false;
+			case GameServer.SUCCESS_CREATION : displayMessage("Successfully created game"); return true;
+			case GameServer.SUCCESS_JOIN : displayMessage("Successfully joined game"); return true;
+			default : return false;
+		}
+	}
 
 	public MainFrame(String title, String hostName, int portNum) {		
 		super(title);
@@ -85,6 +142,11 @@ public class MainFrame extends JFrame {
 
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
+							boolean createOrJoin = getCreateOrJoin();
+							
+//							String gameName = getGameName();
+//							int numPlayers = getNumPlayers();
+
 							socket = null;
 							boolean connected = false;
 							while (!connected) {
@@ -101,10 +163,25 @@ public class MainFrame extends JFrame {
 								}
 								connected = true;
 							}
-
+							
 							try {
 								DataInputStream in = new DataInputStream(socket.getInputStream());
 								DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				
+								out.writeBoolean(createOrJoin);
+								
+								String gameName;
+								int numPlayers;
+								
+								while (true) {
+									gameName = getGameName();
+									numPlayers = getNumPlayers();
+									out.writeUTF(gameName);
+									out.writeInt(numPlayers);
+									if (canStartGame(in.readByte())) {
+										break;
+									}
+								}
 
 								// Should block here until server sends boolean
 								int playerNumber = in.readInt();
