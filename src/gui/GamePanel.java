@@ -32,8 +32,9 @@ public class GamePanel extends JPanel implements Runnable {
 
 	private BoardPanel boardPanel;
 	private EndPanel endPanel;
-	private JLabel leftScore;
-	private JLabel rightScore;
+
+	private JLabel[] scoreLabels;
+
 	private KeyEventDispatcher keyDispatcher;
 
 	private BlockingQueue<Byte> commands;
@@ -68,28 +69,19 @@ public class GamePanel extends JPanel implements Runnable {
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setBackground(Color.LIGHT_GRAY);
 		
-		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-		JLabel leftTitle = GuiUtil.addLabel(leftPanel, "Player 1", 20);
-		leftTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
-		leftTitle.setPreferredSize(LABEL_SIZE);
-		
-		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		GuiUtil.addLabel(leftPanel, "Score", 20);
-		
-		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		leftScore = GuiUtil.addLabel(leftPanel, "0", 20);
-		
-//		// Filler
-//		leftPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-//		
-//		JLabel leftNextLabel = new JLabel("Next");
-//		leftNextLabel.setFont(LABEL_FONT);
-//		leftNextLabel.setPreferredSize(LABEL_SIZE);
-//		leftNextLabel.setAlignmentX(CENTER_ALIGNMENT);
-//		leftPanel.add(leftNextLabel);
+		scoreLabels = new JLabel[GameUtil.NUM_PLAYERS];
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+			JLabel nextTitleLabel = GuiUtil.addLabel(leftPanel, "Player " + i, 20);
+			nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+			nextTitleLabel.setPreferredSize(LABEL_SIZE);
+			
+			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+			GuiUtil.addLabel(leftPanel, "Score", 20);
+			
+			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+			scoreLabels[i] =  GuiUtil.addLabel(leftPanel, "0", 20);
+		}
 		
 		leftPanel.add(Box.createVerticalGlue());
 		
@@ -109,29 +101,6 @@ public class GamePanel extends JPanel implements Runnable {
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.setBackground(Color.LIGHT_GRAY);
-		
-		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Player 2", 20);
-		rightTitle.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
-		rightTitle.setPreferredSize(LABEL_SIZE);
-		
-		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		GuiUtil.addLabel(rightPanel, "Score", 20);
-		
-		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		rightScore = GuiUtil.addLabel(rightPanel, "0", 20);
-		
-//		// Filler
-//		rightPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-//		
-//		JLabel leftNextLabel = new JLabel("Next");
-//		leftNextLabel.setFont(LABEL_FONT);
-//		leftNextLabel.setPreferredSize(LABEL_SIZE);
-//		leftNextLabel.setAlignmentX(CENTER_ALIGNMENT);
-//		rightPanel.add(leftNextLabel);
 		
 		rightPanel.add(Box.createVerticalGlue());
 		
@@ -194,15 +163,15 @@ public class GamePanel extends JPanel implements Runnable {
 				break;
 			}
 
-			// Update score
-			leftScore.setText(Integer.toString(state.getScore(0)));
-			rightScore.setText(Integer.toString(state.getScore(1)));
+			// update scores
+			for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+				scoreLabels[i].setText(Integer.toString(state.getScore(i)));
+			}
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
 			for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
 				spaces.add(state.getSpaces(i));
-			//	System.out.println(state.getSpaces(i));
 			}
 			boardPanel.updateGrid(state.getBoard(), spaces);
 			boardPanel.revalidate();

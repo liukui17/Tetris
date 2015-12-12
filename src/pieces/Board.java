@@ -3,11 +3,18 @@ package pieces;
 import infrastructure.*;
 
 import java.util.Map;
+import java.util.Queue;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Board {
 	static final int DEBUG = 0;
+	
+	// size of the queue of upcoming pieces for each player
+	static final int PIECE_QUEUE_SIZE = 3;
 	
 	/* 
 	 * 0 indicates no collision
@@ -38,10 +45,11 @@ public class Board {
 	 */
 	
 	/*
-	 * playerPieces[0] = player 1's falling piece
-	 * playerPieces[1] = player 2's falling piece
+	 * array holding each player's currently falling piece
 	 */
 	Piece[] playerPieces;
+	
+	List<Queue<Piece>> playerUpcomingPieces;
 	
 	/*
 	 * boardRows stores the FIXED rows of the Tetris game. It only stores the
@@ -56,6 +64,14 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			playerPieces[i] = PieceFactory.generateNewPiece(i);
 		}
+		playerUpcomingPieces = new ArrayList<Queue<Piece>>(GameUtil.NUM_PLAYERS);
+		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
+			Queue<Piece> nextQueue = new LinkedList<Piece>();
+			for (int j = 0; j < PIECE_QUEUE_SIZE; j++) {
+				nextQueue.add(PieceFactory.generateNewPiece(i));
+			}
+			playerUpcomingPieces.add(nextQueue);
+		}
 		checkRep();
 	}
 	
@@ -66,19 +82,30 @@ public class Board {
 	public void disable(int player) {
 		if (player >= 0 && player < GameUtil.NUM_PLAYERS) {
 			playerPieces[player] = null;
+			playerUpcomingPieces.set(player, null);
 		}
 	}
 	
 	/**
-	 * Mainly for testing purposes. If you decide to call
-	 * this, do NOT modify the piece. Use it only for
-	 * observing.
+	 * Gets the current falling piece for the given player.
+	 * The caller should NOT modify the piece they get.
 	 */
 	public Piece getPiece(int player) {
 		if (player >= playerPieces.length || player < 0) {
 			return null;
 		}
 		return playerPieces[player];
+	}
+	
+	/**
+	 * Gets the queue of upcoming pieces for the given player.
+	 * The caller should NOT modify the queue they get.
+	 */
+	public Queue<Piece> getPlayerPieceQueue(int player) {
+		if (player >= playerPieces.length || player < 0) {
+			return null;
+		}
+		return playerUpcomingPieces.get(player);
 	}
 	
 	/**
@@ -301,7 +328,7 @@ public class Board {
 	private synchronized void addToSetSquares(int player) {
 		if (playerPieces[player] != null) {
 			// Adds the given player's current piece into the pieces
-		  // that are no longer moving (hit the bottom).
+			// that are no longer moving (hit the bottom).
 			for (Square square : playerPieces[player].squares) {
 				Square[] row = boardRows.get(square.y);
 				if (row == null) {
@@ -309,8 +336,13 @@ public class Board {
 				}
 				boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 			}
-			// generate new piece for the player
-			playerPieces[player] = PieceFactory.generateNewPiece(player);
+			/*
+			 * Update the current player's falling piece by getting it from the
+			 * next piece in that player's queue. Then, generate a new piece and
+			 * add that to the queue. 
+			 */
+			playerPieces[player] = playerUpcomingPieces.get(player).remove();
+			playerUpcomingPieces.get(player).add(PieceFactory.generateNewPiece(player));
 		}
 	}
 	

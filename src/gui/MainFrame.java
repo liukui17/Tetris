@@ -19,8 +19,8 @@ import infrastructure.GameServer;
 import infrastructure.GameUtil;
 
 public class MainFrame extends JFrame {
-	private static final int WIDTH = BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH + (GameUtil.BOARD_WIDTH + 1) + 60;
-	private static final int HEIGHT = BoardPanel.CELL_LENGTH * GameUtil.BOARD_HEIGHT + (GameUtil.BOARD_HEIGHT + 1) + 60;
+	private static final int WIDTH = BoardPanel.CELL_LENGTH * GameUtil.BOARD_WIDTH + 200;
+	private static final int HEIGHT = BoardPanel.CELL_LENGTH * GameUtil.BOARD_HEIGHT + (GameUtil.BOARD_HEIGHT + 1) + 100;
 	private static final long EASY_INTERVAL = 1000;
 	private static final long MEDIUM_INTERVAL = 500;
 	private static final long HARD_INTERVAL = 250;

@@ -11,7 +11,7 @@ public class GameTimer extends Thread {
 	private static final long DEFAULT_DROP_INTERVAL = 1000;
 
 	// The change in time which the drop interval will be decremented by
-	private static final long SPEED_UP_CHANGE = 500;
+	private static final long SPEED_UP_CHANGE = 50;
 
 	private BlockingQueue<GameState> out;
 
@@ -64,7 +64,11 @@ public class GameTimer extends Thread {
 	 * Speeds up the game timer by the default speed up change
 	 */
 	public void speedUp() {
-		dropInterval -= SPEED_UP_CHANGE;
+		// check that we can actually still speed up
+		if (dropInterval > 50) {
+			dropInterval -= SPEED_UP_CHANGE;
+		}
+		
 		dropper.cancel();
 		dropper = new Dropper();
 		timer.scheduleAtFixedRate(dropper, 0, dropInterval, TimeUnit.MILLISECONDS);

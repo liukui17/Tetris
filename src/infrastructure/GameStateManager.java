@@ -45,7 +45,10 @@ public class GameStateManager {
 		// get player pieces
 		List<Set<BytePair>> playerPieces = new ArrayList<Set<BytePair>>(GameUtil.NUM_PLAYERS);
 		for (int i = 0; i < GameUtil.NUM_PLAYERS; i++) {
-			playerPieces.add(board.getPiece(i).getBytePairs());
+			Piece nextPlayerPiece = board.getPiece(i);
+			if (nextPlayerPiece != null) {
+				playerPieces.add(nextPlayerPiece.getBytePairs());
+			}
 		}
 		
 		return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver());
@@ -92,6 +95,10 @@ public class GameStateManager {
 	
 	public synchronized Piece getPiece(int player) {
 		return board.getPiece(player);
+	}
+	
+	public synchronized void disable(int player) {
+		board.disable(player);
 	}
 	
 	private synchronized void updateScore(int player) {

@@ -94,6 +94,8 @@ public class ServerConnectionManager implements Runnable {
 				playerInputStreams[playerNumber] = null;
 				playerOutputStreams[playerNumber].close();
 				playerOutputStreams[playerNumber] = null;
+				playerSockets[playerNumber].close();
+				playerSockets[playerNumber] = null;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
