@@ -6,23 +6,34 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class Encoder {
-	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
-	public static final int COLOR_MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
-	public static final int BYTE = 8;
-	public static final long BYTE_MASK = 255;  // 00..11111111
-	
-	public static final int COMMAND_BITS = 3;
-	public static final byte COMMAND_MASK = (1 << COMMAND_BITS) - 1; // 00000111
-	
-	public static final int PLAYER_BITS = 3;
-	public static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << COMMAND_BITS; // 00111000
-	
+	private static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
+	private static final int COLOR_MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
+	private static final int BYTE = 8;
+	private static final long BYTE_MASK = 255;  // 00..11111111
+
+	private static final int COMMAND_BITS = 3;
+	private static final byte COMMAND_MASK = (1 << COMMAND_BITS) - 1; // 00000111
+
+	private static final int PLAYER_BITS = 3;
+	private static final byte PLAYER_MASK = ((1 << PLAYER_BITS) - 1) << COMMAND_BITS; // 00111000
+
 	public static final byte QUIT_MASK = (byte) (1 << (BYTE - 1)); // 1000000
 	public static final byte OTHER_QUIT = 1 << (BYTE - 2); // 01000000
 
+	private static final Color[] PIECE_COLORS = {
+			Color.WHITE, // empty
+			Color.CYAN, // I
+			Color.BLUE, // J
+			Color.ORANGE, // L
+			Color.YELLOW, // O
+			Color.GREEN, // S (there is no lime so set this for now)
+			Color.MAGENTA, // T (there is no purple so set this for now)
+			Color.RED // Z
+	};
+
 	public static int colorToInt(Color color) {
-		for (int i = 0; i < GameUtil.PIECE_COLORS.length; i++) {
-			if (GameUtil.PIECE_COLORS[i].equals(color)) {
+		for (int i = 0; i < PIECE_COLORS.length; i++) {
+			if (PIECE_COLORS[i].equals(color)) {
 				return i;
 			}
 		}
@@ -44,7 +55,7 @@ public class Encoder {
 		// empty row
 		if (row == null) {
 			for (int i = 0; i < width; i++) {
-				networkFormat += colorToInt(Color.GRAY);
+				networkFormat += colorToInt(GameUtil.EMPTY);
 				networkFormat <<= BITS_PER_COLOR;
 			}
 		} else {
@@ -80,7 +91,7 @@ public class Encoder {
 		 */
 		for (int i = row.length - 1; i >= 0; i--) {
 			int nextColor = (int) (bits & COLOR_MASK);
-			row[i] = GameUtil.PIECE_COLORS[nextColor];
+			row[i] = PIECE_COLORS[nextColor];
 			bits >>= BITS_PER_COLOR;
 		}
 	}
@@ -98,20 +109,20 @@ public class Encoder {
 	public static void decodeCommand(byte bits, GameStateManager gameState) {
 		// get command using from bottom four bits
 		byte command = (byte) (bits & COMMAND_MASK);
-		
+
 		// get player number from next top three bits
 		int player = (bits & PLAYER_MASK) >> COMMAND_BITS;
-				
-		switch (command) {
-			case 0: gameState.tryMoveLeft(player); break;
-			case 1: gameState.tryMoveRight(player); break;
-			case 2: gameState.tryRotateLeft(player); break;
-			case 3: gameState.tryMoveDown(player); break;
-			case 4: gameState.drop(player); break;
-			default:	// just ignore anything else that is given so the user can
-						// accidentally hit some other key without us having to throw
-						// an illegal argument exception
-		}
+
+				switch (command) {
+				case 0: gameState.tryMoveLeft(player); break;
+				case 1: gameState.tryMoveRight(player); break;
+				case 2: gameState.tryRotateLeft(player); break;
+				case 3: gameState.tryMoveDown(player); break;
+				case 4: gameState.drop(player); break;
+				default:	// just ignore anything else that is given so the user can
+					// accidentally hit some other key without us having to throw
+					// an illegal argument exception
+				}
 	}
 
 	/**
@@ -128,15 +139,15 @@ public class Encoder {
 		byte encoding = 0;
 		encoding += player << COMMAND_BITS;
 		switch (key) {
-			case KeyEvent.VK_LEFT: return (byte) (encoding + 0);
-			case KeyEvent.VK_RIGHT: return (byte) (encoding + 1);
-			case KeyEvent.VK_UP: return (byte) (encoding + 2);
-			case KeyEvent.VK_DOWN: return (byte) (encoding + 3);
-			case KeyEvent.VK_SPACE: return (byte) (encoding + 4);
-			default: return COMMAND_MASK; // use 00000111 as default for anything unrecognized
+		case KeyEvent.VK_LEFT: return (byte) (encoding + 0);
+		case KeyEvent.VK_RIGHT: return (byte) (encoding + 1);
+		case KeyEvent.VK_UP: return (byte) (encoding + 2);
+		case KeyEvent.VK_DOWN: return (byte) (encoding + 3);
+		case KeyEvent.VK_SPACE: return (byte) (encoding + 4);
+		default: return COMMAND_MASK; // use 00000111 as default for anything unrecognized
 		}
 	}
-	
+
 	/**
 	 * Encodes the coordinates of the spaces of the piece described by the
 	 * specified Set of BytePairs.
@@ -159,19 +170,19 @@ public class Encoder {
 		 *   
 		 *   4 spaces/piece * 2 indices/space * 1 byte/index = 8 bytes = 1 long
 		 */
-		
+
 		long encoding = 0;
-		
+
 		Iterator<BytePair> itr = piece.iterator();
-		
+
 		BytePair s = itr.next();
 		encoding |= GameUtil.modulo(s.getX(), width);
 		encoding <<= BYTE;  // shift it over a byte
 		encoding |= (s.getY() & BYTE_MASK);
-		
+
 		for (int i = 0; i < piece.size() - 1; i++) {
 			BytePair space = itr.next();
-			
+
 			encoding <<= BYTE;
 			encoding |= GameUtil.modulo(space.getX(), width);
 			encoding <<= BYTE;  // shift it over a byte
@@ -197,11 +208,11 @@ public class Encoder {
 		for (int i = 0; i < 4; i++) {
 			long y = encoding & BYTE_MASK;
 			encoding >>= BYTE;
-			long x = encoding & BYTE_MASK;
-			encoding >>= BYTE;
+		long x = encoding & BYTE_MASK;
+		encoding >>= BYTE;
 			spaces.add(new BytePair((byte) x, (byte) y));
 		}
-		
+
 		return spaces;
 	}
 

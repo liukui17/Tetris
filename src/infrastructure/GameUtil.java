@@ -7,22 +7,13 @@ public class GameUtil {
 	public static final int PLAYER_START_SECTION_WIDTH = 8;
 	//public static final int BOARD_WIDTH = NUM_PLAYERS * PLAYER_START_SECTION_WIDTH;
 	public static final int BOARD_HEIGHT = 24;
-	public static final Color[] PIECE_COLORS = {
-		Color.WHITE, // empty
-		Color.CYAN, // I
-		Color.BLUE, // J
-		Color.ORANGE, // L
-		Color.YELLOW, // O
-		Color.GREEN, // S (there is no lime so set this for now)
-		Color.MAGENTA, // T (there is no purple so set this for now)
-		Color.RED // Z
-	};
-	
+
 	public static final Color[] OUTLINE_COLORS = {
 		Color.BLACK,
 		Color.PINK
 	};
 	
+	public static final Color EMPTY = Color.WHITE;
 	public static final Color GHOST = Color.LIGHT_GRAY;
 	
 	/**
@@ -47,21 +38,21 @@ public class GameUtil {
 	 * Can return ??? if the specified color is not known to the game
 	 */
 	public static String colorToString(Color color) {
-		if (color.equals(PIECE_COLORS[0])) {
+		if (color.equals(EMPTY)) {
 			return "_";
-		} else if (color.equals(PIECE_COLORS[1])) {
+		} else if (color.equals(Color.CYAN)) {
 			return "C";
-		} else if (color.equals(PIECE_COLORS[2])) {
+		} else if (color.equals(Color.BLUE)) {
 			return "B";
-		} else if (color.equals(PIECE_COLORS[3])) {
+		} else if (color.equals(Color.ORANGE)) {
 			return "O";
-		} else if (color.equals(PIECE_COLORS[4])) {
+		} else if (color.equals(Color.YELLOW)) {
 			return "Y";
-		} else if (color.equals(PIECE_COLORS[5])) {
+		} else if (color.equals(Color.GREEN)) {
 			return "G";
-		} else if (color.equals(PIECE_COLORS[6])) {
+		} else if (color.equals(Color.MAGENTA)) {
 			return "M";
-		} else if (color.equals(PIECE_COLORS[7])){
+		} else if (color.equals(Color.RED)){
 			return "R";
 		} else {
 			return "?";

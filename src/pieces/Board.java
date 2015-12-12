@@ -284,7 +284,7 @@ public class Board {
 				// null array element means that square is not occupied
 				// so set the corresponding color to GRAY (PIECE_COLORS[0])
 				if (row[i] == null) {
-					rowColors[i] = GameUtil.PIECE_COLORS[0];
+					rowColors[i] = GameUtil.EMPTY;
 				} else {
 					rowColors[i] = row[i].color;
 				}
@@ -303,7 +303,7 @@ public class Board {
 		// fill gaps with gray
 		for (int i = 0; i < rowColors.length; i++) {
 			if (rowColors[i] == null) {
-				rowColors[i] = GameUtil.PIECE_COLORS[0];
+				rowColors[i] = GameUtil.EMPTY;
 			}
 		}
 		return rowColors;

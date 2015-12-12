@@ -1,11 +1,9 @@
 package pieces;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 
-import infrastructure.GameUtil;
-
 public class PieceS extends Piece {
+	private static final Color COLOR = Color.GREEN;
 	
 	public PieceS(List<Square> squares) {
 		super(squares);
@@ -15,10 +13,10 @@ public class PieceS extends Piece {
 	//     [ ][x]			(x indicates fixed point in rotate)
 	public PieceS(int startRow, int startCol) {
 		super();
-		squares.add(new Square(startCol, startRow + 1, GameUtil.PIECE_COLORS[5]));
-		squares.add(new Square(startCol + 1, startRow + 1, GameUtil.PIECE_COLORS[5])); // pivot (index 1)
-		squares.add(new Square(startCol + 1, startRow, GameUtil.PIECE_COLORS[5]));
-		squares.add(new Square(startCol + 2, startRow, GameUtil.PIECE_COLORS[5]));
+		squares.add(new Square(startCol, startRow + 1, COLOR));
+		squares.add(new Square(startCol + 1, startRow + 1, COLOR)); // pivot (index 1)
+		squares.add(new Square(startCol + 1, startRow, COLOR));
+		squares.add(new Square(startCol + 2, startRow, COLOR));
 	}
 	
 	public void rotateLeft() {

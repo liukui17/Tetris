@@ -73,7 +73,7 @@ public class BoardPanel extends JPanel {
 					g.setColor(c);
 					
 					if (isGhostSpace(j, i, ghostLocations)) {
-						if (c.equals(GameUtil.PIECE_COLORS[0])) {
+						if (c.equals(GameUtil.EMPTY)) {
 							g.setColor(GameUtil.GHOST);
 						} 
 					}
@@ -109,7 +109,7 @@ public class BoardPanel extends JPanel {
 			int x = GameUtil.modulo((int) space.getX(), numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
 			int y = (int) space.getY();
 			
-			if (y >= 0 && y < GameUtil.BOARD_HEIGHT && !board[y][x].equals(GameUtil.PIECE_COLORS[0])) {
+			if (y >= 0 && y < GameUtil.BOARD_HEIGHT && !board[y][x].equals(GameUtil.EMPTY)) {
 				return true;
 			}
 		}
@@ -237,7 +237,7 @@ public class BoardPanel extends JPanel {
 
 			// collide with another piece
 			int newX = GameUtil.modulo(x, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH);
-			if (y >= -1 && !board[y + 1][newX].equals(GameUtil.PIECE_COLORS[0])) {
+			if (y >= -1 && !board[y + 1][newX].equals(GameUtil.EMPTY)) {
 				return false;
 			}
 		}
