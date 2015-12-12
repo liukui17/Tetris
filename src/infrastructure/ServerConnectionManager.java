@@ -32,7 +32,6 @@ public class ServerConnectionManager implements Runnable {
 		this.commands = commands;
 		this.outStates = outStates;
 		this.numPlayers = playerSockets.length;
-		System.out.println("from serverconnmanager " + numPlayers);
 
 		this.playerSockets = playerSockets;
 		playerInputStreams = new DataInputStream[this.playerSockets.length];

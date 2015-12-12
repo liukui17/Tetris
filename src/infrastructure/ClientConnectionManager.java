@@ -30,7 +30,6 @@ public class ClientConnectionManager implements Runnable {
 		this.inFromServer = inFromServer;
 		this.outToServer = outToServer;
 		this.numPlayers = numPlayers;
-		System.out.println("from clientconnectionmanager " + numPlayers);
 
 		hasQuit = false;
 	}

@@ -64,7 +64,6 @@ public class Board {
 	public Board(int numPlayers) {
 		this.numPlayers = numPlayers;
 		this.sectionWidth = GameUtil.computeSectionWidth(this.numPlayers);
-		System.out.println("from board " + numPlayers);
 		
 		boardRows = new HashMap<Integer, Square[]>();
 		playerPieces = new Piece[numPlayers];
