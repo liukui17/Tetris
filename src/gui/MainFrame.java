@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
 	private static final long EASY_INTERVAL = 1000;
 	private static final long MEDIUM_INTERVAL = 500;
 	private static final long HARD_INTERVAL = 250;
-	
+
 	private static final String DEFAULT_HOST = "localhost";
 	private static final int DEFAULT_PORT = 3333;
 
@@ -36,105 +36,142 @@ public class MainFrame extends JFrame {
 	private OptionsPanel optionsPanel;
 	private WaitingPanel waitingPanel;
 	private EndPanel endPanel;
-	
+
 	private Socket socket;
-	
+
 	private boolean drawGhosts;
 	private long dropInterval;
 	private int numPlayers;
 	private String hostName;
 	private int portNum;
-	
+
 	private MusicPlayer musicPlayer;
-	
+
 	private boolean getCreateOrJoin() {
 		Object[] options = {"Create a new game", "Join a current game"};
 		int response = JOptionPane.showOptionDialog(waitingPanel, "Would you like to create or join a game",
 				"Create or join a game", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		return response == JOptionPane.YES_OPTION;
 	}
-	
+
 	private String getGameName() {
 		return getTypedInput("Enter a game name");
 	}
-	
+
 	private String getTypedInput(String prompt) {
 		String input = "";
 		while (input.isEmpty()) {
 			input = (String) JOptionPane.showInputDialog(waitingPanel,
-          																						prompt, "Title", JOptionPane.PLAIN_MESSAGE);
+					prompt, "Title", JOptionPane.PLAIN_MESSAGE);
+			// null = cancel button
+			if (input == null) {
+				return null;
+			}
 		}
 		return input;
 	}
 	
+	/*
+	 * Ensures user types in a positive number. Will return -1 iff user hit the
+	 * cancel button
+	 */
 	private int getNumPlayers() {
 		int numPlayers = -1;
 		while (true) {
 			try {
-				numPlayers = Integer.parseInt((String) JOptionPane.showInputDialog(
-            waitingPanel,
-            "Enter number of players", "Players", JOptionPane.PLAIN_MESSAGE));
-				break;
+				String numPlayersString = (String) JOptionPane.showInputDialog(
+						waitingPanel, "Enter number of players", "Players", 
+						JOptionPane.PLAIN_MESSAGE);
+				
+				// null = cancel button
+				if (numPlayersString == null) {
+					return -1;
+				}
+				
+				numPlayers = Integer.parseInt(numPlayersString);
+				
+				if (numPlayers > 0) {
+					return numPlayers;
+				} else {
+					displayError("Number must be positive");
+				}
 			} catch (NumberFormatException e) {
 				displayError("Not a number. Try again");
 			}
 		}
-		return numPlayers;
 	}
-	
+
 	private void displayError(String message) {
 		JOptionPane.showMessageDialog(waitingPanel,
-		    message, "error", JOptionPane.ERROR_MESSAGE);
+				message, "error", JOptionPane.ERROR_MESSAGE);
 	}
-	
+
 	private void displayMessage(String message) {
 		JOptionPane.showMessageDialog(waitingPanel, message, "Reponse", JOptionPane.PLAIN_MESSAGE);
 	}
-	
-	private void sendNameToServer(boolean creating, DataInputStream in, DataOutputStream out) throws IOException {
+
+	private String sendNameToServer(boolean creating, DataInputStream in, DataOutputStream out) throws IOException {
 		byte response;
+		
 		String gameName = ""; 
 		while (true) {
 			gameName = getGameName();
+
+			if (gameName == null) {
+				out.writeUTF("");
+				return null;
+			}
+
 			out.writeUTF(gameName);
+
 			response = in.readByte();
+
 			if (creating) {
-				if (response != GameServer.GAME_ALREADY_EXISTS) {
+				if (response == GameServer.GAME_DOES_NOT_EXIST) {
 					break;
 				} else {
 					displayMessage("Game already exists");
 				}
 			} else {
-				if (response != GameServer.GAME_DOES_NOT_EXIST) {
+				if (response == GameServer.GAME_ALREADY_EXISTS) {
 					break;
 				} else {
 					displayMessage("Game does not exist");
 				}
 			}
 		}
+
+		return gameName;
 	}
-	
-	private void sendNumPlayersToServer(DataInputStream in, DataOutputStream out) throws IOException {
+
+	private int sendNumPlayersToServer(DataInputStream in, DataOutputStream out) throws IOException {
 		byte response;
 		int numPlayers = -1;
 		while (true) {
 			numPlayers = getNumPlayers();
+			
+			if (numPlayers == -1) {
+				out.writeInt(numPlayers);
+				// Client hit cancel; tell the server to start the protocol over
+				return -1;
+			}
+			
 			out.writeInt(numPlayers);
 			response = in.readByte();
 			if (response != GameServer.ILLEGAL_NUM_PLAYERS) {
-				break;
+				return numPlayers;
 			}
 		}
 	}
 
 	public MainFrame(String title) {		
 		super(title);
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setVisible(true);
-		
+
 		drawGhosts = true;
 		dropInterval = EASY_INTERVAL;
 		musicPlayer = new MusicPlayer();
@@ -148,7 +185,7 @@ public class MainFrame extends JFrame {
 		optionsPanel = new OptionsPanel(musicPlayer);
 		waitingPanel = new WaitingPanel();
 		endPanel = new EndPanel();
-		
+
 		hostName = DEFAULT_HOST;
 		portNum = DEFAULT_PORT;
 
@@ -188,7 +225,7 @@ public class MainFrame extends JFrame {
 									JTextField host = new JTextField();
 									JTextField port = new JTextField();
 									Object[] message = {"Host name:", host, "Port number:", port};
-									
+
 									int option = JOptionPane.showConfirmDialog(waitingPanel, message, "Enter a valid Host and Port", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 									if (option == JOptionPane.OK_OPTION) {
 										hostName = host.getText();
@@ -204,31 +241,56 @@ public class MainFrame extends JFrame {
 								}
 								connected = true;
 							}
-							
+
 							try {
 								DataInputStream in = new DataInputStream(socket.getInputStream());
 								DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-				
-								boolean createOrJoin = getCreateOrJoin();
-								
-								out.writeBoolean(createOrJoin);
-								
-								// create
-								if (createOrJoin) {
-									sendNameToServer(true, in, out);
-									sendNumPlayersToServer(in, out);
-									
-									displayMessage("Sucessfully created game");
-								} else {  // join
-									sendNameToServer(false, in, out);
-									displayMessage("Successfully joined game");
+
+								while (true) {
+									boolean createOrJoin = getCreateOrJoin();
+									out.writeBoolean(createOrJoin);
+
+									String gameName;
+
+									// create
+									if (createOrJoin) {
+										gameName = sendNameToServer(true, in, out);
+										if (gameName == null) {
+											continue;
+										}
+
+										int numPlayersSent = sendNumPlayersToServer(in, out);
+										if (numPlayersSent == -1) {
+											continue;
+										}
+										
+										byte response = in.readByte();
+
+										displayMessage("Sucessfully created game");
+										break;
+									} else {  // join
+										gameName = sendNameToServer(false, in, out);
+										
+										if (gameName == null) {
+											continue;
+										}
+										
+										byte serverAccepted = in.readByte();
+										if (serverAccepted == GameServer.GAME_FULL) {
+											displayError("Game full");
+											continue;
+										}
+
+										displayMessage("Successfully joined game");
+										break;
+									}
 								}
-								
+
 								numPlayers = in.readInt();
-								
+
 								// Should block here until server sends boolean
 								int playerNumber = in.readInt();
-								
+
 								out.writeLong(dropInterval);
 
 								c.remove(waitingPanel);
@@ -249,7 +311,7 @@ public class MainFrame extends JFrame {
 					});
 					revalidate();
 					repaint();
-					
+
 					break;
 				}
 
@@ -297,7 +359,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		
+
 		endPanel.setButtonListener(new ButtonListener() {
 			public void buttonClicked(String s) {
 				if (s.equals("Back to Menu")) {
@@ -349,7 +411,7 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void windowDeactivated(WindowEvent e) {}
-			
+
 		});
 	}
 }
