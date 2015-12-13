@@ -113,7 +113,7 @@ public class Encoder {
 		byte command = (byte) (bits & COMMAND_MASK);
 
 		// get player number from next top three bits
-		int player = (bits & PLAYER_MASK) >>> PLAYER_BITS_START;
+		int player = (bits >> PLAYER_BITS_START) & ((1 << PLAYER_BITS) - 1);
 
 		switch (command) {
 			case 0: gameState.disable(player);
@@ -140,15 +140,15 @@ public class Encoder {
 	 */
 	public static byte encodeKeyPress(int key, int player) {
 		byte encoding = 0;
-		encoding += player << PLAYER_BITS_START;
+		encoding |= player << PLAYER_BITS_START;
 		switch (key) {
-			case KeyEvent.VK_UNDEFINED: return (byte) (encoding + 0);
-			case KeyEvent.VK_LEFT: return (byte) (encoding + 1);
-			case KeyEvent.VK_RIGHT: return (byte) (encoding + 2);
-			case KeyEvent.VK_UP: return (byte) (encoding + 3);
-			case KeyEvent.VK_DOWN: return (byte) (encoding + 4);
-			case KeyEvent.VK_SPACE: return (byte) (encoding + 5);
-			default: return (byte) (encoding + COMMAND_MASK); // add 00000111 as default for anything unrecognized
+			case KeyEvent.VK_UNDEFINED: return (byte) (encoding | 0);
+			case KeyEvent.VK_LEFT: return (byte) (encoding | 1);
+			case KeyEvent.VK_RIGHT: return (byte) (encoding | 2);
+			case KeyEvent.VK_UP: return (byte) (encoding | 3);
+			case KeyEvent.VK_DOWN: return (byte) (encoding | 4);
+			case KeyEvent.VK_SPACE: return (byte) (encoding | 5);
+			default: return (byte) (encoding | COMMAND_MASK); // add 00000111 as default for anything unrecognized
 		}
 	}
 
