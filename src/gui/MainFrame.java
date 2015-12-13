@@ -282,6 +282,7 @@ public class MainFrame extends JFrame {
 										}
 										
 										byte response = in.readByte();
+										System.out.println("create");
 
 										displayMessage("Sucessfully created game");
 										break;
@@ -291,8 +292,9 @@ public class MainFrame extends JFrame {
 										if (gameName == null) {
 											continue;
 										}
-										
+
 										byte serverAccepted = in.readByte();
+
 										if (serverAccepted == GameServer.GAME_FULL) {
 											displayError("Game full");
 											continue;
@@ -304,8 +306,12 @@ public class MainFrame extends JFrame {
 								}
 
 								numPlayers = in.readInt();
+								
+								System.out.println(numPlayers);
 
 								playerNumber = in.readInt();
+								
+								System.out.println(playerNumber);
 								
 								out.writeLong(dropInterval);
 

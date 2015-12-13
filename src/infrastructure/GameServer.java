@@ -33,92 +33,108 @@ public class GameServer {
 			System.out.println("Started server");
 
 			while (true) {
-				boolean doneSetup = false;
-
-				while (!doneSetup) {
-					Socket player = server.accept();
-					DataInputStream in = new DataInputStream(player.getInputStream());
-					DataOutputStream out = new DataOutputStream(player.getOutputStream());
-
-					while (true) {
-						boolean makingGame = in.readBoolean();
-
-						if (makingGame) {
-							String gameName = getGameName(true, in, out);
-
-							if (gameName.isEmpty()) {
-								continue;
-							}
-
-							int numPlayers = getNumPlayers(in, out);
-							if (numPlayers == -1) {
-								continue;
-							}
-
-							Game game = new Game(numPlayers);
-
-							game.numConnectedPlayers++;
-							game.playerSockets[0] = player;
-							game.playersIn[0] = in;
-							game.playersOut[0] = out;
-
-							games.put(gameName, game);
-
-							out.writeByte(ACCEPTED);
-							
-							if (numPlayers == 1) {
-								new Thread(new GameThreadWrapper(gameName)).start();
-							}
-
-							doneSetup = true;
-							break;
-						} else {
-							String gameName = getGameName(false, in, out);
-							
-							if (gameName.isEmpty()) {
-								continue;
-							}
-
-							Game game = games.get(gameName);
-							
-							if (game.numConnectedPlayers == game.capacity) {
-								out.writeByte(GAME_FULL);
-								continue;
-							} else {
-								game.numConnectedPlayers++;
-
-								int index = game.numConnectedPlayers - 1;
-								game.playerSockets[index] = player;
-								game.playersIn[index] = in;
-								game.playersOut[index] = out;
-
-								out.writeByte(ACCEPTED);
-								
-								if (game.isReady()) {
-									new Thread(new GameThreadWrapper(gameName)).start();
-									doneSetup = true;
-									break;
-								}
-							}
-						}
-					}
-				}
+				Socket player = server.accept();
+				new Thread(new SetupThread(player)).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	public static class SetupThread implements Runnable {
+		private Socket player;
+		private DataInputStream in;
+		private DataOutputStream out;
+
+		public SetupThread(Socket player) {
+			try{ 
+				this.player = player;
+				this.in = new DataInputStream(player.getInputStream());
+				this.out = new DataOutputStream(player.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void run() {
+			try {
+				while (true) {
+					boolean makingGame = in.readBoolean();
+
+					if (makingGame) {
+						String gameName = getGameName(true, in, out);
+
+						if (gameName.isEmpty()) {
+							continue;
+						}
+
+						int numPlayers = getNumPlayers(in, out);
+						if (numPlayers == -1) {
+							continue;
+						}
+
+						Game game = new Game(numPlayers);
+
+						game.numConnectedPlayers++;
+						game.playerSockets[0] = player;
+						game.playersIn[0] = in;
+						game.playersOut[0] = out;
+
+						games.put(gameName, game);
+
+						out.writeByte(ACCEPTED);
+
+						if (numPlayers == 1) {
+							new Thread(new GameThreadWrapper(gameName)).start();
+						}
+						break;
+					} else {  // JOINING GAME
+						String gameName = getGameName(false, in, out);
+
+						if (gameName.isEmpty()) {
+							continue;
+						}
+
+						Game game = games.get(gameName);
+
+						if (game.numConnectedPlayers >= game.capacity) {
+							out.writeByte(GAME_FULL);
+							continue;
+						} else {
+							game.numConnectedPlayers++;
+
+							int index = game.numConnectedPlayers - 1;
+							game.playerSockets[index] = player;
+							game.playersIn[index] = in;
+							game.playersOut[index] = out;
+
+							out.writeByte(ACCEPTED);
+
+							if (game.isReady()) {
+								new Thread(new GameThreadWrapper(gameName)).start();
+								break;
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
 	private static String getGameName(boolean creating, DataInputStream in, DataOutputStream out) throws IOException {
 		String gameName = "";
 		while (true) {
 			gameName = in.readUTF();
-			
+
 			if (gameName.isEmpty()) {
 				// Client hit cancel
 				return gameName;
 			}
-			
+
 			if (creating) {
 				if (games.containsKey(gameName)) {
 					out.writeByte(GAME_ALREADY_EXISTS);
@@ -175,7 +191,7 @@ public class GameServer {
 
 				// COME BACK HERE AND UPDATE UPCOMING ASSISTED BOOLEAN
 				Thread thread = new Thread(new GameThread(clientSockets, dropInterval, false));
-				
+
 				thread.start();
 
 				thread.join();
