@@ -17,7 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -25,6 +24,7 @@ import infrastructure.BytePair;
 import infrastructure.ClientConnectionManager;
 import infrastructure.Encoder;
 import infrastructure.GameState;
+import infrastructure.GameUtil;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private EndPanel endPanel;
 
 	private JLabel[] scoreLabels;
-	private JLabel[] upcomingLabels;
+	private PiecePanel[] upcomingPieces;
 
 	private KeyEventDispatcher keyDispatcher;
 
@@ -116,21 +116,20 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		if (upcomingAssistance) {
-			upcomingLabels = new JLabel[numPlayers];
+			upcomingPieces = new PiecePanel[numPlayers];
 			for (int i = 0; i < numPlayers; i++) {
 				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 				JLabel nextTitleLabel = GuiUtil.addLabel(rightPanel, "Player " + i, 20);
 				nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
 				nextTitleLabel.setPreferredSize(LABEL_SIZE);
 				
-				leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 				PiecePanel piece = new PiecePanel();
 				rightPanel.add(piece);
-				piece.revalidate();
-				piece.repaint();
+				upcomingPieces[i] = piece;
 			}
 		} else {
-			upcomingLabels = null;
+			upcomingPieces = null;
 		}
 		
 		rightPanel.add(Box.createVerticalGlue());
@@ -199,11 +198,16 @@ public class GamePanel extends JPanel implements Runnable {
 			for (int i = 0; i < numPlayers; i++) {
 				scoreLabels[i].setText(Integer.toString(state.getScore(i)));
 			}
-			
+
 //			// update next piece
-//			for (int i = 0; i < numPlayers; i++) {
-//				pieces[i].
-//			}
+			if (upcomingPieces != null) {
+				for (int i = 0; i < numPlayers; i++) {
+					byte pieceByte = state.getUpcomingPieces()[i];
+					// update piece based upon pieceByte
+					upcomingPieces[i].updatePiece(GameUtil.S_SHAPE, GameUtil.S_COLOR);
+				}
+			}
+
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(numPlayers);

@@ -17,6 +17,53 @@ public class GameUtil {
 	public static final Color EMPTY = Color.WHITE;
 	public static final Color GHOST = Color.LIGHT_GRAY;
 	
+	public static final boolean[][] I_SHAPE = {{true, true, true, true}, 
+												{false, false, false, false}, 
+												{false, false, false, false}, 
+												{false, false, false, false}};
+	
+	public static final boolean[][] J_SHAPE = {{true, false, false, false}, 
+												{true, true, true, false}, 
+												{false, false, false, false}, 
+												{false, false, false, false}};
+	
+	public static final boolean[][] L_SHAPE = {{false, false, true, false}, 
+												{true, true, true, false}, 
+												{false, false, false, false}, 
+												{false, false, false, false}};
+	
+	public static final boolean[][] O_SHAPE = 
+		{{false, false, false, false}, 
+		{false, true, true, false}, 
+		{false, true, true, false}, 
+		{false, false, false, false}};
+	
+	public static final boolean[][] S_SHAPE = 
+		{{false, true, true, false}, 
+		{true, true, false, false}, 
+		{false, false, false, false}, 
+		{false, false, false, false}};
+	
+	public static final boolean[][] Z_SHAPE = 
+		{{true, true, false, false}, 
+		{false, true, true, false}, 
+		{false, false, false, false}, 
+		{false, false, false, false}};
+	
+	public static final boolean[][] T_SHAPE = 
+		{{false, true, false, false}, 
+		{true, true, true, false}, 
+		{false, false, false, false}, 
+		{false, false, false, false}};
+
+	public static final Color I_COLOR = Color.CYAN;
+	public static final Color J_COLOR = Color.BLUE;
+	public static final Color L_COLOR = Color.ORANGE;
+	public static final Color O_COLOR = Color.YELLOW;
+	public static final Color S_COLOR = Color.GREEN;
+	public static final Color T_COLOR = Color.MAGENTA;
+	public static final Color Z_COLOR = Color.RED;
+	
 	public static int computeSectionWidth(int numPlayers) {
 		return BOARD_WIDTH / numPlayers;
 	}
