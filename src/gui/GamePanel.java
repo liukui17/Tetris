@@ -199,7 +199,7 @@ public class GamePanel extends JPanel implements Runnable {
 				scoreLabels[i].setText(Integer.toString(state.getScore(i)));
 			}
 
-//			// update next piece
+			// update next piece
 			if (upcomingPieces != null) {
 				for (int i = 0; i < numPlayers; i++) {
 					byte pieceByte = state.getUpcomingPieces()[i];

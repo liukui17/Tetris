@@ -32,29 +32,25 @@ public class GameUtil {
 												{false, false, false, false}, 
 												{false, false, false, false}};
 	
-	public static final boolean[][] O_SHAPE = 
-		{{false, false, false, false}, 
-		{false, true, true, false}, 
-		{false, true, true, false}, 
-		{false, false, false, false}};
+	public static final boolean[][] O_SHAPE = {{false, false, false, false}, 
+												{false, true, true, false}, 
+												{false, true, true, false}, 
+												{false, false, false, false}};
 	
-	public static final boolean[][] S_SHAPE = 
-		{{false, true, true, false}, 
-		{true, true, false, false}, 
-		{false, false, false, false}, 
-		{false, false, false, false}};
+	public static final boolean[][] S_SHAPE = {{false, true, true, false}, 
+												{true, true, false, false}, 
+												{false, false, false, false}, 
+												{false, false, false, false}};
 	
-	public static final boolean[][] Z_SHAPE = 
-		{{true, true, false, false}, 
-		{false, true, true, false}, 
-		{false, false, false, false}, 
-		{false, false, false, false}};
+	public static final boolean[][] Z_SHAPE = {{true, true, false, false}, 
+												{false, true, true, false}, 
+												{false, false, false, false}, 
+												{false, false, false, false}};
 	
-	public static final boolean[][] T_SHAPE = 
-		{{false, true, false, false}, 
-		{true, true, true, false}, 
-		{false, false, false, false}, 
-		{false, false, false, false}};
+	public static final boolean[][] T_SHAPE = {{false, true, false, false}, 
+												{true, true, true, false}, 
+												{false, false, false, false}, 
+												{false, false, false, false}};
 
 	public static final Color I_COLOR = Color.CYAN;
 	public static final Color J_COLOR = Color.BLUE;
