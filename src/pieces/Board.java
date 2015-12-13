@@ -14,7 +14,7 @@ public class Board {
 	static final int DEBUG = 0;
 	
 	// size of the queue of upcoming pieces for each player
-	static final int PIECE_QUEUE_SIZE = 3;
+	static final int PIECE_QUEUE_SIZE = 1;
 	
 	/* 
 	 * 0 indicates no collision
@@ -51,6 +51,8 @@ public class Board {
 	
 	List<Queue<Piece>> playerUpcomingPieces;
 	
+	int sectionWidth;
+	
 	/*
 	 * boardRows stores the FIXED rows of the Tetris game. It only stores the
 	 * spaces that have hit the bottom and can no longer move; it does NOT store
@@ -61,18 +63,18 @@ public class Board {
 	
 	public Board(int numPlayers) {
 		this.numPlayers = numPlayers;
-		System.out.println("from board " + numPlayers);
+		this.sectionWidth = GameUtil.computeSectionWidth(this.numPlayers);
 		
 		boardRows = new HashMap<Integer, Square[]>();
 		playerPieces = new Piece[numPlayers];
 		for (int i = 0; i < playerPieces.length; i++) {
-			playerPieces[i] = PieceFactory.generateNewPiece(i);
+			playerPieces[i] = PieceFactory.generateNewPiece(i, sectionWidth);
 		}
 		playerUpcomingPieces = new ArrayList<Queue<Piece>>(numPlayers);
 		for (int i = 0; i < numPlayers; i++) {
 			Queue<Piece> nextQueue = new LinkedList<Piece>();
 			for (int j = 0; j < PIECE_QUEUE_SIZE; j++) {
-				nextQueue.add(PieceFactory.generateNewPiece(i));
+				nextQueue.add(PieceFactory.generateNewPiece(i, sectionWidth));
 			}
 			playerUpcomingPieces.add(nextQueue);
 		}
@@ -243,7 +245,7 @@ public class Board {
 			Square[] row = boardRows.get(square.y);
 			if (row != null) {
 				// check there isn't already another square occupying that space
-				if (row[GameUtil.modulo(square.x, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH)] != null) {
+				if (row[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] != null) {
 					return false;
 				}
 			}
@@ -262,7 +264,7 @@ public class Board {
 		for (int i = 0; i < playerPieces.length; i++) {
 			if (i != player && playerPieces[i] != null) {
 				for (Square square : playerPieces[player].squares) {
-					if (playerPieces[i].containsSquare(square, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH)) {
+					if (playerPieces[i].containsSquare(square, GameUtil.BOARD_WIDTH)) {
 						return false;
 					}
 				}
@@ -275,7 +277,7 @@ public class Board {
 	 * Gets all of the colors of the given row.
 	 */
 	public synchronized Color[] getRowColors(int rowNum) {
-		Color[] rowColors = new Color[numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
+		Color[] rowColors = new Color[GameUtil.BOARD_WIDTH];
 		Square[] row = boardRows.get(rowNum);
 		if (row != null) {
 			assert rowColors.length == row.length;
@@ -295,7 +297,7 @@ public class Board {
 			if (playerPieces[i] != null) {
 				for (Square square : playerPieces[i].squares) {
 					if (square.y == rowNum) {
-						rowColors[GameUtil.modulo(square.x, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH)] = square.color;
+						rowColors[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square.color;
 					}
 				}
 			}
@@ -336,9 +338,9 @@ public class Board {
 			for (Square square : playerPieces[player].squares) {
 				Square[] row = boardRows.get(square.y);
 				if (row == null) {
-					boardRows.put(square.y, new Square[numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH]);
+					boardRows.put(square.y, new Square[GameUtil.BOARD_WIDTH]);
 				}
-				boardRows.get(square.y)[GameUtil.modulo(square.x, numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH)] = square;
+				boardRows.get(square.y)[GameUtil.modulo(square.x, GameUtil.BOARD_WIDTH)] = square;
 			}
 			/*
 			 * Update the current player's falling piece by getting it from the
@@ -346,7 +348,7 @@ public class Board {
 			 * add that to the queue. 
 			 */
 			playerPieces[player] = playerUpcomingPieces.get(player).remove();
-			playerUpcomingPieces.get(player).add(PieceFactory.generateNewPiece(player));
+			playerUpcomingPieces.get(player).add(PieceFactory.generateNewPiece(player, sectionWidth));
 		}
 	}
 	

@@ -18,21 +18,22 @@ public class ClientConnectionManager implements Runnable {
 	
 	private int numPlayers;
 
-	boolean hasQuit;
+	private boolean hasQuit;
+	private final boolean upcomingAssist;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
 			DataInputStream inFromServer,
-			DataOutputStream outToServer, int numPlayers) {
+			DataOutputStream outToServer, int numPlayers, boolean upcomingAssist) {
 		this.outputCommandBytes = commands;
 		this.inputStates = inputStates;
 
 		this.inFromServer = inFromServer;
 		this.outToServer = outToServer;
 		this.numPlayers = numPlayers;
-		System.out.println("from clientconnectionmanager " + numPlayers);
 
 		hasQuit = false;
+		this.upcomingAssist = upcomingAssist;
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class ClientConnectionManager implements Runnable {
 			while (true) {
 				try {
 					// read the board state
-					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
+					Color[][] board = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 					for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 						if (hasQuit) {
 							return;
@@ -100,7 +101,16 @@ public class ClientConnectionManager implements Runnable {
 					}
 					
 					// put the board state, score and isGameOver in a GameState struct
-					GameState state = new GameState(board, playerSpaces, playerScores, isGameOver);
+					GameState state;
+					if (upcomingAssist) {
+						byte[] upcomingPieces = new byte[numPlayers];
+						for (int i = 0; i < numPlayers; i++) {
+							
+						}
+						state = new GameState(board, playerSpaces, playerScores, isGameOver, upcomingPieces);
+					} else {
+						state = new GameState(board, playerSpaces, playerScores, isGameOver);
+					}
 					
 					// wait for synchronization
 					long delay = inFromServer.readLong();

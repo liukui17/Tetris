@@ -3,6 +3,9 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.DataInputStream;
@@ -40,7 +43,9 @@ public class MainFrame extends JFrame {
 	private Socket socket;
 
 	private boolean drawGhosts;
+	private boolean upcomingAssistance;
 	private long dropInterval;
+	private int playerNumber;
 	private int numPlayers;
 	private String hostName;
 	private int portNum;
@@ -173,6 +178,7 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 
 		drawGhosts = true;
+		upcomingAssistance = true;
 		dropInterval = EASY_INTERVAL;
 		musicPlayer = new MusicPlayer();
 
@@ -203,9 +209,11 @@ public class MainFrame extends JFrame {
 				switch (s) {
 				case "Options":
 					c.add(optionsPanel, BorderLayout.CENTER);
+					setSize(optionsPanel.getPreferredSize());
 					break;
 				case "Help":
 					c.add(helpPanel, BorderLayout.CENTER);
+					setSize(helpPanel.getPreferredSize());
 					break;
 				case "Start":
 					c.add(waitingPanel, BorderLayout.CENTER);
@@ -223,13 +231,22 @@ public class MainFrame extends JFrame {
 									socket = new Socket(hostName, portNum);
 								} catch (Exception e) {
 									JTextField host = new JTextField();
+									host.setText(hostName);
+									
 									JTextField port = new JTextField();
+									port.setText(Integer.toString(portNum));
+									
 									Object[] message = {"Host name:", host, "Port number:", port};
 
 									int option = JOptionPane.showConfirmDialog(waitingPanel, message, "Enter a valid Host and Port", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 									if (option == JOptionPane.OK_OPTION) {
 										hostName = host.getText();
-										portNum = Integer.parseInt(port.getText());
+										try {
+											portNum = Integer.parseInt(port.getText());
+										} catch (Exception e1) {
+											JOptionPane.showMessageDialog(waitingPanel, "Port number must be an integer", "Error", JOptionPane.PLAIN_MESSAGE);
+											continue;
+										}
 									} else {
 										c.remove(waitingPanel);
 										c.add(menuPanel);
@@ -288,16 +305,15 @@ public class MainFrame extends JFrame {
 
 								numPlayers = in.readInt();
 
-								// Should block here until server sends boolean
-								int playerNumber = in.readInt();
-
+								playerNumber = in.readInt();
+								
 								out.writeLong(dropInterval);
 
 								c.remove(waitingPanel);
 
-								System.out.println("from MainFrame " + numPlayers);
+								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, upcomingAssistance, numPlayers);
 
-								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, numPlayers);
+								setSize(gamePanel.getPreferredSize());
 								Thread gameThread = new Thread(gamePanel);
 								c.add(gamePanel, BorderLayout.CENTER);
 								gameThread.start();
@@ -331,32 +347,62 @@ public class MainFrame extends JFrame {
 
 			}
 		});
-
-		optionsPanel.setButtonListener(new ButtonListener() {
-			public void buttonClicked(String s) {
-				switch (s) {
-				case "Back":
-					c.add(menuPanel, BorderLayout.CENTER);
-					c.remove(optionsPanel);
-					revalidate();
-					repaint();
-					break;
-				case "No":
-					drawGhosts = false;
-					break;
-				case "Yes":
-					drawGhosts = true;
-					break;
-				case "Easy":
-					dropInterval = EASY_INTERVAL;
-					break;
-				case "Medium":
-					dropInterval = MEDIUM_INTERVAL;
-					break;
-				case "Hard":
-					dropInterval = HARD_INTERVAL;
-					break;
-				}
+		
+		optionsPanel.easyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dropInterval = EASY_INTERVAL;
+			//	System.out.println("easy");
+			}
+		});
+		
+		optionsPanel.mediumButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dropInterval = MEDIUM_INTERVAL;
+			//	System.out.println("medium");
+			}
+		});
+		
+		optionsPanel.hardButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dropInterval = HARD_INTERVAL;
+			//	System.out.println("hard");
+			}
+		});
+		
+		optionsPanel.ghostYesBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				drawGhosts = true;
+			//	System.out.println("ghosts: " + drawGhosts);
+			}
+		});
+		
+		optionsPanel.ghostNoBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				drawGhosts = false;
+			//	System.out.println("ghosts: " + drawGhosts);
+			}
+		});
+		
+		optionsPanel.upcomingYesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				upcomingAssistance = true;
+			//	System.out.println("upcoming: " + upcomingAssistance);
+			}
+		});
+		
+		optionsPanel.upcomingNoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				upcomingAssistance = false;
+			//	System.out.println("upcoming: " + upcomingAssistance);
+			}
+		});
+		
+		optionsPanel.backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				c.add(menuPanel, BorderLayout.CENTER);
+				c.remove(optionsPanel);
+				revalidate();
+				repaint();
 			}
 		});
 
@@ -385,7 +431,7 @@ public class MainFrame extends JFrame {
 					DataOutputStream out;
 					try {
 						out = new DataOutputStream(socket.getOutputStream());
-						out.writeByte(Encoder.QUIT_MASK);
+						out.writeByte(Encoder.encodeKeyPress(KeyEvent.VK_UNDEFINED, playerNumber));
 						if (gamePanel != null) {
 							gamePanel.manager.toggleHasQuit();
 						}

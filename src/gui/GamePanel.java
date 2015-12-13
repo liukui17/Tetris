@@ -17,6 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -24,7 +25,6 @@ import infrastructure.BytePair;
 import infrastructure.ClientConnectionManager;
 import infrastructure.Encoder;
 import infrastructure.GameState;
-import infrastructure.GameUtil;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private EndPanel endPanel;
 
 	private JLabel[] scoreLabels;
+	private JLabel[] upcomingLabels;
 
 	private KeyEventDispatcher keyDispatcher;
 
@@ -44,9 +45,9 @@ public class GamePanel extends JPanel implements Runnable {
 	private int numPlayers;
 	
 	ClientConnectionManager manager;
-	int playerNumber;
 
-	public GamePanel(DataInputStream in, DataOutputStream out, int playerNumber, MusicPlayer musicPlayer, EndPanel endPanel, boolean drawGhosts, int numPlayers) {
+	public GamePanel(DataInputStream in, DataOutputStream out, int playerNumber, MusicPlayer musicPlayer,
+					 EndPanel endPanel, boolean drawGhosts, boolean upcomingAssistance, int numPlayers) {
 
 		commands = new LinkedBlockingQueue<Byte>();
 		gameState = new LinkedBlockingQueue<GameState>();
@@ -58,8 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		System.out.println("from gamepanel " + numPlayers);
 
-		this.playerNumber = playerNumber;
-		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers);
+		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers, upcomingAssistance);
 		Thread managerThread = new Thread(manager);
 		managerThread.start();
 
@@ -95,7 +95,6 @@ public class GamePanel extends JPanel implements Runnable {
 		add(Box.createHorizontalGlue());
 
 		boardPanel = new BoardPanel(drawGhosts, numPlayers);
-		boardPanel.setPreferredSize(new Dimension(480, 720));
 		boardPanel.setAlignmentX(CENTER_ALIGNMENT);
 		boardPanel.setAlignmentY(CENTER_ALIGNMENT);
 		add(boardPanel);
@@ -108,10 +107,26 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.setBackground(Color.LIGHT_GRAY);
 		
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		GuiUtil.addLabel(rightPanel, "Next", 30);
+		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Next", 30);
+		rightTitle.setPreferredSize(LABEL_SIZE);
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		//rightPanel.add(Box.createVerticalGlue());
+		if (upcomingAssistance) {
+			upcomingLabels = new JLabel[numPlayers];
+			for (int i = 0; i < numPlayers; i++) {
+				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				JLabel nextTitleLabel = GuiUtil.addLabel(rightPanel, "Player " + i, 20);
+				nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+				nextTitleLabel.setPreferredSize(LABEL_SIZE);
+				
+				leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				scoreLabels[i] =  GuiUtil.addLabel(rightPanel, null, 20);
+			}
+		} else {
+			upcomingLabels = null;
+		}
+		
+		rightPanel.add(Box.createVerticalGlue());
 		
 		add(rightPanel);
 		
@@ -175,6 +190,10 @@ public class GamePanel extends JPanel implements Runnable {
 			for (int i = 0; i < numPlayers; i++) {
 				scoreLabels[i].setText(Integer.toString(state.getScore(i)));
 			}
+			
+		/*	for (int i = 0; i < numPlayers; i++) {
+				scoreLabels[i].setText(text);
+			} */
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(numPlayers);

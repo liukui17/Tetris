@@ -22,7 +22,7 @@ public class GameServer {
 	public static final byte SUCCESS_CREATION = 2;
 	public static final byte GAME_DOES_NOT_EXIST = 3;
 	public static final byte SUCCESS_JOIN = 4;
-	public static final byte VALID_NUM_PLAYERS = 5;
+	public static final byte VALID_NUM_PLAYERS = 4;
 	public static final byte GAME_FULL = 6;
 	public static final byte ACCEPTED = 7;
 
@@ -173,8 +173,9 @@ public class GameServer {
 
 				long dropInterval = getInitialDropInterval(game.playersIn);
 
-				Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
-
+				// COME BACK HERE AND UPDATE UPCOMING ASSISTED BOOLEAN
+				Thread thread = new Thread(new GameThread(clientSockets, dropInterval, false));
+				
 				thread.start();
 
 				thread.join();

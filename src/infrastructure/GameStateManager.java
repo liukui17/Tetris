@@ -24,7 +24,6 @@ public class GameStateManager {
 			playerScores[i] = 0;
 		}
 		
-		System.out.println("from Gamestatemanager " + numPlayers);
 	}
 	
 	public synchronized int getScore(int player) {
@@ -42,7 +41,7 @@ public class GameStateManager {
 	 */
 	public synchronized GameState getCurrentState() {
 		// convert board into a Color[][]
-		Color[][] currentBoard = new Color[GameUtil.BOARD_HEIGHT][numPlayers * GameUtil.PLAYER_START_SECTION_WIDTH];
+		Color[][] currentBoard = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
 		for (int i = 0; i < GameUtil.BOARD_HEIGHT; i++) {
 			currentBoard[i] = board.getRowColors(i);
 		}

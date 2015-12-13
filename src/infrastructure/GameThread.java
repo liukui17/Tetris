@@ -27,8 +27,10 @@ public class GameThread implements Runnable {
 	private GameTimer timer;
 	
 	private int numPlayers;
+	
+	private final boolean upcomingAssist;
 
-	public GameThread(Socket[] playerSockets, long initialDropInterval) throws IOException {	
+	public GameThread(Socket[] playerSockets, long initialDropInterval, boolean upcomingAssist) throws IOException {	
 		this.playerSockets = playerSockets;
 		numPlayers = playerSockets.length;
 
@@ -39,6 +41,7 @@ public class GameThread implements Runnable {
 
 		gameState = new GameStateManager(numPlayers);
 		timer = new GameTimer(initialDropInterval, gameState, outStates, numPlayers);
+		this.upcomingAssist = upcomingAssist;
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class GameThread implements Runnable {
 		 * GameState data to be sent to players will be dequeued from the shared
 		 * outStates BlockingQueue.
 		 */
-		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets)).start();
+		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets, upcomingAssist)).start();
 
 		// send out the initial state to the client
 		GameState initialState = gameState.getCurrentState();
@@ -65,6 +68,35 @@ public class GameThread implements Runnable {
 		timer.start();
 
 		/*
+		 * Thread that checks if socket closes and tells the gameState
+		 */
+		new Thread() {
+			public void run() {
+				while (true) {
+					boolean remaining = false;
+
+					for (int i = 0; i < playerSockets.length; i++) {
+						if (playerSockets[i] == null) {
+							gameState.disable(i);
+						} else {
+							remaining = true;
+						}
+					}
+					
+					if (!remaining) {
+						return;
+					}
+
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}.start();
+
+		/*
 		 * Dequeues command bytes from the command BlockingQueue, parses it,
 		 * updates the board, and enqueues the new game state to the outStates
 		 * BlockingQueue.
@@ -72,12 +104,6 @@ public class GameThread implements Runnable {
 		while (true) {
 			byte commandByte;
 			try {
-				
-				for (int i = 0; i < playerSockets.length; i++) {
-					if (playerSockets[i] == null) {
-						gameState.disable(i);
-					}
-				}
 				
 				// get the next command
 				commandByte = commandsFromClient.take();
