@@ -88,6 +88,7 @@ public class GameServer {
 						if (numPlayers == 1) {
 							new Thread(new GameThreadWrapper(gameName)).start();
 						}
+						
 						break;
 					} else {  // JOINING GAME
 						String gameName = getGameName(false, in, out);
@@ -113,8 +114,9 @@ public class GameServer {
 
 							if (game.isReady()) {
 								new Thread(new GameThreadWrapper(gameName)).start();
-								break;
 							}
+							
+							break;
 						}
 					}
 				}
@@ -241,6 +243,7 @@ public class GameServer {
 		long interval = 0;
 		for (int i = 0; i < in.length; i++) {
 			interval += in[i].readLong();
+			System.out.println("read interval from player " + i);
 		}
 
 		return interval / in.length;
