@@ -57,8 +57,6 @@ public class GamePanel extends JPanel implements Runnable {
 		this.numPlayers = numPlayers;
 		musicPlayer.playBGM();
 		
-		System.out.println("from gamepanel " + numPlayers);
-
 		manager = new ClientConnectionManager(commands, gameState, in, out, numPlayers);
 		Thread managerThread = new Thread(manager);
 		managerThread.start();
@@ -102,6 +100,9 @@ public class GamePanel extends JPanel implements Runnable {
 		add(Box.createHorizontalGlue());
 
 		// Right Panel
+		
+		add(Box.createRigidArea(new Dimension(10, 0)));
+		
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.setBackground(Color.LIGHT_GRAY);
@@ -120,7 +121,10 @@ public class GamePanel extends JPanel implements Runnable {
 				nextTitleLabel.setPreferredSize(LABEL_SIZE);
 				
 				leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-				scoreLabels[i] =  GuiUtil.addLabel(rightPanel, null, 20);
+				PiecePanel piece = new PiecePanel();
+				rightPanel.add(piece);
+				piece.revalidate();
+				piece.repaint();
 			}
 		} else {
 			upcomingLabels = null;
@@ -129,6 +133,8 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.add(Box.createVerticalGlue());
 		
 		add(rightPanel);
+		
+		add(Box.createRigidArea(new Dimension(10, 0)));
 		
 		// Keyboard Dispatcher
 		keyDispatcher = new KeyEventDispatcher() {
@@ -191,9 +197,10 @@ public class GamePanel extends JPanel implements Runnable {
 				scoreLabels[i].setText(Integer.toString(state.getScore(i)));
 			}
 			
-		/*	for (int i = 0; i < numPlayers; i++) {
-				scoreLabels[i].setText(text);
-			} */
+//			// update next piece
+//			for (int i = 0; i < numPlayers; i++) {
+//				pieces[i].
+//			}
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(numPlayers);
