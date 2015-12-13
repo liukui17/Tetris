@@ -25,13 +25,15 @@ public class ServerConnectionManager implements Runnable {
 	private DataOutputStream[] playerOutputStreams;
 	
 	private int numPlayers;
+	private final boolean upcomingAssist;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
-			Socket[] playerSockets) {
+			Socket[] playerSockets, boolean upcomingAssist) {
 		this.commands = commands;
 		this.outStates = outStates;
 		this.numPlayers = playerSockets.length;
+		this.upcomingAssist = upcomingAssist;
 
 		this.playerSockets = playerSockets;
 		playerInputStreams = new DataInputStream[this.playerSockets.length];

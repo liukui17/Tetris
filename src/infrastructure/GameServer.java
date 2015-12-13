@@ -140,7 +140,8 @@ public class GameServer {
 
 				long dropInterval = getInitialDropInterval(game.playersIn);
 
-				Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
+				// COME BACK HERE AND UPDATE UPCOMING ASSISTED BOOLEAN
+				Thread thread = new Thread(new GameThread(clientSockets, dropInterval, false));
 				
 				thread.start();
 				
