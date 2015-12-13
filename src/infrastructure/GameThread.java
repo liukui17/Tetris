@@ -27,8 +27,10 @@ public class GameThread implements Runnable {
 	private GameTimer timer;
 	
 	private int numPlayers;
+	
+	private final boolean upcomingAssist;
 
-	public GameThread(Socket[] playerSockets, long initialDropInterval) throws IOException {	
+	public GameThread(Socket[] playerSockets, long initialDropInterval, boolean upcomingAssist) throws IOException {	
 		this.playerSockets = playerSockets;
 		numPlayers = playerSockets.length;
 
@@ -39,6 +41,7 @@ public class GameThread implements Runnable {
 
 		gameState = new GameStateManager(numPlayers);
 		timer = new GameTimer(initialDropInterval, gameState, outStates, numPlayers);
+		this.upcomingAssist = upcomingAssist;
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class GameThread implements Runnable {
 		 * GameState data to be sent to players will be dequeued from the shared
 		 * outStates BlockingQueue.
 		 */
-		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets)).start();
+		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets, upcomingAssist)).start();
 
 		// send out the initial state to the client
 		GameState initialState = gameState.getCurrentState();
@@ -73,7 +76,7 @@ public class GameThread implements Runnable {
 					boolean remaining = false;
 
 					for (int i = 0; i < playerSockets.length; i++) {
-						if (playerSockets[i] == null ) {
+						if (playerSockets[i] == null) {
 							gameState.disable(i);
 						} else {
 							remaining = true;

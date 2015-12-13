@@ -25,13 +25,15 @@ public class ServerConnectionManager implements Runnable {
 	private DataOutputStream[] playerOutputStreams;
 	
 	private int numPlayers;
+	private final boolean upcomingAssist;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
-			Socket[] playerSockets) {
+			Socket[] playerSockets, boolean upcomingAssist) {
 		this.commands = commands;
 		this.outStates = outStates;
 		this.numPlayers = playerSockets.length;
+		this.upcomingAssist = upcomingAssist;
 
 		this.playerSockets = playerSockets;
 		playerInputStreams = new DataInputStream[this.playerSockets.length];
@@ -82,9 +84,8 @@ public class ServerConnectionManager implements Runnable {
 			while (!isFinished) {
 				try {
 					byte msg = player.readByte();
-					if ((msg ^ Encoder.QUIT_MASK) != 0) {
-						commands.add(msg);
-					} else {
+					commands.add(msg);
+					if ((msg & Encoder.COMMAND_MASK) == 0) {
 						break;
 					}
 				} catch (IOException e) {
@@ -189,7 +190,7 @@ public class ServerConnectionManager implements Runnable {
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);
 			} catch (Exception e) {
-				e.printStackTrace();
+			//	e.printStackTrace();
 			}
 		}
 	}

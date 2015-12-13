@@ -16,14 +16,16 @@ public class GameServer {
 	public static final int PORT_NUM = 3333;
 
 	private static Map<String, Game> games = new HashMap<String, Game>();
-	
+
 	public static final byte GAME_ALREADY_EXISTS = 0;
 	public static final byte ILLEGAL_NUM_PLAYERS = 1;
 	public static final byte SUCCESS_CREATION = 2;
 	public static final byte GAME_DOES_NOT_EXIST = 3;
 	public static final byte SUCCESS_JOIN = 4;
 	public static final byte VALID_NUM_PLAYERS = 4;
-	
+	public static final byte GAME_FULL = 6;
+	public static final byte ACCEPTED = 7;
+
 	public static void main(String[] args) {
 		try {
 			@SuppressWarnings("resource")
@@ -37,44 +39,67 @@ public class GameServer {
 					Socket player = server.accept();
 					DataInputStream in = new DataInputStream(player.getInputStream());
 					DataOutputStream out = new DataOutputStream(player.getOutputStream());
-					
-					boolean makingGame = in.readBoolean();
-					
-					if (makingGame) {
-						String gameName = getGameName(true, in, out);
-						int numPlayers = getNumPlayers(in, out);
 
-						Game game = new Game(numPlayers);
-						
-						game.numConnectedPlayers++;
-						game.playerSockets[0] = player;
-						game.playersIn[0] = in;
-						game.playersOut[0] = out;
-						
-						games.put(gameName, game);
+					while (true) {
+						boolean makingGame = in.readBoolean();
 
-						if (numPlayers == 1) {
-							//createGame(gameName);
-							new Thread(new GameThreadWrapper(gameName)).start();
-						}
-						
-						doneSetup = true;
-					} else {
-						String gameName = getGameName(false, in, out);
-						
-						Game game = games.get(gameName);
-						
-						game.numConnectedPlayers++;
-						
-						int index = game.numConnectedPlayers - 1;
-						game.playerSockets[index] = player;
-						game.playersIn[index] = in;
-						game.playersOut[index] = out;
-						
-						if (game.isReady()) {
-							//createGame(gameName);
-							new Thread(new GameThreadWrapper(gameName)).start();
+						if (makingGame) {
+							String gameName = getGameName(true, in, out);
+
+							if (gameName.isEmpty()) {
+								continue;
+							}
+
+							int numPlayers = getNumPlayers(in, out);
+							if (numPlayers == -1) {
+								continue;
+							}
+
+							Game game = new Game(numPlayers);
+
+							game.numConnectedPlayers++;
+							game.playerSockets[0] = player;
+							game.playersIn[0] = in;
+							game.playersOut[0] = out;
+
+							games.put(gameName, game);
+
+							out.writeByte(ACCEPTED);
+							
+							if (numPlayers == 1) {
+								new Thread(new GameThreadWrapper(gameName)).start();
+							}
+
 							doneSetup = true;
+							break;
+						} else {
+							String gameName = getGameName(false, in, out);
+							
+							if (gameName.isEmpty()) {
+								continue;
+							}
+
+							Game game = games.get(gameName);
+							
+							if (game.numConnectedPlayers == game.capacity) {
+								out.writeByte(GAME_FULL);
+								continue;
+							} else {
+								game.numConnectedPlayers++;
+
+								int index = game.numConnectedPlayers - 1;
+								game.playerSockets[index] = player;
+								game.playersIn[index] = in;
+								game.playersOut[index] = out;
+
+								out.writeByte(ACCEPTED);
+								
+								if (game.isReady()) {
+									new Thread(new GameThreadWrapper(gameName)).start();
+									doneSetup = true;
+									break;
+								}
+							}
 						}
 					}
 				}
@@ -88,6 +113,12 @@ public class GameServer {
 		String gameName = "";
 		while (true) {
 			gameName = in.readUTF();
+			
+			if (gameName.isEmpty()) {
+				// Client hit cancel
+				return gameName;
+			}
+			
 			if (creating) {
 				if (games.containsKey(gameName)) {
 					out.writeByte(GAME_ALREADY_EXISTS);
@@ -95,7 +126,7 @@ public class GameServer {
 					out.writeByte(GAME_DOES_NOT_EXIST);
 					break;
 				}
-			} else {
+			} else {	
 				if (games.containsKey(gameName)) {
 					out.writeByte(GAME_ALREADY_EXISTS);
 					break;
@@ -106,47 +137,49 @@ public class GameServer {
 		}	
 		return gameName;
 	}
-	
+
 	private static int getNumPlayers(DataInputStream in, DataOutputStream out) throws IOException {
 		int numPlayers = in.readInt();
-		while (true) {
-			if (numPlayers <= 0) {
-				out.writeByte(ILLEGAL_NUM_PLAYERS);
-			} else {
-				out.writeByte(VALID_NUM_PLAYERS);
-				break;
-			}
-			numPlayers = in.readInt();
+		/*
+		 * Client ensures the user either entered a positive number or hit cancel,
+		 * so no need to infinite loop and verify
+		 */
+		if (numPlayers <= 0) {
+			// Client hit cancel
+			return -1;
+		} else {
+			out.writeByte(VALID_NUM_PLAYERS);
 		}
+
 		return numPlayers;
 	}
 
 	private static class GameThreadWrapper implements Runnable {
 		private String name;
-		
+
 		public GameThreadWrapper(String name) {
 			this.name = name;
 		}
-		
+
 		@Override
 		public void run() {
 			try {
 				Game game = games.get(name);
 				Socket[] clientSockets = game.playerSockets;
-				
+
 				notifyNumberOfPlayers(game.playersOut);
-				
+
 				notifyPlayerNumbers(game.playersOut);
 
 				long dropInterval = getInitialDropInterval(game.playersIn);
 
-				Thread thread = new Thread(new GameThread(clientSockets, dropInterval));
+				// COME BACK HERE AND UPDATE UPCOMING ASSISTED BOOLEAN
+				Thread thread = new Thread(new GameThread(clientSockets, dropInterval, false));
 				
 				thread.start();
-				
+
 				thread.join();
-				
-				System.out.println("removed game " + name);
+
 				games.remove(name);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -155,13 +188,13 @@ public class GameServer {
 			}
 		}
 	}
-	
+
 	private static void notifyNumberOfPlayers(DataOutputStream[] out) throws IOException {
 		for (int i = 0; i < out.length; i++) {
 			out[i].writeInt(out.length);
 		}
 	}
-	
+
 	/**
 	 * Notifies the players connected to sockets in the specified Socket[] which
 	 * player number they are.
@@ -196,14 +229,14 @@ public class GameServer {
 
 		return interval / in.length;
 	}
-	
+
 	static class Game {
 		int capacity;
 		int numConnectedPlayers;
 		Socket[] playerSockets;
 		DataInputStream[] playersIn;
 		DataOutputStream[] playersOut;
-		
+
 		public Game(int numPlayers) {
 			capacity = numPlayers;
 			numConnectedPlayers = 0;
@@ -211,7 +244,7 @@ public class GameServer {
 			playersIn = new DataInputStream[capacity];
 			playersOut = new DataOutputStream[capacity];
 		}
-		
+
 		public boolean isReady() {
 			return capacity == numConnectedPlayers;
 		}

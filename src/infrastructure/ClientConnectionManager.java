@@ -18,12 +18,13 @@ public class ClientConnectionManager implements Runnable {
 	
 	private int numPlayers;
 
-	boolean hasQuit;
+	private boolean hasQuit;
+	private final boolean upcomingAssist;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
 			DataInputStream inFromServer,
-			DataOutputStream outToServer, int numPlayers) {
+			DataOutputStream outToServer, int numPlayers, boolean upcomingAssist) {
 		this.outputCommandBytes = commands;
 		this.inputStates = inputStates;
 
@@ -32,6 +33,7 @@ public class ClientConnectionManager implements Runnable {
 		this.numPlayers = numPlayers;
 
 		hasQuit = false;
+		this.upcomingAssist = upcomingAssist;
 	}
 
 	/**
@@ -99,7 +101,16 @@ public class ClientConnectionManager implements Runnable {
 					}
 					
 					// put the board state, score and isGameOver in a GameState struct
-					GameState state = new GameState(board, playerSpaces, playerScores, isGameOver);
+					GameState state;
+					if (upcomingAssist) {
+						byte[] upcomingPieces = new byte[numPlayers];
+						for (int i = 0; i < numPlayers; i++) {
+							
+						}
+						state = new GameState(board, playerSpaces, playerScores, isGameOver, upcomingPieces);
+					} else {
+						state = new GameState(board, playerSpaces, playerScores, isGameOver);
+					}
 					
 					// wait for synchronization
 					long delay = inFromServer.readLong();

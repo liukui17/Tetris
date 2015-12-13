@@ -14,6 +14,7 @@ public class GameState {
 	private List<Set<BytePair>> playerSpaces;
 	private final int[] playerScores;
 	private final boolean isGameOver;
+	private byte[] upcomingPieces = null;
 	
 	public GameState(Color[][] board, List<Set<BytePair>> playerSpaces,
 					 int[] playerScores, boolean isGameOver) {
@@ -21,6 +22,12 @@ public class GameState {
 		this.playerSpaces = playerSpaces;
 		this.isGameOver = isGameOver;
 		this.playerScores = playerScores;
+	}
+	
+	public GameState(Color[][] board, List<Set<BytePair>> playerSpaces,
+			 int[] playerScores, boolean isGameOver, byte[] upcomingPieces) {
+		this(board, playerSpaces, playerScores, isGameOver);
+		this.upcomingPieces = upcomingPieces;
 	}
 	
 	public Color[][] getBoard() {
@@ -44,6 +51,10 @@ public class GameState {
 	
 	public boolean getIsGameOver() {
 		return isGameOver;
+	}
+	
+	public byte[] getUpcomingPieces() {
+		return upcomingPieces;
 	}
 	
 	public void printBoard() {
