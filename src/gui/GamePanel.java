@@ -222,10 +222,8 @@ public class GamePanel extends JPanel implements Runnable {
 						upcomingPieces[i].updatePiece(GameUtil.Z_SHAPE, GameUtil.Z_COLOR); break;
 					default: // default to nothing
 					}
-				//	upcomingPieces[i].updatePiece(GameUtil.S_SHAPE, GameUtil.S_COLOR);
 				}
 			}
-
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(numPlayers);
