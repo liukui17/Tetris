@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import pieces.Piece;
+
 public class Encoder {
 	public static final int BITS_PER_COLOR = 3; // encode each color with 3 bits
 	public static final int COLOR_MASK = (1 << BITS_PER_COLOR) - 1;  // 00000111
@@ -125,6 +127,23 @@ public class Encoder {
 			default:	// just ignore anything else that is given so the user can
 				// accidentally hit some other key without us having to throw
 				// an illegal argument exception
+		}
+	}
+	
+	public static byte encodeUpcomingPiece(Piece upcoming, int player) {
+		return encodeUpcomingPiece(upcoming.getByte(), player);
+	}
+	
+	public static byte encodeUpcomingPiece(byte upcoming, int player) {
+		return (byte) ((byte) (player << NEXT_PIECE_BITS) | upcoming);
+	}
+	
+	public static void decodeUpcomingPiece(byte encoded, byte[] upcomingPieces) {
+		int player = (encoded >> NEXT_PIECE_BITS) & ((1 << PLAYER_BITS) - 1);
+		
+		if (player < upcomingPieces.length && player >= 0) {
+			byte piece = (byte) (encoded & ((1 << NEXT_PIECE_BITS) - 1));
+			upcomingPieces[player] = piece;
 		}
 	}
 

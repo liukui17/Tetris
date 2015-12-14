@@ -32,6 +32,7 @@ public class GameThread implements Runnable {
 
 	public GameThread(Socket[] playerSockets, long initialDropInterval, boolean upcomingAssist) throws IOException {	
 		this.playerSockets = playerSockets;
+		this.upcomingAssist = upcomingAssist;
 		numPlayers = playerSockets.length;
 
 		commandsFromClient = new LinkedBlockingQueue<Byte>();
@@ -39,9 +40,8 @@ public class GameThread implements Runnable {
 
 		threshold = INITIAL_THRESHOLD;
 
-		gameState = new GameStateManager(numPlayers);
+		gameState = new GameStateManager(numPlayers, upcomingAssist);
 		timer = new GameTimer(initialDropInterval, gameState, outStates, numPlayers);
-		this.upcomingAssist = upcomingAssist;
 	}
 
 	@Override

@@ -120,6 +120,8 @@ public abstract class Piece {
 		buf.append("]");
 		return buf.toString();
 	}
+	
+	public abstract byte getByte();
 
 	protected abstract void rotateLeft();
 

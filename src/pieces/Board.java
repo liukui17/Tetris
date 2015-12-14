@@ -81,6 +81,19 @@ public class Board {
 		checkRep();
 	}
 	
+	public synchronized byte[] getPlayerUpcomingPieces() {
+		byte[] upcoming = new byte[numPlayers];
+		for (int i = 0; i < upcoming.length; i++) {
+			Queue<Piece> nextQueue = playerUpcomingPieces.get(i);
+			if (nextQueue != null) {
+				upcoming[i] = nextQueue.peek().getByte();
+			} else {
+				upcoming[i] = 0;
+			}
+		}
+		return upcoming;
+	}
+	
 	/**
 	 * Disables a given player's piece (do this for players
 	 * that disconnect mid-game)
