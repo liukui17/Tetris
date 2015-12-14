@@ -232,6 +232,13 @@ public class GameServer {
 		}
 	}
 	
+	/**
+	 * Notifies the player what the assistance setting is for this game.
+	 * 
+	 * @param out the output streams to each player
+	 * @param preference the decided assistance preference
+	 * @throws IOException iff io error on writing
+	 */
 	private static void notifyMajorityAssistancePreference(DataOutputStream[] out, boolean preference) throws IOException {
 		for (int i = 0; i < out.length; i++) {
 			out[i].writeBoolean(preference);
@@ -252,7 +259,9 @@ public class GameServer {
 				numWantAssistance++;
 			}
 		}
-		if (numWantAssistance > in.length / 2) {
+		
+		// if tie, choose to use assistance (default is to have assistance)
+		if (numWantAssistance >= in.length / 2) {
 			return true;
 		} else {
 			return false;
