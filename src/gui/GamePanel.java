@@ -220,7 +220,8 @@ public class GamePanel extends JPanel implements Runnable {
 						upcomingPieces[i].updatePiece(GameUtil.T_SHAPE, GameUtil.T_COLOR); break;
 					case 7:
 						upcomingPieces[i].updatePiece(GameUtil.Z_SHAPE, GameUtil.Z_COLOR); break;
-					default: // default to nothing
+					default:
+						upcomingPieces[i].updatePiece(null, GameUtil.EMPTY);
 					}
 				}
 			}
