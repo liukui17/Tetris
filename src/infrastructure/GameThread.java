@@ -42,6 +42,7 @@ public class GameThread implements Runnable {
 
 		gameState = new GameStateManager(numPlayers, upcomingAssist);
 		timer = new GameTimer(initialDropInterval, gameState, outStates, numPlayers);
+		
 	}
 
 	@Override

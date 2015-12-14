@@ -190,9 +190,12 @@ public class GameServer {
 				notifyPlayerNumbers(game.playersOut);
 
 				long dropInterval = getInitialDropInterval(game.playersIn);
+				
+				boolean assistance = getMajorityAssistancePreference(game.playersIn);
 
-				// COME BACK HERE AND UPDATE UPCOMING ASSISTED BOOLEAN
-				Thread thread = new Thread(new GameThread(clientSockets, dropInterval, false));
+				notifyMajorityAssistancePreference(game.playersOut, assistance);
+				
+				Thread thread = new Thread(new GameThread(clientSockets, dropInterval, assistance));
 
 				thread.start();
 
@@ -226,6 +229,33 @@ public class GameServer {
 	private static void notifyPlayerNumbers(DataOutputStream[] out) throws IOException {
 		for (int i = 0; i < out.length; i++) {
 			out[i].writeInt(i);
+		}
+	}
+	
+	private static void notifyMajorityAssistancePreference(DataOutputStream[] out, boolean preference) throws IOException {
+		for (int i = 0; i < out.length; i++) {
+			out[i].writeBoolean(preference);
+		}
+	}
+	
+	/**
+	 * Obtains the majority assistance preference of the pool of players.
+	 * 
+	 * @param in streams reading from players
+	 * @return whether or not to turn on upcoming piece assistance based on majority vote
+	 * @throws IOException iff error on reading the dropping intervals from each player
+	 */
+	private static boolean getMajorityAssistancePreference(DataInputStream[] in) throws IOException {
+		int numWantAssistance = 0;
+		for (int i = 0; i < in.length; i++) {
+			if (in[i].readBoolean()) {
+				numWantAssistance++;
+			}
+		}
+		if (numWantAssistance > in.length / 2) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

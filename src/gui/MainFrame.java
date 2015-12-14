@@ -314,6 +314,10 @@ public class MainFrame extends JFrame {
 								System.out.println(playerNumber);
 								
 								out.writeLong(dropInterval);
+								
+								out.writeBoolean(upcomingAssistance);
+								
+								upcomingAssistance = in.readBoolean();
 
 								c.remove(waitingPanel);
 
