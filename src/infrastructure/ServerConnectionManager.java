@@ -26,6 +26,8 @@ public class ServerConnectionManager implements Runnable {
 	
 	private int numPlayers;
 	private final boolean upcomingAssist;
+	
+	int numQuit;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
@@ -34,6 +36,7 @@ public class ServerConnectionManager implements Runnable {
 		this.outStates = outStates;
 		this.numPlayers = playerSockets.length;
 		this.upcomingAssist = upcomingAssist;
+		numQuit = 0;
 
 		this.playerSockets = playerSockets;
 		playerInputStreams = new DataInputStream[this.playerSockets.length];
@@ -50,10 +53,24 @@ public class ServerConnectionManager implements Runnable {
 
 	@Override
 	public void run() {
+		Thread[] readers = new Thread[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
-			new Thread(new ReadThread(playerInputStreams[i], i)).start();
+			readers[i] = new Thread(new ReadThread(playerInputStreams[i], i));
 		}
-		new Thread(new WriteManager()).start();
+		Thread writer = new Thread(new WriteManager());
+		for (int i = 0; i < numPlayers; i++) {
+			readers[i].start();
+		}
+		writer.start();
+		try {
+			for (int i = 0; i < numPlayers; i++) {
+				readers[i].join();
+			}
+		//	writer.join();
+		} catch (InterruptedException ie) {
+		//	System.out.println("done");
+		}
+		System.out.println("terminated normally");
 	}
 
 	/**
@@ -86,6 +103,8 @@ public class ServerConnectionManager implements Runnable {
 					byte msg = player.readByte();
 					commands.add(msg);
 					if ((msg & Encoder.COMMAND_MASK) == 0) {
+					//	System.out.println("broke here");
+						numQuit++;
 						break;
 					}
 				} catch (IOException e) {
@@ -118,12 +137,20 @@ public class ServerConnectionManager implements Runnable {
 					GameState state = outStates.take();
 
 					long displayDelay = System.currentTimeMillis() + DISPLAY_DELAY;
+					
+					boolean hasWritten = false;
 
 					Thread[] writeThreads = new Thread[numPlayers];
 					for (int i = 0; i < writeThreads.length; i++) {
 						if (playerOutputStreams[i] != null) {
 							writeThreads[i] = new Thread(new WriteThread(playerOutputStreams[i], state, displayDelay));
+							hasWritten = true;
 						}
+					}
+					
+					if (!hasWritten) {
+					//	System.out.println("write manager terminated");
+						break;
 					}
 					
 					for (int i = 0; i < writeThreads.length; i++) {

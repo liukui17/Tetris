@@ -135,7 +135,6 @@ public class Encoder {
 	}
 	
 	public static byte encodeUpcomingPiece(byte upcoming, int player) {
-	//	System.out.println(upcoming);
 		return (byte) ((byte) (player << NEXT_PIECE_BITS) | upcoming);
 	}
 	

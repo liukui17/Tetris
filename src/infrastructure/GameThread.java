@@ -57,7 +57,9 @@ public class GameThread implements Runnable {
 		 * GameState data to be sent to players will be dequeued from the shared
 		 * outStates BlockingQueue.
 		 */
-		new Thread(new ServerConnectionManager(commandsFromClient, outStates, playerSockets, upcomingAssist)).start();
+		ServerConnectionManager connectionManager = new ServerConnectionManager(commandsFromClient, outStates, playerSockets, upcomingAssist);
+		Thread connectionManagerThread = new Thread(connectionManager);
+		connectionManagerThread.start();
 
 		// send out the initial state to the client
 		GameState initialState = gameState.getCurrentState();
@@ -84,7 +86,7 @@ public class GameThread implements Runnable {
 						}
 					}
 					
-					if (!remaining) {
+					if (!remaining || !connectionManagerThread.isAlive()) {
 						return;
 					}
 
@@ -105,16 +107,25 @@ public class GameThread implements Runnable {
 		while (true) {
 			byte commandByte;
 			try {
-				
 				// get the next command
 				commandByte = commandsFromClient.take();
+				
+				/*
+				 * Break out of the while loop to kill this thread if
+				 * the number of players that have quit equals the initial
+				 * number of players.
+				 */
+				if (connectionManager.numQuit == numPlayers) {
+					System.out.println("died");
+					break;
+				}
 
 				// decode the command and perform it
 				Encoder.decodeCommand(commandByte, gameState);
-
+				
 				// get the new game state
 				GameState updatedGameState = gameState.getCurrentState();
-
+				
 				int sumScore = 0;
 				for (int i = 0; i < numPlayers; i++) {
 					sumScore += gameState.getScore(i);
@@ -143,5 +154,6 @@ public class GameThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("gamethread terminated");
 	}
 }

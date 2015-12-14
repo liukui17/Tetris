@@ -106,7 +106,6 @@ public class ClientConnectionManager implements Runnable {
 						byte[] upcomingPieces = new byte[numPlayers];
 						for (int i = 0; i < numPlayers; i++) {
 							Encoder.decodeUpcomingPiece(inFromServer.readByte(), upcomingPieces);
-						//	System.out.println(upcomingPieces[i]);
 						}
 						state = new GameState(board, playerSpaces, playerScores, isGameOver, upcomingPieces);
 					} else {
