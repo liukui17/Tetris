@@ -203,11 +203,35 @@ public class GamePanel extends JPanel implements Runnable {
 			if (upcomingPieces != null) {
 				for (int i = 0; i < numPlayers; i++) {
 					byte pieceByte = state.getUpcomingPieces()[i];
-					// update piece based upon pieceByte
-					upcomingPieces[i].updatePiece(GameUtil.S_SHAPE, GameUtil.S_COLOR);
+					switch(pieceByte) {
+					case 0:
+						//upcomingPieces[i].updatePiece(GameUtil.S_SHAPE, GameUtil.S_COLOR);
+						break;
+					case 1:
+						upcomingPieces[i].updatePiece(GameUtil.I_SHAPE, GameUtil.I_COLOR);
+						break;
+					case 2:
+						upcomingPieces[i].updatePiece(GameUtil.J_SHAPE, GameUtil.J_COLOR);
+						break;
+					case 3:
+						upcomingPieces[i].updatePiece(GameUtil.L_SHAPE, GameUtil.L_COLOR);
+						break;
+					case 4:
+						upcomingPieces[i].updatePiece(GameUtil.O_SHAPE, GameUtil.O_COLOR);
+						break;
+					case 5:
+						upcomingPieces[i].updatePiece(GameUtil.S_SHAPE, GameUtil.S_COLOR);
+						break;
+					case 6:
+						upcomingPieces[i].updatePiece(GameUtil.T_SHAPE, GameUtil.T_COLOR);
+						break;
+					case 7:
+						upcomingPieces[i].updatePiece(GameUtil.Z_SHAPE, GameUtil.Z_COLOR);
+						break;
+					}
+					//upcomingPieces[i].updatePiece(GameUtil.S_SHAPE, GameUtil.S_COLOR);
 				}
 			}
-
 
 			// Update grid
 			List<Set<BytePair>> spaces = new ArrayList<Set<BytePair>>(numPlayers);
