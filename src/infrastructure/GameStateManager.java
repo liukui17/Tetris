@@ -14,9 +14,11 @@ public class GameStateManager {
 	private Board board;
 	private int[] playerScores;
 	private int numPlayers;
+	private boolean upcomingAssist;
 	
-	public GameStateManager(int numPlayers) {
+	public GameStateManager(int numPlayers, boolean upcomingAssist) {
 		this.numPlayers = numPlayers;
+		this.upcomingAssist = upcomingAssist;
 		
 		board = new Board(numPlayers);
 		playerScores = new int[numPlayers];
@@ -55,7 +57,12 @@ public class GameStateManager {
 			}
 		}
 		
-		return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver());
+		if (upcomingAssist) {
+			byte[] upcoming = board.getPlayerUpcomingPieces();
+			return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver(), upcoming);
+		} else {
+			return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver());
+		}
 	}
 	
 	public synchronized boolean tryMoveLeft(int player) {

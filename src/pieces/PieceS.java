@@ -19,6 +19,10 @@ public class PieceS extends Piece {
 		squares.add(new Square(startCol + 2, startRow, COLOR));
 	}
 	
+	public byte getByte() {
+		return 5;
+	}
+	
 	public void rotateLeft() {
 		rotateLeftFixedSquareOrigin(1);
 	}

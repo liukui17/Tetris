@@ -187,6 +187,13 @@ public class ServerConnectionManager implements Runnable {
 					out.writeLong(pSpaces[i]);
 				}
 				
+				if (upcomingAssist) {
+					byte[] upcoming = state.getUpcomingPieces();
+					for (int i = 0; i < upcoming.length; i++) {
+						out.writeByte(Encoder.encodeUpcomingPiece(upcoming[i], i));
+					}
+				}
+				
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);
 			} catch (Exception e) {
