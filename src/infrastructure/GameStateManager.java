@@ -58,8 +58,12 @@ public class GameStateManager {
 		}
 		
 		if (upcomingAssist) {
-			byte[] upcoming = board.getPlayerUpcomingPieces();
-			return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver(), upcoming);
+			Piece[] upcoming = board.getPlayerUpcomingPieces();
+			byte[] upcomingBytes = new byte[upcoming.length];
+			for (int i = 0; i < upcoming.length; i++) {
+				upcomingBytes[i] = Encoder.encodeUpcomingPiece(upcoming[i], i);
+			}
+			return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver(), upcomingBytes);
 		} else {
 			return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver());
 		}

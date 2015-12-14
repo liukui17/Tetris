@@ -81,7 +81,20 @@ public class Board {
 		checkRep();
 	}
 	
-	public synchronized byte[] getPlayerUpcomingPieces() {
+	public synchronized Piece[] getPlayerUpcomingPieces() {
+		Piece[] upcoming = new Piece[numPlayers];
+		for (int i = 0; i < upcoming.length; i++) {
+			Queue<Piece> nextQueue = playerUpcomingPieces.get(i);
+			if (nextQueue != null) {
+				upcoming[i] = nextQueue.peek();
+			} else {
+				upcoming[i] = null;
+			}
+		}
+		return upcoming;
+	}
+	
+/*	public synchronized byte[] getPlayerUpcomingPieces() {
 		byte[] upcoming = new byte[numPlayers];
 		for (int i = 0; i < upcoming.length; i++) {
 			Queue<Piece> nextQueue = playerUpcomingPieces.get(i);
@@ -92,7 +105,7 @@ public class Board {
 			}
 		}
 		return upcoming;
-	}
+	} */
 	
 	/**
 	 * Disables a given player's piece (do this for players

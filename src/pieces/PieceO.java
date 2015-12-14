@@ -21,8 +21,8 @@ public class PieceO extends Piece {
 		squares.add(new Square(startCol + 1, startRow + 1, COLOR));
 	}
 	
-	public byte getByte() {
-		return 4;
+	public char getCharacterRepresentation() {
+		return 'O';
 	}
 	
 	public void rotateLeft() {}

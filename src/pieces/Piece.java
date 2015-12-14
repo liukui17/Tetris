@@ -121,7 +121,7 @@ public abstract class Piece {
 		return buf.toString();
 	}
 	
-	public abstract byte getByte();
+	public abstract char getCharacterRepresentation();
 
 	protected abstract void rotateLeft();
 

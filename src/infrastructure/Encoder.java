@@ -131,7 +131,24 @@ public class Encoder {
 	}
 	
 	public static byte encodeUpcomingPiece(Piece upcoming, int player) {
-		return encodeUpcomingPiece(upcoming.getByte(), player);
+		switch (upcoming.getCharacterRepresentation()) {
+			case 'I':
+				return encodeUpcomingPiece((byte) 1, player);
+			case 'J':
+				return encodeUpcomingPiece((byte) 2, player);
+			case 'L':
+				return encodeUpcomingPiece((byte) 3, player);
+			case 'O':
+				return encodeUpcomingPiece((byte) 4, player);
+			case 'S':
+				return encodeUpcomingPiece((byte) 5, player);
+			case 'T':
+				return encodeUpcomingPiece((byte) 6, player);
+			case 'Z':
+				return encodeUpcomingPiece((byte) 7, player);
+			default:
+				return encodeUpcomingPiece((byte) 0, player);
+		}
 	}
 	
 	public static byte encodeUpcomingPiece(byte upcoming, int player) {

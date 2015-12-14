@@ -19,8 +19,8 @@ public class PieceJ extends Piece {
 		squares.add(new Square(startCol + 2, startRow + 1, COLOR));
 	}
 	
-	public byte getByte() {
-		return 2;
+	public char getCharacterRepresentation() {
+		return 'J';
 	}
 	
 	public void rotateLeft() {

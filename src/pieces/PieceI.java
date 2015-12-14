@@ -18,8 +18,8 @@ public class PieceI extends Piece {
 		squares.add(new Square(startCol + 3, startRow, COLOR));
 	}
 	
-	public byte getByte() {
-		return 1;
+	public char getCharacterRepresentation() {
+		return 'I';
 	}
 	
 	public void rotateLeft() {

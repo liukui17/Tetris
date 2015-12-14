@@ -19,8 +19,8 @@ public class PieceZ extends Piece {
 		squares.add(new Square(startCol + 2, startRow + 1, COLOR));
 	}
 	
-	public byte getByte() {
-		return 7;
+	public char getCharacterRepresentation() {
+		return 'Z';
 	}
 	
 	public void rotateLeft() {
