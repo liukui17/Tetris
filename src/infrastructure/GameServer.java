@@ -261,7 +261,7 @@ public class GameServer {
 		}
 		
 		// if tie, choose to use assistance (default is to have assistance)
-		if (numWantAssistance >= in.length / 2) {
+		if (numWantAssistance >= Math.ceil(in.length / 2.0)) {
 			return true;
 		} else {
 			return false;
