@@ -61,7 +61,9 @@ public class GameStateManager {
 			Piece[] upcoming = board.getPlayerUpcomingPieces();
 			byte[] upcomingBytes = new byte[upcoming.length];
 			for (int i = 0; i < upcoming.length; i++) {
-				upcomingBytes[i] = Encoder.encodeUpcomingPiece(upcoming[i], i);
+				if (upcoming[i] != null) {
+					upcomingBytes[i] = Encoder.encodeUpcomingPiece(upcoming[i], i);
+				}
 			}
 			return new GameState(currentBoard, playerPieces, playerScores, board.isGameOver(), upcomingBytes);
 		} else {

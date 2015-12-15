@@ -396,14 +396,14 @@ public class MainFrame extends JFrame {
 		optionsPanel.upcomingYesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				upcomingAssistance = true;
-			//	System.out.println("upcoming: " + upcomingAssistance);
+				//System.out.println("upcoming: " + upcomingAssistance);
 			}
 		});
 		
 		optionsPanel.upcomingNoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				upcomingAssistance = false;
-			//	System.out.println("upcoming: " + upcomingAssistance);
+				//System.out.println("upcoming: " + upcomingAssistance);
 			}
 		});
 		

@@ -87,6 +87,7 @@ public class GamePanel extends JPanel implements Runnable {
 			
 			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 			scoreLabels[i] =  GuiUtil.addLabel(leftPanel, "0", 20);
+			leftPanel.add(Box.createVerticalGlue());
 		}
 		
 		leftPanel.add(Box.createVerticalGlue());
@@ -116,6 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		if (upcomingAssistance) {
+			System.out.println(upcomingAssistance);
 			upcomingPieces = new PiecePanel[numPlayers];
 			for (int i = 0; i < numPlayers; i++) {
 				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -127,6 +129,7 @@ public class GamePanel extends JPanel implements Runnable {
 				PiecePanel piece = new PiecePanel();
 				rightPanel.add(piece);
 				upcomingPieces[i] = piece;
+				rightPanel.add(Box.createVerticalGlue());
 			}
 		} else {
 			upcomingPieces = null;

@@ -55,7 +55,8 @@ public class BoardPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		this.setBackground(Color.WHITE);
+		// turn back to white if dont like
+		this.setBackground(Color.LIGHT_GRAY);
 		
 		Set<BytePair> ghostLocations = new HashSet<BytePair>();
 		for (int i = 0; i < playerSpaces.size(); i++) {
