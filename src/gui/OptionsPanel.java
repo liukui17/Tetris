@@ -49,7 +49,8 @@ public class OptionsPanel extends TemplatePanel {
 
 		GuiUtil.addButton(option1, "-", 25, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				musicPlayer.start();
+				//musicPlayer.start();
+				musicPlayer.playBGM();
 				musicPlayer.adjustVolume(-4.0f);
 			}
 		});
@@ -58,7 +59,8 @@ public class OptionsPanel extends TemplatePanel {
 
 		GuiUtil.addButton(option1, "+", 25, buttonList).addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				musicPlayer.start();
+				//musicPlayer.start();
+				musicPlayer.playBGM();
 				musicPlayer.adjustVolume(4.0f);
 			}
 		});

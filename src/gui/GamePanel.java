@@ -184,9 +184,7 @@ public class GamePanel extends JPanel implements Runnable {
 				removeAll();
 				setLayout(new BorderLayout());
 
-				for (int i = 0; i < numPlayers; i++) {
-					endPanel.setScore(i, state.getScore(i));
-				}
+				endPanel.setScores(scoreLabels);
 				
 				add(endPanel, BorderLayout.CENTER);
 				revalidate();

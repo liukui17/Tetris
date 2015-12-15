@@ -190,7 +190,7 @@ public class MainFrame extends JFrame {
 		helpPanel = new HelpPanel();
 		optionsPanel = new OptionsPanel(musicPlayer);
 		waitingPanel = new WaitingPanel();
-		endPanel = new EndPanel();
+		//endPanel = new EndPanel();
 
 		hostName = DEFAULT_HOST;
 		portNum = DEFAULT_PORT;
@@ -200,6 +200,21 @@ public class MainFrame extends JFrame {
 		c.add(menuPanel, BorderLayout.CENTER);
 
 		// Set Listeners
+		ButtonListener endListener = new ButtonListener() {
+			public void buttonClicked(String s) {
+				if (s.equals("Back to Menu")) {
+					musicPlayer.stop();
+					musicPlayer.close();
+					c.add(menuPanel, BorderLayout.CENTER);
+					c.remove(gamePanel);
+					setSize(WIDTH, HEIGHT);
+					revalidate();
+					repaint();
+				}
+
+			}
+		};
+		
 		menuPanel.setButtonListener(new ButtonListener() {
 			public void buttonClicked(String s) {
 				c.remove(menuPanel);
@@ -209,6 +224,8 @@ public class MainFrame extends JFrame {
 				switch (s) {
 				case "Options":
 					c.add(optionsPanel, BorderLayout.CENTER);
+					musicPlayer.playBGM();
+					musicPlayer.stop();
 					setSize(optionsPanel.getPreferredSize());
 					break;
 				case "Help":
@@ -217,7 +234,7 @@ public class MainFrame extends JFrame {
 					break;
 				case "Start":
 					c.add(waitingPanel, BorderLayout.CENTER);
-					musicPlayer.playCrickets();
+					//musicPlayer.playCrickets();
 					revalidate();
 					repaint();
 
@@ -250,6 +267,7 @@ public class MainFrame extends JFrame {
 									} else {
 										c.remove(waitingPanel);
 										c.add(menuPanel);
+										musicPlayer.stop();
 										revalidate();
 										repaint();
 										return;
@@ -304,8 +322,12 @@ public class MainFrame extends JFrame {
 										break;
 									}
 								}
+								musicPlayer.playCrickets();
 
 								numPlayers = in.readInt();
+								
+								endPanel = new EndPanel(numPlayers);
+								endPanel.setButtonListener(endListener);
 								
 								System.out.println(numPlayers);
 
@@ -413,20 +435,6 @@ public class MainFrame extends JFrame {
 				c.remove(optionsPanel);
 				revalidate();
 				repaint();
-			}
-		});
-
-		endPanel.setButtonListener(new ButtonListener() {
-			public void buttonClicked(String s) {
-				if (s.equals("Back to Menu")) {
-					musicPlayer.stop();
-					musicPlayer.close();
-					c.add(menuPanel, BorderLayout.CENTER);
-					c.remove(gamePanel);
-					revalidate();
-					repaint();
-				}
-
 			}
 		});
 

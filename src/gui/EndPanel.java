@@ -10,24 +10,24 @@ import javax.swing.JLabel;
 
 public class EndPanel extends TemplatePanel implements ActionListener {
 	private ButtonListener buttonListener;
+	JButton backButton;
+
+	JLabel[] scoreLabels;
 	
-	private JLabel p1ScoreLabel;
-	private JLabel p2ScoreLabel;
-	
-	public EndPanel() {
+	public EndPanel(int numPlayers) {
 		super("Game Over");
 		
 		body.add(Box.createVerticalGlue());
-
-		p1ScoreLabel = GuiUtil.addLabel(body, "", 30);
 		
-		body.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		p2ScoreLabel = GuiUtil.addLabel(body, "", 30);
+		scoreLabels = new JLabel[numPlayers];
+		for (int i = 0; i < numPlayers; i++) {
+			scoreLabels[i] = GuiUtil.addLabel(body, "", 30);
+			body.add(Box.createRigidArea(new Dimension(0, 10)));
+		}
 		
 		body.add(Box.createVerticalGlue());
 		
-		JButton backButton = GuiUtil.addButton(body, "Back to Menu", 30, buttonList);
+		backButton = GuiUtil.addButton(body, "Back to Menu", 30, buttonList);
 		backButton.addActionListener(this);
 	}
 
@@ -41,17 +41,10 @@ public class EndPanel extends TemplatePanel implements ActionListener {
 	public void setButtonListener(ButtonListener listener) {
 		this.buttonListener = listener;
 	}
-
-	/*
-	 * Sets the score
-	 */
-	public void setScore(int player, int score) {
-		if (player == 0) {
-			p1ScoreLabel.setText("P1 Score: " + score);
-		} else {
-			p2ScoreLabel.setText("P2 Score: " + score);
+	
+	public void setScores(JLabel[] scoreLabels) {
+		for (int i = 0; i < scoreLabels.length; i++) {
+			this.scoreLabels[i].setText("P" + i + " Score: " + scoreLabels[i].getText());
 		}
 	}
-	
-	
 }
