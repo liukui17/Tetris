@@ -3,8 +3,6 @@ package infrastructure;
 import java.awt.Color;
 
 public class GameUtil {
-	//public static final int NUM_PLAYERS = 2;
-	//public static final int PLAYER_START_SECTION_WIDTH = 7;
 	public static final int LONG_SIZE = 64;
 	public static final int BOARD_WIDTH = LONG_SIZE / Encoder.BITS_PER_COLOR;
 	public static final int BOARD_HEIGHT = 24;

@@ -115,7 +115,7 @@ public class GameThread implements Runnable {
 				 * the number of players that have quit equals the initial
 				 * number of players.
 				 */
-				if (connectionManager.numQuit == numPlayers) {
+				if (connectionManager.getNumQuit() == numPlayers) {
 					System.out.println("died");
 					break;
 				}
@@ -153,6 +153,9 @@ public class GameThread implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+		for (int i = 0; i < this.numPlayers; i++) {
+			connectionManager.toggleFinished(i);
 		}
 		System.out.println("gamethread terminated");
 	}

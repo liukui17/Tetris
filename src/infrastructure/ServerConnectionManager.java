@@ -27,7 +27,10 @@ public class ServerConnectionManager implements Runnable {
 	private int numPlayers;
 	private final boolean upcomingAssist;
 	
-	int numQuit;
+	private ReadThread[] readers;
+	private WriteManager writer;
+	
+	private int numQuit;
 
 	public ServerConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> outStates,
@@ -41,30 +44,48 @@ public class ServerConnectionManager implements Runnable {
 		this.playerSockets = playerSockets;
 		playerInputStreams = new DataInputStream[this.playerSockets.length];
 		playerOutputStreams = new DataOutputStream[this.playerSockets.length];
+		readers = new ReadThread[this.playerSockets.length];
+	//	System.out.println(playerSockets + " " + playerInputStreams + " " + playerOutputStreams);
 		try {
 			for (int i = 0; i < this.playerSockets.length; i++) {
 				playerInputStreams[i] = new DataInputStream(playerSockets[i].getInputStream());
 				playerOutputStreams[i] = new DataOutputStream(playerSockets[i].getOutputStream());
+				System.out.println(playerInputStreams[i]);
 			}
+			for (int i = 0; i < this.playerSockets.length; i++) {
+				readers[i] = new ReadThread(playerInputStreams[i], i);
+				System.out.println(i);
+			}
+			writer = new WriteManager();
 		} catch (IOException ioe) {
 			ioe.printStackTrace(System.err);
 		}
 	}
+	
+	public void toggleFinished(int player) {
+		if (player >= 0 && player < playerSockets.length) {
+			readers[player].isFinished = true;
+		}
+	}
+	
+	public int getNumQuit() {
+		return numQuit;
+	}
 
 	@Override
 	public void run() {
-		Thread[] readers = new Thread[numPlayers];
+		Thread[] readerThreads = new Thread[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
-			readers[i] = new Thread(new ReadThread(playerInputStreams[i], i));
+			readerThreads[i] = new Thread(readers[i]);
 		}
-		Thread writer = new Thread(new WriteManager());
+		Thread writerThread = new Thread(writer);
 		for (int i = 0; i < numPlayers; i++) {
-			readers[i].start();
+			readerThreads[i].start();
 		}
-		writer.start();
+		writerThread.start();
 		try {
 			for (int i = 0; i < numPlayers; i++) {
-				readers[i].join();
+				readerThreads[i].join();
 			}
 		//	writer.join();
 		} catch (InterruptedException ie) {
@@ -119,6 +140,7 @@ public class ServerConnectionManager implements Runnable {
 				playerOutputStreams[playerNumber] = null;
 				playerSockets[playerNumber].close();
 				playerSockets[playerNumber] = null;
+				readers[playerNumber] = null;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

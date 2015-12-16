@@ -226,9 +226,17 @@ public class MainFrame extends JFrame {
 				c.remove(menuPanel);
 				revalidate();
 				repaint();
-
+				
 				switch (s) {
-				case "Exit": System.exit(0);
+				case "Exit":
+				/*	if (socket != null) {
+						try {
+							DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+							out.writeByte(Encoder.encodeKeyPress(KeyEvent.VK_UNDEFINED, playerNumber));
+						} catch (IOException ioe) {}
+					}
+					break; */
+					System.exit(0);
 					
 				case "Options":
 					optionsPanel.update(hostName, portNum);

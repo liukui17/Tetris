@@ -20,6 +20,7 @@ public class ClientConnectionManager implements Runnable {
 
 	private boolean hasQuit;
 	private final boolean upcomingAssist;
+	private boolean gameOver;
 
 	public ClientConnectionManager(BlockingQueue<Byte> commands,
 			BlockingQueue<GameState> inputStates,
@@ -34,6 +35,7 @@ public class ClientConnectionManager implements Runnable {
 
 		hasQuit = false;
 		this.upcomingAssist = upcomingAssist;
+		gameOver = false;
 	}
 
 	/**
@@ -51,13 +53,14 @@ public class ClientConnectionManager implements Runnable {
 		writer.start();
 		try {
 			reader.join();
-			writer.join();
 		} catch (InterruptedException ie) {
 			ie.printStackTrace(System.err);
 		}
 		try {
 			inFromServer.close();
 			outToServer.close();
+			inFromServer = null;
+			outToServer = null;
 		} catch (IOException ioe) {
 			ioe.printStackTrace(System.err);
 		}
@@ -92,7 +95,7 @@ public class ClientConnectionManager implements Runnable {
 					}
 					
 					// read if the game has ended or not
-					boolean isGameOver = inFromServer.readBoolean();
+					gameOver = inFromServer.readBoolean();
 					
 					// read the pieces of each player
 					List<Set<BytePair>> playerSpaces = new ArrayList<Set<BytePair>>(numPlayers);
@@ -107,9 +110,9 @@ public class ClientConnectionManager implements Runnable {
 						for (int i = 0; i < numPlayers; i++) {
 							Encoder.decodeUpcomingPiece(inFromServer.readByte(), upcomingPieces);
 						}
-						state = new GameState(board, playerSpaces, playerScores, isGameOver, upcomingPieces);
+						state = new GameState(board, playerSpaces, playerScores, gameOver, upcomingPieces);
 					} else {
-						state = new GameState(board, playerSpaces, playerScores, isGameOver);
+						state = new GameState(board, playerSpaces, playerScores, gameOver);
 					}
 					
 					// wait for synchronization
@@ -132,7 +135,7 @@ public class ClientConnectionManager implements Runnable {
 		@Override
 		public void run() {
 			try {
-				while (true) {
+				while (!gameOver && !hasQuit) {
 					byte command = outputCommandBytes.take();
 					outToServer.writeByte(command);
 				}
