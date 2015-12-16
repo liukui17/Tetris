@@ -19,6 +19,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 import infrastructure.BytePair;
 import infrastructure.ClientConnectionManager;
@@ -78,18 +81,27 @@ public class GamePanel extends JPanel implements Runnable {
 		GuiUtil.addLabel(leftPanel, "Score", 30);
 		leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
+		Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+		Border margin = new EmptyBorder(10, 10, 10, 10);
+		CompoundBorder playerBorder = new CompoundBorder(border, margin);
+		
 		scoreLabels = new JLabel[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
-			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-			JLabel nextTitleLabel = GuiUtil.addLabel(leftPanel, "Player " + i, 20);
-//			nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+			JPanel playerScorePanel = new JPanel();
+			playerScorePanel.setLayout(new BoxLayout(playerScorePanel, BoxLayout.Y_AXIS));
+			playerScorePanel.setBackground(Color.LIGHT_GRAY);
 			if (i == playerNumber) {
-				nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+				playerScorePanel.setBorder(playerBorder);
 			}
+			
+			add(Box.createRigidArea(new Dimension(0, 10)));
+			JLabel nextTitleLabel = GuiUtil.addLabel(playerScorePanel, "Player " + i, 20);
+			nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
 			nextTitleLabel.setPreferredSize(LABEL_SIZE);
 			
-			leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-			scoreLabels[i] =  GuiUtil.addLabel(leftPanel, "0", 20);
+			playerScorePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+			scoreLabels[i] =  GuiUtil.addLabel(playerScorePanel, "0", 20);
+			leftPanel.add(playerScorePanel);
 			leftPanel.add(Box.createVerticalGlue());
 		}
 		
@@ -122,17 +134,23 @@ public class GamePanel extends JPanel implements Runnable {
 			System.out.println(upcomingAssistance);
 			upcomingPieces = new PiecePanel[numPlayers];
 			for (int i = 0; i < numPlayers; i++) {
-				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-				JLabel nextTitleLabel = GuiUtil.addLabel(rightPanel, "Player " + i, 20);
+				JPanel playerNextPanel = new JPanel();
+				playerNextPanel.setLayout(new BoxLayout(playerNextPanel, BoxLayout.Y_AXIS));
+				playerNextPanel.setBackground(Color.LIGHT_GRAY);
 				if (i == playerNumber) {
-					nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
+					playerNextPanel.setBorder(playerBorder);
 				}
+				
+				playerNextPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				JLabel nextTitleLabel = GuiUtil.addLabel(playerNextPanel, "Player " + i, 20);
+				nextTitleLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
 				nextTitleLabel.setPreferredSize(LABEL_SIZE);
 				
-				rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+				playerNextPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 				PiecePanel piece = new PiecePanel();
-				rightPanel.add(piece);
+				playerNextPanel.add(piece);
 				upcomingPieces[i] = piece;
+				rightPanel.add(playerNextPanel);
 				rightPanel.add(Box.createVerticalGlue());
 			}
 		} else {
