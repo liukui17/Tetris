@@ -43,6 +43,7 @@ public class BoardPanel extends JPanel {
 		this.numPlayers = numPlayers;
 		this.playerNum = playerNum;
 		this.setPreferredSize(new Dimension(GameUtil.BOARD_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
+		this.setMinimumSize(new Dimension(GameUtil.BOARD_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
 		
 		setBackground(Color.LIGHT_GRAY);
 		grid = new Color[GameUtil.BOARD_HEIGHT][GameUtil.BOARD_WIDTH];
