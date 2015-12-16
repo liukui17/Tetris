@@ -18,9 +18,6 @@ public class GameTimer extends Thread {
 	// The timer backbone of this class
 	private ScheduledExecutorService timer;
 
-	// The module to perform the dropping
-	TimerTask dropper;
-
 	// The current interval between drops in milliseconds
 	private long dropInterval;
 	
@@ -37,7 +34,6 @@ public class GameTimer extends Thread {
 	public GameTimer(long initialDropInterval, GameStateManager gameState,
 			BlockingQueue<GameState> out, int numPlayers) {
 		timer = Executors.newSingleThreadScheduledExecutor();
-		dropper = new Dropper();
 		dropInterval = initialDropInterval;
 		this.gameState = gameState;
 		this.out = out;
@@ -53,7 +49,7 @@ public class GameTimer extends Thread {
 
 	@Override
 	public void run() {
-		timer.scheduleAtFixedRate(dropper, 0, dropInterval, TimeUnit.MILLISECONDS);
+		timer.scheduleAtFixedRate(new Dropper(), 0, dropInterval * 1000000, TimeUnit.NANOSECONDS);
 	}
 
 	/**
@@ -72,9 +68,6 @@ public class GameTimer extends Thread {
 			dropInterval -= SPEED_UP_CHANGE;
 		}
 		
-		dropper.cancel();
-		dropper = new Dropper();
-		timer.scheduleAtFixedRate(dropper, 0, dropInterval, TimeUnit.MILLISECONDS);
 		System.out.println("Sped up");
 	}
 
