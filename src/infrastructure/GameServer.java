@@ -25,6 +25,9 @@ public class GameServer {
 	public static final byte VALID_NUM_PLAYERS = 4;
 	public static final byte GAME_FULL = 6;
 	public static final byte ACCEPTED = 7;
+	public static final byte CLIENT_DISCONNECTED = 8;
+	public static final byte CREATING = 9;
+	public static final byte JOINING = 10;
 
 	public static void main(String[] args) {
 		try {
@@ -55,14 +58,14 @@ public class GameServer {
 				e.printStackTrace();
 			}
 		}
-
+		
 		@Override
 		public void run() {
 			try {
 				while (true) {
-					boolean makingGame = in.readBoolean();
+					byte choice = in.readByte();
 
-					if (makingGame) {
+					if (choice == CREATING) {
 						String gameName = getGameName(true, in, out);
 
 						if (gameName.isEmpty()) {
@@ -90,7 +93,7 @@ public class GameServer {
 						}
 						
 						break;
-					} else {  // JOINING GAME
+					} else if (choice == JOINING) {
 						String gameName = getGameName(false, in, out);
 
 						if (gameName.isEmpty()) {
@@ -118,6 +121,10 @@ public class GameServer {
 							
 							break;
 						}
+					} else {  // disconnected
+						in.close();
+						out.close();
+						return;
 					}
 				}
 			} catch (IOException e) {

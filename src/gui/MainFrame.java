@@ -52,11 +52,16 @@ public class MainFrame extends JFrame {
 
 	private MusicPlayer musicPlayer;
 
-	private boolean getCreateOrJoin() {
-		Object[] options = {"Create a new game", "Join a current game"};
+	private byte getChoice() {
+		Object[] options = {"Create a new game", "Join a current game", "Back"};
 		int response = JOptionPane.showOptionDialog(waitingPanel, "Would you like to create or join a game",
-				"Create or join a game", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-		return response == JOptionPane.YES_OPTION;
+				"Create or join a game", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		switch (response) {
+			case JOptionPane.YES_OPTION: return GameServer.CREATING;
+			case JOptionPane.NO_OPTION: return GameServer.JOINING;
+			case JOptionPane.CANCEL_OPTION: return GameServer.CLIENT_DISCONNECTED;
+			default: return GameServer.CLIENT_DISCONNECTED; 
+		}
 	}
 
 	private String getGameName() {
@@ -283,13 +288,13 @@ public class MainFrame extends JFrame {
 								DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
 								while (true) {
-									boolean createOrJoin = getCreateOrJoin();
-									out.writeBoolean(createOrJoin);
+									byte choice = getChoice();
+									out.writeByte(choice);
 
 									String gameName;
 
 									// create
-									if (createOrJoin) {
+									if (choice == GameServer.CREATING) {
 										gameName = sendNameToServer(true, in, out);
 										if (gameName == null) {
 											continue;
@@ -305,7 +310,7 @@ public class MainFrame extends JFrame {
 
 										displayMessage("Sucessfully created game");
 										break;
-									} else {  // join
+									} else if (choice == GameServer.JOINING) {  // join
 										gameName = sendNameToServer(false, in, out);
 										
 										if (gameName == null) {
@@ -321,6 +326,16 @@ public class MainFrame extends JFrame {
 
 										displayMessage("Successfully joined game");
 										break;
+									} else {
+										in.close();
+										out.close();
+										
+										c.remove(waitingPanel);
+										c.add(menuPanel);
+										musicPlayer.stop();
+										revalidate();
+										repaint();
+										return;
 									}
 								}
 								musicPlayer.playCrickets();
