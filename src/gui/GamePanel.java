@@ -96,7 +96,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		add(Box.createHorizontalGlue());
 
-		boardPanel = new BoardPanel(drawGhosts, numPlayers);
+		boardPanel = new BoardPanel(drawGhosts, numPlayers, playerNumber);
 		boardPanel.setAlignmentX(CENTER_ALIGNMENT);
 		boardPanel.setAlignmentY(CENTER_ALIGNMENT);
 		add(boardPanel);

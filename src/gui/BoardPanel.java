@@ -27,6 +27,7 @@ public class BoardPanel extends JPanel {
 	private List<Set<BytePair>> playerSpaces;
 	private boolean drawGhosts;
 	private int numPlayers;
+	private int playerNum;
 
 	/*
 	 * Length of a side of a square cell
@@ -38,8 +39,9 @@ public class BoardPanel extends JPanel {
 	 */
 	static final int BORDER_THICKNESS = 3;
 
-	public BoardPanel(boolean drawGhosts, int numPlayers) {
+	public BoardPanel(boolean drawGhosts, int numPlayers, int playerNum) {
 		this.numPlayers = numPlayers;
+		this.playerNum = playerNum;
 		this.setPreferredSize(new Dimension(GameUtil.BOARD_WIDTH * CELL_LENGTH, GameUtil.BOARD_HEIGHT * CELL_LENGTH));
 		
 		setBackground(Color.LIGHT_GRAY);
@@ -84,19 +86,8 @@ public class BoardPanel extends JPanel {
 				}
 			}
 		}
-
-		// draw the outlines of the falling pieces
-		List<Set<Line>> playerSides = new ArrayList<Set<Line>>(numPlayers);
-		for (int i = 0; i < numPlayers; i++) {
-			Set<BytePair> nextSpaces = playerSpaces.get(i);
-			if (nextSpaces != null) {
-				playerSides.add(findSides(nextSpaces));
-			}
-		}
 		
-		for (int i = 0; i < playerSides.size(); i++) {
-			drawPieceOutLine(g, GameUtil.OUTLINE_COLORS[i % 2], playerSides.get(i));
-		}
+		drawPieceOutLine(g, Color.BLACK, findSides(playerSpaces.get(playerNum)));
 	}
 
 	public void updateGrid(Color[][] grid, List<Set<BytePair>> playerSpaces) {
