@@ -46,7 +46,7 @@ public class Square {
 	 * @return a BytePair containing this Square's coordinates
 	 */
 	public BytePair getBytePair() {
-		return new BytePair((byte) getX(), (byte) getY());
+		return new BytePair((byte) GameUtil.modulo(getX(), GameUtil.BOARD_WIDTH), (byte) getY());
 	}
 	
 	public String toString() {

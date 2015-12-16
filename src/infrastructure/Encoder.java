@@ -216,7 +216,7 @@ public class Encoder {
 		Iterator<BytePair> itr = piece.iterator();
 
 		BytePair s = itr.next();
-		encoding |= GameUtil.modulo(s.getX(), width);
+		encoding |= (GameUtil.modulo(s.getX(), width) & BYTE_MASK);
 		encoding <<= BYTE;  // shift it over a byte
 		encoding |= (s.getY() & BYTE_MASK);
 
@@ -224,7 +224,7 @@ public class Encoder {
 			BytePair space = itr.next();
 
 			encoding <<= BYTE;
-			encoding |= GameUtil.modulo(space.getX(), width);
+			encoding |= (GameUtil.modulo(space.getX(), width) & BYTE_MASK);
 			encoding <<= BYTE;  // shift it over a byte
 			encoding |= (space.getY() & BYTE_MASK);
 		}
