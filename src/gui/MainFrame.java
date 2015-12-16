@@ -186,6 +186,9 @@ public class MainFrame extends JFrame {
 		upcomingAssistance = true;
 		dropInterval = EASY_INTERVAL;
 		musicPlayer = new MusicPlayer();
+		
+		hostName = DEFAULT_HOST;
+		portNum = DEFAULT_PORT;
 
 		// Set layout manager
 		setLayout(new BorderLayout());
@@ -193,12 +196,10 @@ public class MainFrame extends JFrame {
 		// Create Swing component
 		menuPanel = new MenuPanel();
 		helpPanel = new HelpPanel();
-		optionsPanel = new OptionsPanel(musicPlayer);
+		optionsPanel = new OptionsPanel(musicPlayer, hostName, portNum);
 		waitingPanel = new WaitingPanel();
 		//endPanel = new EndPanel();
 
-		hostName = DEFAULT_HOST;
-		portNum = DEFAULT_PORT;
 
 		// Add Swing components to content pane
 		Container c = getContentPane();
@@ -230,10 +231,10 @@ public class MainFrame extends JFrame {
 				case "Exit": System.exit(0);
 					
 				case "Options":
+					optionsPanel.update(hostName, portNum);
 					c.add(optionsPanel, BorderLayout.CENTER);
 					musicPlayer.playBGM();
 					musicPlayer.stop();
-					setSize(optionsPanel.getPreferredSize());
 					setMinimumSize(optionsPanel.getPreferredSize());
 					break;
 					
@@ -448,6 +449,14 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				upcomingAssistance = false;
 				//System.out.println("upcoming: " + upcomingAssistance);
+			}
+		});
+		
+		optionsPanel.setHostPortButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hostName = optionsPanel.hostText.getText();
+				portNum = Integer.parseInt(optionsPanel.portText.getText());
+				System.out.println(hostName + " " + portNum);
 			}
 		});
 		

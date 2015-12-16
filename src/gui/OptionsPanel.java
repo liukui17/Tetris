@@ -12,6 +12,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class OptionsPanel extends TemplatePanel {
 	
@@ -23,8 +24,12 @@ public class OptionsPanel extends TemplatePanel {
 	JButton upcomingYesButton;
 	JButton upcomingNoButton;
 	JButton backButton;
+	
+	JTextField hostText;
+	JTextField portText;
+	JButton setHostPortButton;
 
-	public OptionsPanel(MusicPlayer musicPlayer) {
+	public OptionsPanel(MusicPlayer musicPlayer, String host, int port) {
 		super("Options");
 
 		// Option 1 Panel
@@ -184,6 +189,39 @@ public class OptionsPanel extends TemplatePanel {
 			}
 		});
 		
+		// filler
+		body.add(Box.createRigidArea(new Dimension(0, 50)));
+		
+		JPanel option5 = new JPanel();
+		option5.setBackground(Color.LIGHT_GRAY);
+		option5.setLayout(new BoxLayout(option5, BoxLayout.X_AXIS));
+		body.add(option5);
+		
+		GuiUtil.addLabel(option5, "Host: ", 30);
+		hostText = new JTextField(1);
+		hostText.setPreferredSize(new Dimension(100, 25));
+		hostText.setMaximumSize(new Dimension(100, 25));
+		hostText.setMinimumSize(new Dimension(100, 25));
+		hostText.setText(host);
+		option5.add(hostText);
+		
+		option5.add(Box.createRigidArea(new Dimension(20, 0)));
+		
+		GuiUtil.addLabel(option5, "Port: ", 30);
+		portText = new JTextField(1);
+		portText.setPreferredSize(new Dimension(100, 25));
+		portText.setMaximumSize(new Dimension(100, 25));
+		portText.setMinimumSize(new Dimension(100, 25));
+		portText.setText(Integer.toString(port));
+		option5.add(portText);
+		
+		option5.add(Box.createRigidArea(new Dimension(20, 0)));
+		
+		setHostPortButton = GuiUtil.addButton(option5, "Set", 30, buttonList);
+		
+		
+		
+		
 		//---------------------------------
 		
 		body.add(Box.createVerticalGlue());
@@ -192,6 +230,11 @@ public class OptionsPanel extends TemplatePanel {
 		
 		GuiUtil.formatButtons(buttonList);
 
+	}
+	
+	public void update(String host, int port) {
+		hostText.setText(host);
+		portText.setText(Integer.toString(port));
 	}
 
 }
