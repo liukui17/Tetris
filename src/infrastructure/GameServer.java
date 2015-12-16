@@ -124,6 +124,7 @@ public class GameServer {
 					} else {  // disconnected
 						in.close();
 						out.close();
+						player.close();
 						return;
 					}
 				}

@@ -227,6 +227,8 @@ public class MainFrame extends JFrame {
 				repaint();
 
 				switch (s) {
+				case "Exit": System.exit(0);
+					
 				case "Options":
 					c.add(optionsPanel, BorderLayout.CENTER);
 					musicPlayer.playBGM();
@@ -234,10 +236,12 @@ public class MainFrame extends JFrame {
 					setSize(optionsPanel.getPreferredSize());
 					setMinimumSize(optionsPanel.getPreferredSize());
 					break;
+					
 				case "Help":
 					c.add(helpPanel, BorderLayout.CENTER);
 					setMinimumSize(helpPanel.getPreferredSize());
 					break;
+					
 				case "Start":
 					c.add(waitingPanel, BorderLayout.CENTER);
 					//musicPlayer.playCrickets();
