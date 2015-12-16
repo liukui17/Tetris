@@ -45,16 +45,13 @@ public class ServerConnectionManager implements Runnable {
 		playerInputStreams = new DataInputStream[this.playerSockets.length];
 		playerOutputStreams = new DataOutputStream[this.playerSockets.length];
 		readers = new ReadThread[this.playerSockets.length];
-	//	System.out.println(playerSockets + " " + playerInputStreams + " " + playerOutputStreams);
 		try {
 			for (int i = 0; i < this.playerSockets.length; i++) {
 				playerInputStreams[i] = new DataInputStream(playerSockets[i].getInputStream());
 				playerOutputStreams[i] = new DataOutputStream(playerSockets[i].getOutputStream());
-				System.out.println(playerInputStreams[i]);
 			}
 			for (int i = 0; i < this.playerSockets.length; i++) {
 				readers[i] = new ReadThread(playerInputStreams[i], i);
-				System.out.println(i);
 			}
 			writer = new WriteManager();
 		} catch (IOException ioe) {
@@ -87,10 +84,7 @@ public class ServerConnectionManager implements Runnable {
 			for (int i = 0; i < numPlayers; i++) {
 				readerThreads[i].join();
 			}
-		//	writer.join();
-		} catch (InterruptedException ie) {
-		//	System.out.println("done");
-		}
+		} catch (InterruptedException ie) { }
 		System.out.println("terminated normally");
 	}
 
@@ -124,7 +118,6 @@ public class ServerConnectionManager implements Runnable {
 					byte msg = player.readByte();
 					commands.add(msg);
 					if ((msg & Encoder.COMMAND_MASK) == 0) {
-					//	System.out.println("broke here");
 						numQuit++;
 						break;
 					}
@@ -170,7 +163,6 @@ public class ServerConnectionManager implements Runnable {
 					}
 					
 					if (!hasWritten) {
-					//	System.out.println("write manager terminated");
 						break;
 					}
 					
@@ -244,9 +236,7 @@ public class ServerConnectionManager implements Runnable {
 				
 				// send the delay for the gui to display the game state
 				out.writeLong(displayDelay);
-			} catch (Exception e) {
-			//	e.printStackTrace();
-			}
+			} catch (Exception e) { }
 		}
 	}
 }

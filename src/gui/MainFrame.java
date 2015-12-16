@@ -414,49 +414,42 @@ public class MainFrame extends JFrame {
 		optionsPanel.easyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dropInterval = EASY_INTERVAL;
-			//	System.out.println("easy");
 			}
 		});
 		
 		optionsPanel.mediumButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dropInterval = MEDIUM_INTERVAL;
-			//	System.out.println("medium");
 			}
 		});
 		
 		optionsPanel.hardButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dropInterval = HARD_INTERVAL;
-			//	System.out.println("hard");
 			}
 		});
 		
 		optionsPanel.ghostYesBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				drawGhosts = true;
-			//	System.out.println("ghosts: " + drawGhosts);
 			}
 		});
 		
 		optionsPanel.ghostNoBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				drawGhosts = false;
-			//	System.out.println("ghosts: " + drawGhosts);
 			}
 		});
 		
 		optionsPanel.upcomingYesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				upcomingAssistance = true;
-				//System.out.println("upcoming: " + upcomingAssistance);
 			}
 		});
 		
 		optionsPanel.upcomingNoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				upcomingAssistance = false;
-				//System.out.println("upcoming: " + upcomingAssistance);
 			}
 		});
 		
