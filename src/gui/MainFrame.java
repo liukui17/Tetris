@@ -227,10 +227,11 @@ public class MainFrame extends JFrame {
 					musicPlayer.playBGM();
 					musicPlayer.stop();
 					setSize(optionsPanel.getPreferredSize());
+					setMinimumSize(optionsPanel.getPreferredSize());
 					break;
 				case "Help":
 					c.add(helpPanel, BorderLayout.CENTER);
-					setSize(helpPanel.getPreferredSize());
+					setMinimumSize(helpPanel.getPreferredSize());
 					break;
 				case "Start":
 					c.add(waitingPanel, BorderLayout.CENTER);
@@ -346,6 +347,8 @@ public class MainFrame extends JFrame {
 								gamePanel = new GamePanel(in, out, playerNumber, musicPlayer, endPanel, drawGhosts, upcomingAssistance, numPlayers);
 
 								setSize(gamePanel.getPreferredSize());
+								setMinimumSize(gamePanel.getPreferredSize());
+								
 								Thread gameThread = new Thread(gamePanel);
 								c.add(gamePanel, BorderLayout.CENTER);
 								gameThread.start();

@@ -113,7 +113,6 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		JLabel rightTitle = GuiUtil.addLabel(rightPanel, "Next", 30);
-		rightTitle.setPreferredSize(LABEL_SIZE);
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		if (upcomingAssistance) {
