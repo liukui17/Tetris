@@ -108,8 +108,7 @@ public class MusicPlayer {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			URL url = classLoader.getResource(name);
-			File soundFile = new File(url.getPath());
-			audioIn = AudioSystem.getAudioInputStream(soundFile);
+			audioIn = AudioSystem.getAudioInputStream(url);
 			
 			clip = AudioSystem.getClip();
 			clip.open(audioIn);
